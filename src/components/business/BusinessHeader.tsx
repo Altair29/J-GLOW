@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { getIcon } from '@/lib/icons';
 import type { NavigationItem } from '@/types/database';
 
 type Props = {
@@ -12,55 +13,213 @@ type Props = {
   theme: Record<string, string>;
 };
 
+/* ========================================
+   ナビゲーション構造定義
+   DB の navItems を href でグルーピング
+   ======================================== */
+const featureHrefs = ['/business/simulation', '/business/diagnosis', '/business/ikusei'];
+const resourceHrefs = ['/business/whitepapers', '/business/subsidies', '/business/trends'];
+
+function groupNavItems(items: NavigationItem[]) {
+  const features: NavigationItem[] = [];
+  const resources: NavigationItem[] = [];
+  let newsItem: NavigationItem | null = null;
+
+  for (const item of items) {
+    if (featureHrefs.includes(item.href)) features.push(item);
+    else if (resourceHrefs.includes(item.href)) resources.push(item);
+    else if (item.href === '/business/blog' || item.href === '/business/news') newsItem = item;
+  }
+
+  return { features, resources, newsItem };
+}
+
+/* ========================================
+   ドロップダウンコンポーネント
+   ======================================== */
+function NavDropdown({
+  label,
+  items,
+  theme,
+}: {
+  label: string;
+  items: NavigationItem[];
+  theme: Record<string, string>;
+}) {
+  const [open, setOpen] = useState(false);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const enter = useCallback(() => {
+    if (timeout.current) clearTimeout(timeout.current);
+    setOpen(true);
+  }, []);
+
+  const leave = useCallback(() => {
+    timeout.current = setTimeout(() => setOpen(false), 150);
+  }, []);
+
+  /* キーボード ESC で閉じる */
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    if (open) document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+    >
+      <button
+        className="flex items-center gap-1 px-4 py-2 text-[13px] font-medium tracking-wide text-slate-600 hover:text-slate-900 rounded-lg hover:bg-white/50 transition-all"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        {label}
+        <ChevronDown
+          size={14}
+          className={`opacity-50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {/* ドロップダウンパネル */}
+      <div
+        className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 transition-all duration-200 ${
+          open
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 -translate-y-1 pointer-events-none'
+        }`}
+      >
+        <div className="glass-dropdown rounded-xl py-2 min-w-[240px] shadow-xl">
+          {items.map((item) => {
+            const Icon = getIcon(item.icon);
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                {Icon && (
+                  <span
+                    className="shrink-0 p-1.5 rounded-lg"
+                    style={{
+                      backgroundColor:
+                        theme['--biz-primary']
+                          ? `${theme['--biz-primary']}12`
+                          : 'rgba(30,58,95,0.07)',
+                    }}
+                  >
+                    <Icon
+                      size={16}
+                      style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+                    />
+                  </span>
+                )}
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ========================================
+   ヘッダー本体
+   ======================================== */
 export function BusinessHeader({ navItems, texts, theme }: Props) {
   const { user, profile, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+
+  const { features, resources, newsItem } = groupNavItems(navItems);
 
   return (
-    <header
-      className="text-white shadow-lg"
-      style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
-    >
-      <div className="max-w-7xl mx-auto px-4">
+    <header className="sticky top-0 z-50 glass-header">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/business" className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight">
+          {/* ── ロゴ ── */}
+          <Link href="/business" className="flex items-center gap-2.5 mr-10 lg:mr-14 shrink-0">
+            <span
+              className="font-[family-name:var(--font-heading)] text-xl font-bold tracking-tight"
+              style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+            >
               {texts.brand_name || 'J-GLOW'}
             </span>
-            <span className="text-xs bg-white/20 px-2 py-0.5 rounded">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border"
+              style={{
+                color: theme['--biz-primary'] || '#1e3a5f',
+                borderColor: theme['--biz-primary'] || '#1e3a5f',
+                opacity: 0.5,
+              }}
+            >
               {texts.brand_badge || 'Business'}
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="px-3 py-2 text-sm rounded-md hover:bg-white/10 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+          {/* ── デスクトップナビ ── */}
+          <nav className="hidden lg:flex items-center gap-1 flex-1">
+            {/* サービス概要 */}
+            <Link
+              href="/business"
+              className="px-4 py-2 text-[13px] font-medium tracking-wide text-slate-600 hover:text-slate-900 rounded-lg hover:bg-white/50 transition-all"
+            >
+              {texts.nav_home || 'サービス概要'}
+            </Link>
+
+            {/* 主要機能 ドロップダウン */}
+            {features.length > 0 && (
+              <NavDropdown
+                label={texts.nav_features || '主要機能'}
+                items={features}
+                theme={theme}
+              />
+            )}
+
+            {/* リソース ドロップダウン */}
+            {resources.length > 0 && (
+              <NavDropdown
+                label={texts.nav_resources || 'リソース'}
+                items={resources}
+                theme={theme}
+              />
+            )}
+
+            {/* 業界最新動向 */}
+            <Link
+              href={newsItem?.href || '/business/blog'}
+              className="px-4 py-2 text-[13px] font-medium tracking-wide text-slate-600 hover:text-slate-900 rounded-lg hover:bg-white/50 transition-all"
+            >
+              {texts.nav_news || '業界最新動向'}
+            </Link>
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          {/* ── 右側アクション ── */}
+          <div className="hidden lg:flex items-center gap-3 shrink-0 ml-6">
             {user ? (
               <>
-                <span className="text-sm text-white/70">
+                <span className="text-sm text-slate-500 max-w-[140px] truncate">
                   {profile?.display_name || user.email}
                 </span>
                 {profile?.role === 'admin' && (
                   <Link
                     href="/admin"
-                    className="text-xs bg-amber-500 text-white px-2 py-1 rounded"
+                    className="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full"
                   >
                     {texts.admin_link || '管理'}
                   </Link>
                 )}
                 <button
                   onClick={signOut}
-                  className="text-sm px-3 py-1.5 border border-white/30 rounded-md hover:bg-white/10 transition-colors"
+                  className="text-[13px] px-3.5 py-1.5 border border-slate-200 rounded-lg text-slate-500 hover:text-slate-700 hover:border-slate-300 transition-colors"
                 >
                   {texts.logout_button || 'ログアウト'}
                 </button>
@@ -68,47 +227,88 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
             ) : (
               <Link
                 href="/login"
-                className="text-sm px-4 py-1.5 bg-white rounded-md hover:bg-gray-100 transition-colors font-medium"
-                style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+                className="text-[13px] px-5 py-2 rounded-lg font-semibold text-white shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
+                style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
               >
                 {texts.login_button || 'ログイン'}
               </Link>
             )}
           </div>
 
+          {/* ── モバイルハンバーガー ── */}
           <button
-            className="md:hidden p-2"
+            className="lg:hidden p-2 text-slate-600 rounded-lg hover:bg-white/60 transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={texts.menu_label || 'メニュー'}
           >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
+        {/* ── モバイルメニュー ── */}
         {menuOpen && (
-          <div className="md:hidden pb-4 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="block px-3 py-2 text-sm rounded-md hover:bg-white/10"
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <div className="border-t border-white/20 mt-2 pt-2">
+          <div className="lg:hidden pb-4 border-t border-slate-200/60 pt-3 space-y-1">
+            {/* サービス概要 */}
+            <Link
+              href="/business"
+              className="block px-3 py-2.5 text-sm font-medium text-slate-700 rounded-lg hover:bg-white/60 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
+              {texts.nav_home || 'サービス概要'}
+            </Link>
+
+            {/* 主要機能 (アコーディオン) */}
+            {features.length > 0 && (
+              <MobileAccordion
+                label={texts.nav_features || '主要機能'}
+                items={features}
+                expanded={mobileExpanded === 'features'}
+                onToggle={() =>
+                  setMobileExpanded((v) => (v === 'features' ? null : 'features'))
+                }
+                onNavigate={() => setMenuOpen(false)}
+              />
+            )}
+
+            {/* リソース (アコーディオン) */}
+            {resources.length > 0 && (
+              <MobileAccordion
+                label={texts.nav_resources || 'リソース'}
+                items={resources}
+                expanded={mobileExpanded === 'resources'}
+                onToggle={() =>
+                  setMobileExpanded((v) => (v === 'resources' ? null : 'resources'))
+                }
+                onNavigate={() => setMenuOpen(false)}
+              />
+            )}
+
+            {/* 業界最新動向 */}
+            <Link
+              href={newsItem?.href || '/business/blog'}
+              className="block px-3 py-2.5 text-sm font-medium text-slate-700 rounded-lg hover:bg-white/60 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
+              {texts.nav_news || '業界最新動向'}
+            </Link>
+
+            {/* ログイン/ログアウト */}
+            <div className="border-t border-slate-200/60 mt-2 pt-2">
               {user ? (
                 <button
-                  onClick={() => { signOut(); setMenuOpen(false); }}
-                  className="block w-full text-left px-3 py-2 text-sm hover:bg-white/10 rounded-md"
+                  onClick={() => {
+                    signOut();
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2.5 text-sm text-slate-500 hover:text-slate-700 rounded-lg"
                 >
                   {texts.logout_button || 'ログアウト'}
                 </button>
               ) : (
                 <Link
                   href="/login"
-                  className="block px-3 py-2 text-sm hover:bg-white/10 rounded-md"
+                  className="block px-3 py-2.5 text-sm font-semibold rounded-lg"
+                  style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {texts.login_button || 'ログイン'}
@@ -119,5 +319,51 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
         )}
       </div>
     </header>
+  );
+}
+
+/* ========================================
+   モバイル用アコーディオン
+   ======================================== */
+function MobileAccordion({
+  label,
+  items,
+  expanded,
+  onToggle,
+  onNavigate,
+}: {
+  label: string;
+  items: NavigationItem[];
+  expanded: boolean;
+  onToggle: () => void;
+  onNavigate: () => void;
+}) {
+  return (
+    <div>
+      <button
+        className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-slate-700 rounded-lg hover:bg-white/60 transition-colors"
+        onClick={onToggle}
+      >
+        {label}
+        <ChevronDown
+          size={16}
+          className={`text-slate-400 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {expanded && (
+        <div className="pl-4 space-y-0.5 mt-0.5">
+          {items.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="block px-3 py-2 text-sm text-slate-500 hover:text-slate-800 rounded-lg hover:bg-white/50 transition-colors"
+              onClick={onNavigate}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
