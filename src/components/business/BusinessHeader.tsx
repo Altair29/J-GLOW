@@ -135,7 +135,7 @@ function NavDropdown({
    ヘッダー本体
    ======================================== */
 export function BusinessHeader({ navItems, texts, theme }: Props) {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
 
@@ -204,7 +204,9 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
 
           {/* ── 右側アクション ── */}
           <div className="hidden lg:flex items-center gap-3 shrink-0 ml-6">
-            {user ? (
+            {loading ? (
+              <div className="w-20 h-8 rounded-lg bg-slate-100 animate-pulse" />
+            ) : user ? (
               <>
                 <span className="text-sm text-slate-500 max-w-[140px] truncate">
                   {profile?.display_name || user.email}

@@ -67,6 +67,29 @@ export async function getContentBlocks(
 }
 
 // ========================================
+// コンテンツブロック (全言語一括)
+// ========================================
+export async function getAllContentBlocks(
+  supabase: SupabaseClient,
+  page: string
+): Promise<Record<string, Record<string, string>>> {
+  const { data } = await supabase
+    .from('content_blocks')
+    .select('block_key, content, lang')
+    .eq('page', page)
+    .order('sort_order');
+
+  const result: Record<string, Record<string, string>> = {};
+  if (data) {
+    for (const row of data as { block_key: string; content: string; lang: string }[]) {
+      if (!result[row.lang]) result[row.lang] = {};
+      result[row.lang][row.block_key] = row.content;
+    }
+  }
+  return result;
+}
+
+// ========================================
 // 機能カード
 // ========================================
 export async function getFeatureCards(

@@ -151,6 +151,7 @@ export type WorkerTopic = {
   id: number;
   slug: string;
   title_ja: string;
+  title_en: string | null;
   icon: string | null;
   sort_order: number;
   is_active: boolean;

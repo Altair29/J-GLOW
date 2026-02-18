@@ -17,11 +17,13 @@ export function useAuth() {
       setUser(user);
 
       if (user) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
+        if (error) console.error('[useAuth] profile fetch error:', error);
+        else console.log('[useAuth] profile:', data);
         setProfile(data);
       }
       setLoading(false);
