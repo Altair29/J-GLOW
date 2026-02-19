@@ -2,11 +2,11 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { getHomePath } from '@/lib/utils/routing';
 
-// リダイレクト除外パス（未ログインでもアクセス可）
-// 認証ルートは /login, /register/*, /callback にあり
-// /business/* や /worker/* 配下には存在しないため現在は空
-const PUBLIC_PATHS: string[] = [
-  '/business/simulation',
+// ログイン必須パス（これ以外の /business/* /worker/* はゲスト公開）
+const AUTH_REQUIRED_PATHS = [
+  '/business/mypage',
+  '/worker/mypage',
+  '/admin',
 ];
 
 export async function updateSession(request: NextRequest) {
@@ -39,81 +39,58 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // 公開パスはスキップ
-  if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
+  // ログイン必須パスに該当しなければスキップ（ゲスト公開）
+  const matched = AUTH_REQUIRED_PATHS.find((p) => pathname.startsWith(p));
+  if (!matched) {
     return supabaseResponse;
   }
 
   // ========================================
+  // 未ログイン → ログインページへリダイレクト
+  // ========================================
+  if (!user) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    url.searchParams.set('redirectTo', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // ========================================
+  // ロール取得
+  // ========================================
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const role = profile?.role ?? '';
+
+  // ========================================
   // /admin/* — adminロール必須
   // ========================================
-  if (pathname.startsWith('/admin')) {
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      url.searchParams.set('redirectTo', pathname);
-      return NextResponse.redirect(url);
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'admin') {
-      const url = request.nextUrl.clone();
-      url.pathname = getHomePath(profile?.role ?? '');
-      return NextResponse.redirect(url);
-    }
+  if (pathname.startsWith('/admin') && role !== 'admin') {
+    const url = request.nextUrl.clone();
+    url.pathname = getHomePath(role);
+    return NextResponse.redirect(url);
   }
 
   // ========================================
-  // /business/* — businessロール必須（/business 自体はランディング公開）
+  // /business/mypage/* — businessロール必須
   // ========================================
-  if (pathname.startsWith('/business/')) {
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      url.searchParams.set('redirectTo', pathname);
-      return NextResponse.redirect(url);
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'business') {
-      const url = request.nextUrl.clone();
-      url.pathname = getHomePath(profile?.role ?? '');
-      return NextResponse.redirect(url);
-    }
+  if (pathname.startsWith('/business/mypage') && role !== 'business') {
+    const url = request.nextUrl.clone();
+    url.pathname = getHomePath(role);
+    return NextResponse.redirect(url);
   }
 
   // ========================================
-  // /worker/* — workerロール必須（/worker 自体はランディング公開）
+  // /worker/mypage/* — workerロール必須
   // ========================================
-  if (pathname.startsWith('/worker/')) {
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      url.searchParams.set('redirectTo', pathname);
-      return NextResponse.redirect(url);
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'worker') {
-      const url = request.nextUrl.clone();
-      url.pathname = getHomePath(profile?.role ?? '');
-      return NextResponse.redirect(url);
-    }
+  if (pathname.startsWith('/worker/mypage') && role !== 'worker') {
+    const url = request.nextUrl.clone();
+    url.pathname = getHomePath(role);
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;
