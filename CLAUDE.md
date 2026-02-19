@@ -114,6 +114,46 @@ ja, en, zh, vi, tl, pt, id, th, my, ne, km
 
 ---
 
+### 外国人雇用シミュレーション（/business/simulation）
+
+#### DB テーブル（マイグレーション `00023`, `00024`）
+- **simulation_cards**: シナリオカード（turn_order, situation, yes_label, no_label, is_active）
+- **simulation_effects**: カード別の選択効果（card_id FK, choice yes/no, gauge, delta, 遅延ペナルティ対応）
+- **simulation_config**: ゲーム設定（key/value: initial_gauges, total_turns, guest_max_turns）
+- RLS: SELECT は全員、ALL は `is_admin()` のみ
+- シードデータ: 20枚のカード（`00024` で投入、`ON CONFLICT (key) DO NOTHING` 付き）
+
+#### 型定義 `src/types/database.ts`
+- `GaugeType`: `'operation' | 'morale' | 'compliance'`
+- `SimulationCard`, `SimulationEffect`, `SimulationConfig`, `SimulationCardWithEffects`
+
+#### ゲーム画面 `src/app/business/simulation/`
+- `page.tsx` — サーバーコンポーネント（cards + config + user認証を取得）
+- `SimulationGame.tsx` — クライアントコンポーネント（ゲーム本体）
+
+#### SimulationGame.tsx の構成
+- **イントロ画面**: 背景画像(`/images/3.png`) + オーバーレイ + framer-motion fadeIn、「シミュレーションを始める」ボタンでゲーム開始
+- **ゲーム画面**: ボタンのみ（YES/NO）で選択、framer-motionのドラッグは削除済み
+- **ゲージ**: operation（稼働力）, morale（士気）, compliance（コンプライアンス）— CSS transitionでアニメーション
+- **遅延ペナルティ**: 特定ターンで発動するペナルティ（DelayAlertモーダルで通知）
+- **ゲームオーバー/クリア画面**: 最終ゲージ表示、総合評価（S/A/B/C）、結果保存・実地監査ボタン
+- **ゲスト対応**: 全問プレイ可、「結果を保存」ボタンで RegisterModal（登録/ログイン誘導）
+- **重複カード対策**: `turn_order` でソート後、同一 `turn_order` の重複を排除するフィルタ付き
+
+#### 管理画面 `src/app/admin/simulation/`
+- `page.tsx` — サーバーコンポーネント
+- `src/components/admin/SimulationCardAdmin.tsx` — カード・エフェクト・設定のCRUD
+
+#### ミドルウェア `src/lib/supabase/middleware.ts`
+- `/business/simulation` はゲストアクセス可（AUTH_REQUIRED_PATHS に含まれない）
+- AUTH_REQUIRED_PATHS: `/business/mypage`, `/worker/mypage`, `/admin` のみ
+
+#### 既知の注意点
+- シード SQL（`00024`）を複数回実行すると同一 turn_order のカードが重複する（コード側で排除済みだが、DB側も `DELETE` で清掃推奨）
+- framer-motion はイントロ画面のアニメーションのみで使用（ドラッグ/スワイプは削除済み）
+
+---
+
 ## 言語対応方針
 - /worker 側：11言語対応済み（テキスト直書き禁止・辞書JSON必須）
 - /business 側：日本語のみ（テキスト直書きOK）
