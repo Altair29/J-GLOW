@@ -88,6 +88,32 @@ ja, en, zh, vi, tl, pt, id, th, my, ne, km
 
 ---
 
+### コード品質改善
+
+#### getHomePath 共通化
+- `src/lib/utils/routing.ts` に切り出し
+- `src/hooks/useAuth.ts` と `src/lib/supabase/middleware.ts` の両方から import（重複解消）
+
+#### /business/home・/worker/home ページ追加
+- `src/app/business/home/page.tsx` — 企業ホーム（準備中）
+- `src/app/worker/home/page.tsx` — ワーカーホーム（準備中）
+- ログイン後 `getHomePath` による遷移先の404を解消
+
+#### 言語リスト統一
+- 正しい11言語: ja, en, zh, vi, tl, pt, id, th, my, ne, km
+- `src/lib/constants.ts`, `src/contexts/LangContext.tsx`, CLAUDE.md を統一
+- mn（モンゴル語）・ko（韓国語）を削除、pt（ポルトガル語）を追加
+
+#### 未使用ファイル削除
+- `src/hooks/useTranslation.ts` — 未使用（`LangContext` + `useLang` が実使用系統）
+- `src/lib/settings.ts` — 未使用（`useSettings.ts` がクライアント側で直接取得）
+
+#### ミドルウェア修正
+- PUBLIC_PATHS から存在しないルート（`/business/login` 等）を除去
+- 未認証時のリダイレクト先を共通 `/login` に統一（`/business/login`, `/worker/login` は存在しない）
+
+---
+
 ## 言語対応方針
 - /worker 側：11言語対応済み（テキスト直書き禁止・辞書JSON必須）
 - /business 側：日本語のみ（テキスト直書きOK）
