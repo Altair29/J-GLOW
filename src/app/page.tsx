@@ -101,30 +101,30 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/25 via-black/10 to-transparent md:hidden" />
 
         {/* キャッチコピー パネル */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8 md:py-24">
-          <div className="glass rounded-2xl p-8 sm:p-10 md:p-12 max-w-xl animate-fade-in-up">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8 md:py-24 flex justify-center">
+          <div className="glass rounded-2xl p-8 sm:p-10 md:p-12 max-w-xl animate-fade-in-up text-center">
             <h1 className="font-[family-name:var(--font-heading)] text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight text-slate-900 mb-4">
               {texts.main_heading || '外国人材と企業をつなぐプラットフォーム'}
             </h1>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-8">
               {texts.sub_heading || 'あなたに合ったサービスをお選びください'}
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/business"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-[family-name:var(--font-heading)] font-semibold text-white text-sm shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-[family-name:var(--font-heading)] font-semibold text-white text-base shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
                 style={{ backgroundColor: bizTheme['--biz-primary'] || '#1e3a5f' }}
               >
                 {texts.hero_cta_biz || '企業の方はこちら'}
-                <ArrowRight size={16} />
+                <ArrowRight size={18} />
               </Link>
               <Link
                 href="/worker"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-[family-name:var(--font-heading)] font-semibold text-white text-sm shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-[family-name:var(--font-heading)] font-semibold text-white text-base shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
                 style={{ backgroundColor: wkrTheme['--wkr-primary'] || '#059669' }}
               >
-                {texts.hero_cta_wkr || 'For Workers'}
-                <ArrowRight size={16} />
+                {texts.hero_cta_wkr || 'For Foreign Residents'}
+                <ArrowRight size={18} />
               </Link>
             </div>
           </div>
@@ -205,7 +205,7 @@ export default async function HomePage() {
                 </ul>
               )}
               <div className="flex items-center gap-2 text-white/90 font-[family-name:var(--font-heading)] font-semibold text-sm group-hover:gap-3 transition-all mt-auto">
-                {texts.wkr_card_cta || 'For Workers / サポートページへ'}
+                {texts.wkr_card_cta || 'For Foreign Residents / サポートページへ'}
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
