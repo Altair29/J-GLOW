@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, GaugeType } from '@/types/database';
 
@@ -286,48 +287,61 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
 
   if (!started) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
-          <h1 className="text-xl font-bold text-gray-900 mb-8">
-            初めての外国人雇用シミュレーション
-          </h1>
+      <div className="relative min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden">
+        {/* Background image + overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/3.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-blue-50/80 to-white/90" />
 
-          <div className="text-left space-y-6 text-[15px] leading-relaxed text-gray-700 mb-10">
-            <p>
-              <span className="font-semibold text-gray-900">
-                「人手が足りない。でも外国人雇用は
-                <br />
-                何から始めればいいか分からない」
-              </span>
-            </p>
+        {/* Content */}
+        <div className="relative z-10 max-w-xl w-full px-6 py-12 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-[2rem] leading-snug font-bold text-gray-900 mb-10"
+          >
+            「人手が足りない。でも外国人雇用って
+            <br />
+            何から始めればいいか分からない」
+          </motion.h1>
 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="space-y-5 text-[1.25rem] leading-relaxed text-gray-700 mb-12"
+          >
             <p>
-              どの会社に、誰に依頼をすればよいのか？
+              どのエージェントが信頼できるのか。
               <br />
-              トラブルが起きたら？
-            </p>
-
-            <p>
-              日本人採用とは違う壁が
+              トラブルが起きたらどうすればいいのか。
               <br />
-              確かに存在します。
+              日本人採用とは違う壁が、確かに存在します。
             </p>
 
             <p>
               この体験シミュレーションでは
               <br />
-              リアルな経営・運営判断を通じて
+              10の経営判断を通じて
               <br />
               外国人雇用のリアルを体感してください。
             </p>
-          </div>
+          </motion.div>
 
-          <button
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => setStarted(true)}
-            className="w-full py-4 bg-blue-600 text-white rounded-xl font-medium text-base hover:bg-blue-700 transition-colors"
+            className="px-10 py-4 bg-blue-600 text-white rounded-xl font-medium text-[1.25rem] hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25"
           >
             シミュレーションを始める
-          </button>
+          </motion.button>
         </div>
       </div>
     );
