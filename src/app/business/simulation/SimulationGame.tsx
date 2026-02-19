@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate, type PanInfo } from 'framer-motion';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, SimulationConfig, GaugeType } from '@/types/database';
 
@@ -241,15 +241,24 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const [gameOver, setGameOver] = useState<GaugeType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const processingRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const prevIndexRef = useRef(0);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
-  const yesOpacity = useTransform(x, [0, 100], [0, 1]);
-  const noOpacity = useTransform(x, [-100, 0], [1, 0]);
 
   const currentTurn = currentIndex + 1;
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
+
+  // Release processing lock only after React has committed the new currentIndex
+  useEffect(() => {
+    if (prevIndexRef.current !== currentIndex) {
+      prevIndexRef.current = currentIndex;
+      processingRef.current = false;
+      setIsProcessing(false);
+    }
+  }, [currentIndex]);
 
   const processDelays = (turn: number, currentGauges: Gauges, penalties: DelayedPenalty[]) => {
     const triggered = penalties.filter((p) => p.triggerTurn === turn);
@@ -296,7 +305,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     if (zeroGauge) {
       setGauges(newGauges);
       setGameOver(zeroGauge);
-      requestAnimationFrame(() => { processingRef.current = false; setIsProcessing(false); });
+      // Game over screen replaces UI; no need to release lock
       return;
     }
 
@@ -312,6 +321,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     setGauges(afterDelay);
     setDelayedPenalties(remaining);
     setCurrentIndex(nextIndex);
+    // Lock is released by useEffect watching currentIndex
 
     if (messages.length > 0) {
       setPendingAlert(messages.join('\n'));
@@ -320,14 +330,21 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     if (zeroAfterDelay) {
       setGameOver(zeroAfterDelay);
     }
-
-    // Re-enable after React re-render
-    requestAnimationFrame(() => { processingRef.current = false; setIsProcessing(false); });
   };
 
-  // Stable ref for handlers that need latest handleChoice
+  // Stable ref for drag/keyboard handlers
   const handleChoiceRef = useRef(handleChoice);
   handleChoiceRef.current = handleChoice;
+
+  // Button click: ignore if drag is in progress
+  const handleButtonClick = (choice: 'yes' | 'no') => {
+    if (isDraggingRef.current) return;
+    handleChoice(choice);
+  };
+
+  const handleDragStart = useCallback(() => {
+    isDraggingRef.current = true;
+  }, []);
 
   const handleDragEnd = useCallback((_: unknown, info: PanInfo) => {
     const threshold = 100;
@@ -336,15 +353,18 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       setTimeout(() => {
         handleChoiceRef.current('yes');
         x.set(0);
+        isDraggingRef.current = false;
       }, 300);
     } else if (info.offset.x < -threshold) {
       animate(x, -300, { duration: 0.3 });
       setTimeout(() => {
         handleChoiceRef.current('no');
         x.set(0);
+        isDraggingRef.current = false;
       }, 300);
     } else {
       animate(x, 0, { duration: 0.3 });
+      isDraggingRef.current = false;
     }
   }, [x]);
 
@@ -405,27 +425,12 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       {/* Card */}
       {currentCard && (
         <div className="relative h-[320px] mb-6">
-          {/* Swipe hints */}
-          <div className="absolute inset-0 flex items-center justify-between pointer-events-none px-2 z-10">
-            <motion.div
-              style={{ opacity: noOpacity }}
-              className="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-sm"
-            >
-              NO
-            </motion.div>
-            <motion.div
-              style={{ opacity: yesOpacity }}
-              className="bg-green-500 text-white px-3 py-1 rounded-lg font-bold text-sm"
-            >
-              YES
-            </motion.div>
-          </div>
-
           <motion.div
             style={{ x, rotate }}
-            drag="x"
+            drag={isProcessing ? false : 'x'}
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.8}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             className="absolute inset-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 cursor-grab active:cursor-grabbing flex flex-col justify-center"
           >
@@ -442,20 +447,20 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
         </div>
       )}
 
-      {/* Buttons */}
+      {/* Buttons — 同じデザインで統一（正解/不正解を示さない） */}
       {currentCard && (
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => handleChoice('no')}
+            onClick={() => handleButtonClick('no')}
             disabled={isProcessing}
-            className="py-4 px-3 bg-white border-2 border-blue-200 text-blue-700 rounded-xl font-medium text-sm hover:bg-blue-50 transition-colors disabled:opacity-50 leading-snug"
+            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 leading-snug"
           >
             {currentCard.no_label}
           </button>
           <button
-            onClick={() => handleChoice('yes')}
+            onClick={() => handleButtonClick('yes')}
             disabled={isProcessing}
-            className="py-4 px-3 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 leading-snug"
+            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 leading-snug"
           >
             {currentCard.yes_label}
           </button>
