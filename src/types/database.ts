@@ -1,14 +1,81 @@
-export type Role = 'admin' | 'business' | 'worker' | 'editor';
+export type Role = 'admin' | 'business' | 'worker';
+
+export type Plan = 'free' | 'premium';
 
 export type Profile = {
   id: string;
   role: Role;
   display_name: string | null;
-  organization: string | null;
-  email_domain: string | null;
   preferred_lang: string;
+  plan: Plan;
+  plan_expires_at: string | null;
+  is_active: boolean;
+  metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
+};
+
+export type BusinessProfile = {
+  id: string;
+  company_name: string;
+  department: string | null;
+  position: string | null;
+  contact_name: string;
+  business_email: string;
+  email_domain: string;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WorkerProfile = {
+  id: string;
+  nationality: string;
+  residence_status: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type UserSettings = {
+  id: string;
+  preferences: Record<string, unknown>;
+  updated_at: string;
+};
+
+export type ScoreCategory = 'diagnosis' | 'simulation' | 'jp_test';
+
+export type UserScore = {
+  id: string;
+  user_id: string;
+  category: ScoreCategory;
+  score: number | null;
+  max_score: number | null;
+  answers: Record<string, unknown>;
+  ai_report: string | null;
+  created_at: string;
+};
+
+export type BookmarkContentType = 'article' | 'job' | 'resource';
+
+export type Bookmark = {
+  id: string;
+  user_id: string;
+  content_type: BookmarkContentType;
+  content_id: string;
+  created_at: string;
+};
+
+export type BillingStatus = 'paid' | 'failed' | 'refunded';
+
+export type BillingHistory = {
+  id: string;
+  user_id: string;
+  amount: number;
+  currency: string;
+  status: BillingStatus;
+  provider: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
 };
 
 export type SettingValueType = 'text' | 'color' | 'number' | 'richtext' | 'image_url' | 'boolean' | 'json';

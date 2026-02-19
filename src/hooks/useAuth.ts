@@ -1,15 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
-import type { Profile } from '@/types/database';
+import type { Profile, Role } from '@/types/database';
+
+function getHomePath(role: Role): string {
+  switch (role) {
+    case 'admin':    return '/admin';
+    case 'business': return '/business/home';
+    case 'worker':   return '/worker/home';
+  }
+}
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
@@ -23,7 +33,6 @@ export function useAuth() {
           .eq('id', user.id)
           .single();
         if (error) console.error('[useAuth] profile fetch error:', error);
-        else console.log('[useAuth] profile:', data);
         setProfile(data);
       }
       setLoading(false);
@@ -56,5 +65,11 @@ export function useAuth() {
     setProfile(null);
   };
 
-  return { user, profile, loading, signOut };
+  const redirectToHome = () => {
+    if (profile) {
+      router.push(getHomePath(profile.role));
+    }
+  };
+
+  return { user, profile, loading, signOut, redirectToHome, getHomePath };
 }

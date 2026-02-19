@@ -1,6 +1,25 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+// リダイレクト除外パス（未ログインでもアクセス可）
+const PUBLIC_PATHS = [
+  '/business/login',
+  '/business/register',
+  '/business/auth/callback',
+  '/worker/login',
+  '/worker/register',
+  '/worker/auth/callback',
+];
+
+function getHomePath(role: string): string {
+  switch (role) {
+    case 'admin':    return '/admin';
+    case 'business': return '/business/home';
+    case 'worker':   return '/worker/home';
+    default:         return '/';
+  }
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -31,7 +50,14 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // 管理ページへのアクセス制御
+  // 公開パスはスキップ
+  if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
+    return supabaseResponse;
+  }
+
+  // ========================================
+  // /admin/* — adminロール必須
+  // ========================================
   if (pathname.startsWith('/admin')) {
     if (!user) {
       const url = request.nextUrl.clone();
@@ -48,18 +74,55 @@ export async function updateSession(request: NextRequest) {
 
     if (profile?.role !== 'admin') {
       const url = request.nextUrl.clone();
-      url.pathname = '/';
+      url.pathname = getHomePath(profile?.role ?? '');
       return NextResponse.redirect(url);
     }
   }
 
-  // 企業セクションへのアクセス制御（認証が必要なページ）
-  const protectedBusinessPaths = ['/business/diagnosis', '/business/simulation'];
-  if (protectedBusinessPaths.some((p) => pathname.startsWith(p))) {
+  // ========================================
+  // /business/* — businessロール必須（/business 自体はランディング公開）
+  // ========================================
+  if (pathname.startsWith('/business/')) {
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = '/login';
+      url.pathname = '/business/login';
       url.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(url);
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'business') {
+      const url = request.nextUrl.clone();
+      url.pathname = getHomePath(profile?.role ?? '');
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // ========================================
+  // /worker/* — workerロール必須（/worker 自体はランディング公開）
+  // ========================================
+  if (pathname.startsWith('/worker/')) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/worker/login';
+      url.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(url);
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'worker') {
+      const url = request.nextUrl.clone();
+      url.pathname = getHomePath(profile?.role ?? '');
       return NextResponse.redirect(url);
     }
   }
