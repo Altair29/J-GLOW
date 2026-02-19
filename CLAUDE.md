@@ -20,7 +20,7 @@
 - `supabase/migrations/00021_worker_multilingual.sql` — 多言語テーブル・初期データ
 
 #### 対応言語（11言語）
-ja, en, zh, vi, tl, pt, id, th, my, ne, ko
+ja, en, zh, vi, tl, pt, id, th, my, ne, km
 
 #### 多言語開発プロトコル（以降の /worker 開発で厳守）
 1. **No Hardcoded Strings** — テキスト直書き禁止。辞書JSONまたはSupabase翻訳テーブルから取得
@@ -28,3 +28,67 @@ ja, en, zh, vi, tl, pt, id, th, my, ne, ko
 3. **可変長テキスト対応** — Flexbox/Gridで柔軟レイアウト（ビルマ語・ネパール語等の長文に対応）
 4. **フォントフォールバック** — 各国語フォントのCSS共通スタック
 5. **管理者修正導線** — 翻訳データは疎結合、管理パネルから手動修正可能
+
+---
+
+### 認証・DBシステム再構築
+
+#### マイグレーション `00022_auth_system_rebuild.sql`
+- **profiles リファクタリング**: `organization`/`email_domain` 削除、`plan`(free/premium)/`plan_expires_at`/`is_active`/`metadata` 追加
+- **business_profiles**: 法人プロフィール（company_name, contact_name, business_email, email_domain 等）
+- **worker_profiles**: ワーカープロフィール（nationality, residence_status）
+- **user_settings**: ユーザー設定（preferences jsonb）
+- **user_scores**: スコア履歴（category: diagnosis/simulation/jp_test）
+- **bookmarks**: ブックマーク（content_type: article/job/resource）
+- **billing_history**: 課金履歴（status: paid/failed/refunded）
+- **handle_new_user() トリガー更新**: admin不可、display_name優先順位（full_name→name→email）、user_settings同時作成、is_active=false
+- **blocked_email_domains 追加**: live.com, msn.com, googlemail.com
+
+#### 型定義 `src/types/database.ts`
+- `Role`: `'admin' | 'business' | 'worker'`（editor 削除）
+- 新型: `BusinessProfile`, `WorkerProfile`, `UserSettings`, `UserScore`, `Bookmark`, `BillingHistory`, `Plan`, `ScoreCategory`, `BookmarkContentType`, `BillingStatus`
+
+#### ルーティング `src/lib/utils/routing.ts`
+- `getHomePath(role)`: admin→`/admin`, business→`/business/home`, worker→`/worker/home`
+- `useAuth.ts` と `middleware.ts` の両方から共通利用
+
+#### ミドルウェア `src/lib/supabase/middleware.ts`
+- `/admin/*` → role=admin 必須
+- `/business/*` → role=business 必須（`/business` 自体はランディング公開）
+- `/worker/*` → role=worker 必須（`/worker` 自体はランディング公開）
+- 判定は `startsWith('/business/')` でサブパスのみガード
+- 未認証時は共通 `/login` にリダイレクト（認証ルートは `/(auth)/*` に集約）
+
+#### RLS設計
+- 全テーブル共通: `is_admin()` (SECURITY DEFINER) で admin 全件操作可
+- business_profiles / worker_profiles: 本人 SELECT/UPDATE
+- user_settings / bookmarks: 本人全操作
+- user_scores: 本人 SELECT/INSERT
+- billing_history: 本人 SELECT のみ
+
+#### 3層アクセスモデル
+- guest（未登録）: 触りのみ
+- free（無料会員）: ほぼ全機能
+- premium（有料会員）: 将来の拡充サービス
+
+#### デプロイ情報
+- Vercel: https://j-glow.vercel.app
+- Supabase: tckwizynvfiqezjrcedk（ap-southeast-1）
+- デプロイ方法: ターミナルで `vercel deploy --prod`（CLIログイン済み環境から）
+
+#### Supabase手動設定（要確認）
+- Authentication → Site URL を本番URLに設定
+- Authentication → Redirect URLs に `/callback`, `/worker/auth/callback`, `/business/auth/callback` を追加
+- メール認証有効化（is_active連動）
+
+### トップページUI改善
+- 「For Workers」→「For Foreign Residents」に変更
+- ヒーローパネルを中央寄せ
+- CTAボタンのサイズ拡大（px-8 py-4 text-base）
+
+---
+
+## 言語対応方針
+- /worker 側：11言語対応済み（テキスト直書き禁止・辞書JSON必須）
+- /business 側：日本語のみ（テキスト直書きOK）
+- /トップページ：日本語のみ

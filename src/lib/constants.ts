@@ -1,15 +1,15 @@
 export const SUPPORTED_LANGUAGES = [
   { code: 'ja', name: '日本語', nativeName: '日本語' },
   { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt' },
   { code: 'zh', name: 'Chinese', nativeName: '中文' },
-  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia' },
+  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt' },
   { code: 'tl', name: 'Filipino', nativeName: 'Filipino' },
-  { code: 'my', name: 'Burmese', nativeName: 'မြန်မာဘာသာ' },
-  { code: 'km', name: 'Khmer', nativeName: 'ភាសាខ្មែរ' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia' },
   { code: 'th', name: 'Thai', nativeName: 'ภาษาไทย' },
+  { code: 'my', name: 'Burmese', nativeName: 'မြန်မာဘာသာ' },
   { code: 'ne', name: 'Nepali', nativeName: 'नेपाली' },
-  { code: 'mn', name: 'Mongolian', nativeName: 'Монгол хэл' },
+  { code: 'km', name: 'Khmer', nativeName: 'ភាសាខ្មែរ' },
 ] as const;
 
 export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]['code'];

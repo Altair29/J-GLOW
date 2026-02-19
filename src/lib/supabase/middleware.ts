@@ -1,24 +1,11 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { getHomePath } from '@/lib/utils/routing';
 
 // リダイレクト除外パス（未ログインでもアクセス可）
-const PUBLIC_PATHS = [
-  '/business/login',
-  '/business/register',
-  '/business/auth/callback',
-  '/worker/login',
-  '/worker/register',
-  '/worker/auth/callback',
-];
-
-function getHomePath(role: string): string {
-  switch (role) {
-    case 'admin':    return '/admin';
-    case 'business': return '/business/home';
-    case 'worker':   return '/worker/home';
-    default:         return '/';
-  }
-}
+// 認証ルートは /login, /register/*, /callback にあり
+// /business/* や /worker/* 配下には存在しないため現在は空
+const PUBLIC_PATHS: string[] = [];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -85,7 +72,7 @@ export async function updateSession(request: NextRequest) {
   if (pathname.startsWith('/business/')) {
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = '/business/login';
+      url.pathname = '/login';
       url.searchParams.set('redirectTo', pathname);
       return NextResponse.redirect(url);
     }
@@ -109,7 +96,7 @@ export async function updateSession(request: NextRequest) {
   if (pathname.startsWith('/worker/')) {
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = '/worker/login';
+      url.pathname = '/login';
       url.searchParams.set('redirectTo', pathname);
       return NextResponse.redirect(url);
     }

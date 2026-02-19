@@ -4,15 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
-import type { Profile, Role } from '@/types/database';
-
-function getHomePath(role: Role): string {
-  switch (role) {
-    case 'admin':    return '/admin';
-    case 'business': return '/business/home';
-    case 'worker':   return '/worker/home';
-  }
-}
+import type { Profile } from '@/types/database';
+import { getHomePath } from '@/lib/utils/routing';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);

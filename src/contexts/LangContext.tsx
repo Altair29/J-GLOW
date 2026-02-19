@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 
 export type LangCode =
   | 'ja' | 'en' | 'zh' | 'vi' | 'tl'
-  | 'id' | 'th' | 'my' | 'km' | 'mn' | 'ne';
+  | 'pt' | 'id' | 'th' | 'my' | 'ne' | 'km';
 
 export type LangOption = {
   code: LangCode;
@@ -18,12 +18,12 @@ export const SUPPORTED_LANGS: LangOption[] = [
   { code: 'zh', label: '中文',             labelShort: '中文' },
   { code: 'vi', label: 'Tiếng Việt',       labelShort: 'VI' },
   { code: 'tl', label: 'Tagalog',          labelShort: 'TL' },
+  { code: 'pt', label: 'Português',        labelShort: 'PT' },
   { code: 'id', label: 'Bahasa Indonesia', labelShort: 'ID' },
   { code: 'th', label: 'ภาษาไทย',          labelShort: 'TH' },
   { code: 'my', label: 'မြန်မာဘာသာ',        labelShort: 'MY' },
-  { code: 'km', label: 'ភាសាខ្មែរ',          labelShort: 'KM' },
-  { code: 'mn', label: 'Монгол',           labelShort: 'MN' },
   { code: 'ne', label: 'नेपाली',            labelShort: 'NE' },
+  { code: 'km', label: 'ភាសាខ្មែរ',          labelShort: 'KM' },
 ];
 
 type LangContextType = {
