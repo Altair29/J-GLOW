@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, GaugeType } from '@/types/database';
 
@@ -220,9 +220,23 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
 
+  // DEBUG: mount/unmount detection
+  useEffect(() => {
+    console.log('[DEBUG] SimulationGame mounted, cards:', cards.length, 'activeCards:', activeCards.length, 'config:', JSON.stringify(config));
+    return () => console.log('[DEBUG] SimulationGame unmounted');
+  }, []);
+
+  // DEBUG: render tracking
+  console.log('[DEBUG] SimulationGame render — currentIndex:', currentIndex, 'isProcessing:', isProcessing, 'gameOver:', gameOver, 'currentCard:', currentCard?.turn_order ?? 'none');
+
   const handleChoice = (choice: 'yes' | 'no') => {
-    if (isProcessing || !currentCard || gameOver) return;
+    console.log('[DEBUG] handleChoice CALLED — choice:', choice, 'currentIndex:', currentIndex, 'isProcessing:', isProcessing, 'gameOver:', gameOver, 'currentCard:', !!currentCard);
+    if (isProcessing || !currentCard || gameOver) {
+      console.log('[DEBUG] handleChoice BLOCKED — isProcessing:', isProcessing, '!currentCard:', !currentCard, 'gameOver:', gameOver);
+      return;
+    }
     setIsProcessing(true);
+    console.log('[DEBUG] handleChoice PROCESSING — card turn_order:', currentCard.turn_order, 'effects count:', currentCard.simulation_effects.length);
 
     const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
     const newGauges = { ...gauges };
@@ -265,6 +279,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
 
     const zeroAfterDelay = (Object.keys(afterDelay) as GaugeType[]).find((g) => afterDelay[g] <= 0);
 
+    console.log('[DEBUG] handleChoice ADVANCING — from:', currentIndex, 'to:', nextIndex, 'gauges:', JSON.stringify(afterDelay));
     setGauges(afterDelay);
     setDelayedPenalties(remaining);
     setCurrentIndex(nextIndex);
