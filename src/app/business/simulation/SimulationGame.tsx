@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, animate, type PanInfo } from 'framer-motion';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, SimulationConfig, GaugeType } from '@/types/database';
@@ -240,50 +240,30 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [gameOver, setGameOver] = useState<GaugeType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const processingRef = useRef(false);
-  const isDraggingRef = useRef(false);
-  const prevIndexRef = useRef(0);
+
+  // Synchronous lock: prevents any second call within the same tick
+  const lockRef = useRef(false);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
 
-  const currentTurn = currentIndex + 1;
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
 
-  // Release processing lock only after React has committed the new currentIndex
-  useEffect(() => {
-    if (prevIndexRef.current !== currentIndex) {
-      prevIndexRef.current = currentIndex;
-      processingRef.current = false;
-      setIsProcessing(false);
-    }
-  }, [currentIndex]);
-
-  const processDelays = (turn: number, currentGauges: Gauges, penalties: DelayedPenalty[]) => {
-    const triggered = penalties.filter((p) => p.triggerTurn === turn);
-    const remaining = penalties.filter((p) => p.triggerTurn !== turn);
-
-    if (triggered.length === 0) return { newGauges: currentGauges, remaining, messages: [] as string[] };
-
-    const newGauges = { ...currentGauges };
-    const messages: string[] = [];
-
-    for (const penalty of triggered) {
-      newGauges[penalty.gauge] = Math.max(0, Math.min(100, newGauges[penalty.gauge] + penalty.delta));
-      messages.push(penalty.message);
-    }
-
-    return { newGauges, remaining, messages };
-  };
-
+  // ============================================================
+  // Single unified handler — called by buttons, swipe, keyboard
+  // ============================================================
   const handleChoice = (choice: 'yes' | 'no') => {
-    if (processingRef.current || !currentCard || gameOver) return;
-    processingRef.current = true;
+    // Guard: synchronous ref check blocks all duplicate calls
+    if (lockRef.current || !currentCard || gameOver) return;
+    lockRef.current = true;
     setIsProcessing(true);
 
-    const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
+    // Reset card drag position immediately
+    x.set(0);
 
+    // Apply effects
+    const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
     const newGauges = { ...gauges };
     const newPenalties = [...delayedPenalties];
 
@@ -300,93 +280,91 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       }
     }
 
-    // Check for zero gauge (game over)
+    // Game over check
     const zeroGauge = (Object.keys(newGauges) as GaugeType[]).find((g) => newGauges[g] <= 0);
     if (zeroGauge) {
       setGauges(newGauges);
       setGameOver(zeroGauge);
-      // Game over screen replaces UI; no need to release lock
+      // Game over screen replaces entire UI; lock stays forever (intentional)
       return;
     }
 
+    // Advance turn
     const nextIndex = currentIndex + 1;
     const nextTurn = nextIndex + 1;
 
     // Process delayed penalties for the next turn
-    const { newGauges: afterDelay, remaining, messages } = processDelays(nextTurn, newGauges, newPenalties);
+    const triggered = newPenalties.filter((p) => p.triggerTurn === nextTurn);
+    const remaining = newPenalties.filter((p) => p.triggerTurn !== nextTurn);
+    const afterDelay = { ...newGauges };
+    const delayMessages: string[] = [];
+    for (const penalty of triggered) {
+      afterDelay[penalty.gauge] = Math.max(0, Math.min(100, afterDelay[penalty.gauge] + penalty.delta));
+      delayMessages.push(penalty.message);
+    }
 
-    // Check again after delays
     const zeroAfterDelay = (Object.keys(afterDelay) as GaugeType[]).find((g) => afterDelay[g] <= 0);
 
+    // Commit all state updates (React batches these)
     setGauges(afterDelay);
     setDelayedPenalties(remaining);
     setCurrentIndex(nextIndex);
-    // Lock is released by useEffect watching currentIndex
+    if (delayMessages.length > 0) setPendingAlert(delayMessages.join('\n'));
+    if (zeroAfterDelay) setGameOver(zeroAfterDelay);
 
-    if (messages.length > 0) {
-      setPendingAlert(messages.join('\n'));
-    }
-
-    if (zeroAfterDelay) {
-      setGameOver(zeroAfterDelay);
-    }
+    // Release lock after 400ms — enough for React to commit render + prevent rapid clicks
+    setTimeout(() => {
+      lockRef.current = false;
+      setIsProcessing(false);
+    }, 400);
   };
 
-  // Stable ref for drag/keyboard handlers
+  // Ref for keyboard handler (always points to latest handleChoice)
   const handleChoiceRef = useRef(handleChoice);
   handleChoiceRef.current = handleChoice;
 
-  // Button click: ignore if drag is in progress
-  const handleButtonClick = (choice: 'yes' | 'no') => {
-    if (isDraggingRef.current) return;
-    handleChoice(choice);
+  // ============================================================
+  // Swipe: onDragEnd only — synchronous call, no setTimeout
+  // ============================================================
+  const onDragEnd = (_: unknown, info: PanInfo) => {
+    if (lockRef.current) {
+      x.set(0);
+      return;
+    }
+    const threshold = 80;
+    if (info.offset.x > threshold) {
+      handleChoice('yes');
+    } else if (info.offset.x < -threshold) {
+      handleChoice('no');
+    } else {
+      animate(x, 0, { duration: 0.2 });
+    }
   };
 
-  const handleDragStart = useCallback(() => {
-    isDraggingRef.current = true;
-  }, []);
-
-  const handleDragEnd = useCallback((_: unknown, info: PanInfo) => {
-    const threshold = 100;
-    if (info.offset.x > threshold) {
-      animate(x, 300, { duration: 0.3 });
-      setTimeout(() => {
-        handleChoiceRef.current('yes');
-        x.set(0);
-        isDraggingRef.current = false;
-      }, 300);
-    } else if (info.offset.x < -threshold) {
-      animate(x, -300, { duration: 0.3 });
-      setTimeout(() => {
-        handleChoiceRef.current('no');
-        x.set(0);
-        isDraggingRef.current = false;
-      }, 300);
-    } else {
-      animate(x, 0, { duration: 0.3 });
-      isDraggingRef.current = false;
-    }
-  }, [x]);
-
-  // Keyboard support
+  // ============================================================
+  // Keyboard: arrow keys
+  // ============================================================
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') handleChoiceRef.current('yes');
       if (e.key === 'ArrowLeft') handleChoiceRef.current('no');
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  const handleSaveRequest = useCallback(() => {
+  const handleSaveRequest = () => {
     if (isGuest) {
       setShowRegisterModal(true);
     } else {
       // TODO: ログイン済みユーザーの結果保存処理
       alert('結果を保存しました');
     }
-  }, [isGuest]);
+  };
 
+  // ============================================================
+  // Render
+  // ============================================================
   if (gameOver) {
     return (
       <>
@@ -411,7 +389,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       <div className="text-center mb-4">
         <h1 className="text-lg font-bold text-gray-900">外国人雇用シミュレーション</h1>
         <p className="text-sm text-gray-500">
-          ターン {currentTurn} / {activeCards.length}
+          ターン {currentIndex + 1} / {activeCards.length}
         </p>
       </div>
 
@@ -426,12 +404,12 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       {currentCard && (
         <div className="relative h-[320px] mb-6">
           <motion.div
+            key={currentIndex}
             style={{ x, rotate }}
-            drag={isProcessing ? false : 'x'}
+            drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.8}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
+            onDragEnd={onDragEnd}
             className="absolute inset-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 cursor-grab active:cursor-grabbing flex flex-col justify-center"
           >
             <div className="text-xs text-blue-500 font-medium mb-3">
@@ -447,18 +425,18 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
         </div>
       )}
 
-      {/* Buttons — 同じデザインで統一（正解/不正解を示さない） */}
+      {/* Buttons */}
       {currentCard && (
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => handleButtonClick('no')}
+            onClick={() => handleChoice('no')}
             disabled={isProcessing}
             className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 leading-snug"
           >
             {currentCard.no_label}
           </button>
           <button
-            onClick={() => handleButtonClick('yes')}
+            onClick={() => handleChoice('yes')}
             disabled={isProcessing}
             className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 leading-snug"
           >
