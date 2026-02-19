@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, GaugeType } from '@/types/database';
 
@@ -204,9 +204,11 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const initialGauges = (config.initial_gauges ?? { operation: 30, morale: 60, compliance: 70 }) as Gauges;
   const totalTurns = Number(config.total_turns ?? 10);
 
+  // Deduplicate by turn_order (keep first per turn_order, discard DB duplicates)
   const activeCards = cards
     .filter((c) => c.is_active)
     .sort((a, b) => a.turn_order - b.turn_order)
+    .filter((c, i, arr) => i === 0 || c.turn_order !== arr[i - 1].turn_order)
     .slice(0, totalTurns);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -220,23 +222,9 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
 
-  // DEBUG: mount/unmount detection
-  useEffect(() => {
-    console.log('[DEBUG] SimulationGame mounted, cards:', cards.length, 'activeCards:', activeCards.length, 'config:', JSON.stringify(config));
-    return () => console.log('[DEBUG] SimulationGame unmounted');
-  }, []);
-
-  // DEBUG: render tracking
-  console.log('[DEBUG] SimulationGame render — currentIndex:', currentIndex, 'isProcessing:', isProcessing, 'gameOver:', gameOver, 'currentCard:', currentCard?.turn_order ?? 'none');
-
   const handleChoice = (choice: 'yes' | 'no') => {
-    console.log('[DEBUG] handleChoice CALLED — choice:', choice, 'currentIndex:', currentIndex, 'isProcessing:', isProcessing, 'gameOver:', gameOver, 'currentCard:', !!currentCard);
-    if (isProcessing || !currentCard || gameOver) {
-      console.log('[DEBUG] handleChoice BLOCKED — isProcessing:', isProcessing, '!currentCard:', !currentCard, 'gameOver:', gameOver);
-      return;
-    }
+    if (isProcessing || !currentCard || gameOver) return;
     setIsProcessing(true);
-    console.log('[DEBUG] handleChoice PROCESSING — card turn_order:', currentCard.turn_order, 'effects count:', currentCard.simulation_effects.length);
 
     const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
     const newGauges = { ...gauges };
@@ -279,7 +267,6 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
 
     const zeroAfterDelay = (Object.keys(afterDelay) as GaugeType[]).find((g) => afterDelay[g] <= 0);
 
-    console.log('[DEBUG] handleChoice ADVANCING — from:', currentIndex, 'to:', nextIndex, 'gauges:', JSON.stringify(afterDelay));
     setGauges(afterDelay);
     setDelayedPenalties(remaining);
     setCurrentIndex(nextIndex);
