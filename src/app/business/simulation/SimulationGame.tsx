@@ -211,6 +211,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     .filter((c, i, arr) => i === 0 || c.turn_order !== arr[i - 1].turn_order)
     .slice(0, totalTurns);
 
+  const [started, setStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [gauges, setGauges] = useState<Gauges>({ ...initialGauges });
   const [delayedPenalties, setDelayedPenalties] = useState<DelayedPenalty[]>([]);
@@ -282,6 +283,55 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       alert('結果を保存しました');
     }
   };
+
+  if (!started) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
+          <h1 className="text-xl font-bold text-gray-900 mb-8">
+            初めての外国人雇用シミュレーション
+          </h1>
+
+          <div className="text-left space-y-6 text-[15px] leading-relaxed text-gray-700 mb-10">
+            <p>
+              <span className="font-semibold text-gray-900">
+                「人手が足りない。でも外国人雇用は
+                <br />
+                何から始めればいいか分からない」
+              </span>
+            </p>
+
+            <p>
+              どの会社に、誰に依頼をすればよいのか？
+              <br />
+              トラブルが起きたら？
+            </p>
+
+            <p>
+              日本人採用とは違う壁が
+              <br />
+              確かに存在します。
+            </p>
+
+            <p>
+              この体験シミュレーションでは
+              <br />
+              リアルな経営・運営判断を通じて
+              <br />
+              外国人雇用のリアルを体感してください。
+            </p>
+          </div>
+
+          <button
+            onClick={() => setStarted(true)}
+            className="w-full py-4 bg-blue-600 text-white rounded-xl font-medium text-base hover:bg-blue-700 transition-colors"
+          >
+            シミュレーションを始める
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (gameOver) {
     return (
