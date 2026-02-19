@@ -5,7 +5,9 @@ import { getHomePath } from '@/lib/utils/routing';
 // リダイレクト除外パス（未ログインでもアクセス可）
 // 認証ルートは /login, /register/*, /callback にあり
 // /business/* や /worker/* 配下には存在しないため現在は空
-const PUBLIC_PATHS: string[] = [];
+const PUBLIC_PATHS: string[] = [
+  '/business/simulation',
+];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
