@@ -1,7 +1,6 @@
 'use client';
 
-import { useReducer, useState, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useTransform, animate, type PanInfo } from 'framer-motion';
+import { useState } from 'react';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, GaugeType } from '@/types/database';
 
@@ -19,90 +18,6 @@ type Props = {
   config: Record<string, unknown>;
   isGuest: boolean;
 };
-
-// ============================================================
-// Game state & reducer — all transitions are atomic & idempotent
-// ============================================================
-
-type GameState = {
-  currentIndex: number;
-  gauges: Gauges;
-  delayedPenalties: DelayedPenalty[];
-  gameOver: GaugeType | null;
-  pendingAlert: string | null;
-};
-
-type GameAction =
-  | { type: 'CHOOSE'; choice: 'yes' | 'no'; forIndex: number; card: SimulationCardWithEffects }
-  | { type: 'DISMISS_ALERT' };
-
-function gameReducer(state: GameState, action: GameAction): GameState {
-  if (action.type === 'DISMISS_ALERT') {
-    return { ...state, pendingAlert: null };
-  }
-
-  if (action.type === 'CHOOSE') {
-    // IDEMPOTENCY GUARD: ignore if this action targets an already-processed turn
-    if (action.forIndex !== state.currentIndex) return state;
-    if (state.gameOver) return state;
-
-    const { card, choice } = action;
-
-    // Apply effects
-    const effects = card.simulation_effects.filter((e) => e.choice === choice);
-    const newGauges = { ...state.gauges };
-    const newPenalties = [...state.delayedPenalties];
-
-    for (const effect of effects) {
-      newGauges[effect.gauge] = Math.max(0, Math.min(100, newGauges[effect.gauge] + effect.delta));
-
-      if (effect.delay_turn && effect.delay_delta && effect.delay_gauge && effect.delay_message) {
-        newPenalties.push({
-          triggerTurn: effect.delay_turn,
-          gauge: effect.delay_gauge as GaugeType,
-          delta: effect.delay_delta,
-          message: effect.delay_message,
-        });
-      }
-    }
-
-    // Game over check
-    const zeroGauge = (Object.keys(newGauges) as GaugeType[]).find((g) => newGauges[g] <= 0);
-    if (zeroGauge) {
-      return { ...state, gauges: newGauges, gameOver: zeroGauge };
-    }
-
-    // Advance turn
-    const nextIndex = state.currentIndex + 1;
-    const nextTurn = nextIndex + 1;
-
-    // Process delayed penalties for the next turn
-    const triggered = newPenalties.filter((p) => p.triggerTurn === nextTurn);
-    const remaining = newPenalties.filter((p) => p.triggerTurn !== nextTurn);
-    const afterDelay = { ...newGauges };
-    const delayMessages: string[] = [];
-    for (const penalty of triggered) {
-      afterDelay[penalty.gauge] = Math.max(0, Math.min(100, afterDelay[penalty.gauge] + penalty.delta));
-      delayMessages.push(penalty.message);
-    }
-
-    const zeroAfterDelay = (Object.keys(afterDelay) as GaugeType[]).find((g) => afterDelay[g] <= 0);
-
-    return {
-      currentIndex: nextIndex,
-      gauges: afterDelay,
-      delayedPenalties: remaining,
-      gameOver: zeroAfterDelay ?? null,
-      pendingAlert: delayMessages.length > 0 ? delayMessages.join('\n') : null,
-    };
-  }
-
-  return state;
-}
-
-// ============================================================
-// Constants
-// ============================================================
 
 const GAUGE_LABELS: Record<GaugeType, string> = {
   operation: '稼働力',
@@ -122,10 +37,6 @@ const GAME_OVER_MESSAGES: Record<GaugeType, string> = {
   compliance: '労働基準監督署の立入調査が入りました。不法就労助長罪の疑いで事業停止命令が出ました。',
 };
 
-// ============================================================
-// Sub-components
-// ============================================================
-
 function GaugeBar({ type, value }: { type: GaugeType; value: number }) {
   const clamped = Math.max(0, Math.min(100, value));
   const color = GAUGE_COLORS[type];
@@ -138,12 +49,9 @@ function GaugeBar({ type, value }: { type: GaugeType; value: number }) {
         </span>
       </div>
       <div className="w-full h-3 rounded-full overflow-hidden" style={{ backgroundColor: color.bg }}>
-        <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color.bar }}
-          initial={false}
-          animate={{ width: `${clamped}%` }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+        <div
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{ backgroundColor: color.bar, width: `${clamped}%` }}
         />
       </div>
     </div>
@@ -152,11 +60,7 @@ function GaugeBar({ type, value }: { type: GaugeType; value: number }) {
 
 function DelayAlert({ message, onDismiss }: { message: string; onDismiss: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
         <div className="text-4xl mb-4">⚠️</div>
         <h3 className="text-lg font-bold text-red-600 mb-3">遅延ペナルティ発動</h3>
@@ -168,22 +72,14 @@ function DelayAlert({ message, onDismiss }: { message: string; onDismiss: () => 
           確認
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function RegisterModal({ onClose }: { onClose: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-    >
-      <motion.div
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
         <div className="text-5xl mb-4">📊</div>
         <h3 className="text-xl font-bold text-gray-900 mb-3">結果を保存するには</h3>
         <p className="text-gray-600 mb-6 leading-relaxed">
@@ -207,18 +103,14 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
         >
           閉じる
         </button>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
 function GameOverScreen({ zeroGauge, gauges, onSaveRequest }: { zeroGauge: GaugeType; gauges: Gauges; onSaveRequest: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-[70vh] flex flex-col items-center justify-center p-4"
-    >
+    <div className="min-h-[70vh] flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 text-center">
         <div className="text-6xl mb-4">💥</div>
         <h2 className="text-2xl font-bold text-red-600 mb-4">ゲームオーバー</h2>
@@ -255,7 +147,7 @@ function GameOverScreen({ zeroGauge, gauges, onSaveRequest }: { zeroGauge: Gauge
           もう一度プレイ
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -266,11 +158,7 @@ function ClearScreen({ gauges, totalTurns, onSaveRequest }: { gauges: Gauges; to
   const gradeColor = grade === 'S' ? '#eab308' : grade === 'A' ? '#3b82f6' : grade === 'B' ? '#10b981' : '#6b7280';
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-[70vh] flex flex-col items-center justify-center p-4"
-    >
+    <div className="min-h-[70vh] flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 text-center">
         <div className="text-6xl mb-4">🎉</div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">シミュレーション完了</h2>
@@ -308,60 +196,9 @@ function ClearScreen({ gauges, totalTurns, onSaveRequest }: { gauges: Gauges; to
           もう一度プレイ
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
-
-// ============================================================
-// Draggable card — each instance owns its own MotionValue
-// ============================================================
-
-function DraggableCard({
-  card,
-  onChoice,
-}: {
-  card: SimulationCardWithEffects;
-  onChoice: (choice: 'yes' | 'no') => void;
-}) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-15, 15]);
-
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    const threshold = 80;
-    if (info.offset.x > threshold) {
-      onChoice('yes');
-    } else if (info.offset.x < -threshold) {
-      onChoice('no');
-    } else {
-      animate(x, 0, { duration: 0.2 });
-    }
-  };
-
-  return (
-    <motion.div
-      style={{ x, rotate }}
-      drag="x"
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.8}
-      onDragEnd={onDragEnd}
-      className="absolute inset-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 cursor-grab active:cursor-grabbing flex flex-col justify-center"
-    >
-      <div className="text-xs text-blue-500 font-medium mb-3">
-        第{card.turn_order}問
-      </div>
-      <p className="text-gray-800 leading-relaxed text-[15px]">
-        {card.situation}
-      </p>
-      <div className="mt-4 text-xs text-gray-400 text-center">
-        ← スワイプまたは下のボタンで回答 →
-      </div>
-    </motion.div>
-  );
-}
-
-// ============================================================
-// Main component
-// ============================================================
 
 export function SimulationGame({ cards, config, isGuest }: Props) {
   const initialGauges = (config.initial_gauges ?? { operation: 30, morale: 60, compliance: 70 }) as Gauges;
@@ -372,47 +209,69 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     .sort((a, b) => a.turn_order - b.turn_order)
     .slice(0, totalTurns);
 
-  const [state, dispatch] = useReducer(gameReducer, {
-    currentIndex: 0,
-    gauges: { ...initialGauges },
-    delayedPenalties: [],
-    gameOver: null,
-    pendingAlert: null,
-  });
-
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [gauges, setGauges] = useState<Gauges>({ ...initialGauges });
+  const [delayedPenalties, setDelayedPenalties] = useState<DelayedPenalty[]>([]);
+  const [pendingAlert, setPendingAlert] = useState<string | null>(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [gameOver, setGameOver] = useState<GaugeType | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const currentCard = activeCards[state.currentIndex];
-  const isFinished = state.currentIndex >= activeCards.length;
+  const currentCard = activeCards[currentIndex];
+  const isFinished = currentIndex >= activeCards.length;
 
-  // ============================================================
-  // handleChoice: dispatches to reducer with forIndex guard
-  // Even if called 10 times, only the first dispatch for each
-  // index is processed. All others are no-ops in the reducer.
-  // ============================================================
   const handleChoice = (choice: 'yes' | 'no') => {
-    if (!currentCard || state.gameOver) return;
-    dispatch({
-      type: 'CHOOSE',
-      choice,
-      forIndex: state.currentIndex,
-      card: currentCard,
-    });
+    if (isProcessing || !currentCard || gameOver) return;
+    setIsProcessing(true);
+
+    const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
+    const newGauges = { ...gauges };
+    const newPenalties = [...delayedPenalties];
+
+    for (const effect of effects) {
+      newGauges[effect.gauge] = Math.max(0, Math.min(100, newGauges[effect.gauge] + effect.delta));
+
+      if (effect.delay_turn && effect.delay_delta && effect.delay_gauge && effect.delay_message) {
+        newPenalties.push({
+          triggerTurn: effect.delay_turn,
+          gauge: effect.delay_gauge as GaugeType,
+          delta: effect.delay_delta,
+          message: effect.delay_message,
+        });
+      }
+    }
+
+    // Game over check
+    const zeroGauge = (Object.keys(newGauges) as GaugeType[]).find((g) => newGauges[g] <= 0);
+    if (zeroGauge) {
+      setGauges(newGauges);
+      setGameOver(zeroGauge);
+      return;
+    }
+
+    // Advance turn
+    const nextIndex = currentIndex + 1;
+    const nextTurn = nextIndex + 1;
+
+    // Process delayed penalties
+    const triggered = newPenalties.filter((p) => p.triggerTurn === nextTurn);
+    const remaining = newPenalties.filter((p) => p.triggerTurn !== nextTurn);
+    const afterDelay = { ...newGauges };
+    const delayMessages: string[] = [];
+    for (const penalty of triggered) {
+      afterDelay[penalty.gauge] = Math.max(0, Math.min(100, afterDelay[penalty.gauge] + penalty.delta));
+      delayMessages.push(penalty.message);
+    }
+
+    const zeroAfterDelay = (Object.keys(afterDelay) as GaugeType[]).find((g) => afterDelay[g] <= 0);
+
+    setGauges(afterDelay);
+    setDelayedPenalties(remaining);
+    setCurrentIndex(nextIndex);
+    if (delayMessages.length > 0) setPendingAlert(delayMessages.join('\n'));
+    if (zeroAfterDelay) setGameOver(zeroAfterDelay);
+    setIsProcessing(false);
   };
-
-  // Ref for keyboard handler (always points to latest handleChoice)
-  const handleChoiceRef = useRef(handleChoice);
-  handleChoiceRef.current = handleChoice;
-
-  // Keyboard: arrow keys
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') handleChoiceRef.current('yes');
-      if (e.key === 'ArrowLeft') handleChoiceRef.current('no');
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
 
   const handleSaveRequest = () => {
     if (isGuest) {
@@ -422,13 +281,10 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     }
   };
 
-  // ============================================================
-  // Render
-  // ============================================================
-  if (state.gameOver) {
+  if (gameOver) {
     return (
       <>
-        <GameOverScreen zeroGauge={state.gameOver} gauges={state.gauges} onSaveRequest={handleSaveRequest} />
+        <GameOverScreen zeroGauge={gameOver} gauges={gauges} onSaveRequest={handleSaveRequest} />
         {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
       </>
     );
@@ -437,7 +293,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   if (isFinished) {
     return (
       <>
-        <ClearScreen gauges={state.gauges} totalTurns={activeCards.length} onSaveRequest={handleSaveRequest} />
+        <ClearScreen gauges={gauges} totalTurns={activeCards.length} onSaveRequest={handleSaveRequest} />
         {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
       </>
     );
@@ -449,25 +305,26 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       <div className="text-center mb-4">
         <h1 className="text-lg font-bold text-gray-900">外国人雇用シミュレーション</h1>
         <p className="text-sm text-gray-500">
-          ターン {state.currentIndex + 1} / {activeCards.length}
+          ターン {currentIndex + 1} / {activeCards.length}
         </p>
       </div>
 
       {/* Gauges */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
         {(Object.keys(GAUGE_LABELS) as GaugeType[]).map((g) => (
-          <GaugeBar key={g} type={g} value={state.gauges[g]} />
+          <GaugeBar key={g} type={g} value={gauges[g]} />
         ))}
       </div>
 
-      {/* Card — key forces fresh mount with independent MotionValue */}
+      {/* Card */}
       {currentCard && (
-        <div className="relative h-[320px] mb-6">
-          <DraggableCard
-            key={state.currentIndex}
-            card={currentCard}
-            onChoice={handleChoice}
-          />
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-6 min-h-[200px] flex flex-col justify-center">
+          <div className="text-xs text-blue-500 font-medium mb-3">
+            第{currentCard.turn_order}問
+          </div>
+          <p className="text-gray-800 leading-relaxed text-[15px]">
+            {currentCard.situation}
+          </p>
         </div>
       )}
 
@@ -476,13 +333,15 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => handleChoice('no')}
-            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors leading-snug"
+            disabled={isProcessing}
+            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
           >
             {currentCard.no_label}
           </button>
           <button
             onClick={() => handleChoice('yes')}
-            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors leading-snug"
+            disabled={isProcessing}
+            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
           >
             {currentCard.yes_label}
           </button>
@@ -490,10 +349,10 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       )}
 
       {/* Delay Alert */}
-      {state.pendingAlert && (
+      {pendingAlert && (
         <DelayAlert
-          message={state.pendingAlert}
-          onDismiss={() => dispatch({ type: 'DISMISS_ALERT' })}
+          message={pendingAlert}
+          onDismiss={() => setPendingAlert(null)}
         />
       )}
     </div>
