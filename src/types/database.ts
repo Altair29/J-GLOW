@@ -195,6 +195,45 @@ export type EditorialArticle = {
   updated_at: string;
 };
 
+// ========================================
+// 外国人雇用シミュレーション（カードスワイプ型）
+// ========================================
+
+export type GaugeType = 'operation' | 'morale' | 'compliance';
+
+export type SimulationCard = {
+  id: string;
+  turn_order: number;
+  situation: string;
+  yes_label: string;
+  no_label: string;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type SimulationEffect = {
+  id: string;
+  card_id: string;
+  choice: 'yes' | 'no';
+  gauge: GaugeType;
+  delta: number;
+  delay_turn: number | null;
+  delay_delta: number | null;
+  delay_gauge: string | null;
+  delay_message: string | null;
+};
+
+export type SimulationConfig = {
+  id: string;
+  key: string;
+  value: unknown;
+  description: string | null;
+};
+
+export type SimulationCardWithEffects = SimulationCard & {
+  simulation_effects: SimulationEffect[];
+};
+
 export type SimulationParam = {
   id: number;
   param_group: string;

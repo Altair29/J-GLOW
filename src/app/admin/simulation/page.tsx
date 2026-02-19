@@ -1,18 +1,23 @@
 import { createClient } from '@/lib/supabase/server';
-import { SimulationAdmin } from '@/components/admin/SimulationAdmin';
+import { SimulationCardAdmin } from '@/components/admin/SimulationCardAdmin';
 
 export default async function SimulationAdminPage() {
   const supabase = await createClient();
 
-  const [{ data: params }, { count: logCount }] = await Promise.all([
-    supabase.from('simulation_params').select('*').order('param_group').order('key'),
-    supabase.from('simulation_logs').select('*', { count: 'exact', head: true }),
+  const [{ data: cards }, { data: configs }] = await Promise.all([
+    supabase
+      .from('simulation_cards')
+      .select('*, simulation_effects(*)')
+      .order('turn_order'),
+    supabase
+      .from('simulation_config')
+      .select('*'),
   ]);
 
   return (
-    <SimulationAdmin
-      params={params || []}
-      logCount={logCount || 0}
+    <SimulationCardAdmin
+      cards={cards ?? []}
+      configs={configs ?? []}
     />
   );
 }

@@ -1,14 +1,39 @@
 import { createClient } from '@/lib/supabase/server';
-import { getFeatureLabels } from '@/lib/data';
+import { SimulationGame } from './SimulationGame';
 
 export default async function SimulationPage() {
   const supabase = await createClient();
-  const labels = await getFeatureLabels(supabase);
+
+  const [
+    { data: cards },
+    { data: configRows },
+    { data: { user } },
+  ] = await Promise.all([
+    supabase
+      .from('simulation_cards')
+      .select('*, simulation_effects(*)')
+      .eq('is_active', true)
+      .order('turn_order'),
+    supabase
+      .from('simulation_config')
+      .select('*'),
+    supabase.auth.getUser(),
+  ]);
+
+  const config: Record<string, unknown> = {};
+  for (const row of configRows ?? []) {
+    config[row.key] = row.value;
+  }
+
+  const isGuest = !user;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">{labels.simulation}</h1>
-      <p className="text-gray-500">このページは現在開発中です。</p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4">
+      <SimulationGame
+        cards={cards ?? []}
+        config={config}
+        isGuest={isGuest}
+      />
     </div>
   );
 }
