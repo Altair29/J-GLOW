@@ -84,7 +84,7 @@ function DelayAlert({ message, onDismiss }: { message: string; onDismiss: () => 
   );
 }
 
-function GuestModal() {
+function RegisterModal({ onClose }: { onClose: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -96,29 +96,35 @@ function GuestModal() {
         animate={{ scale: 1, y: 0 }}
         className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
       >
-        <div className="text-5xl mb-4">🔒</div>
-        <h3 className="text-xl font-bold text-gray-900 mb-3">体験版はここまで</h3>
+        <div className="text-5xl mb-4">📊</div>
+        <h3 className="text-xl font-bold text-gray-900 mb-3">結果を保存するには</h3>
         <p className="text-gray-600 mb-6 leading-relaxed">
-          続きをプレイするには無料アカウント登録が必要です。全20問のシナリオで外国人雇用のリスクを体験しましょう。
+          無料会員登録またはログインすると、シミュレーション結果の保存・詳細レポートの閲覧ができます。
         </p>
         <Link
           href="/register/business"
           className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
         >
-          無料で登録する
+          無料会員登録
         </Link>
         <Link
-          href="/business"
-          className="block text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          href="/login"
+          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
         >
-          トップに戻る
+          ログイン
         </Link>
+        <button
+          onClick={onClose}
+          className="block w-full text-sm text-gray-500 hover:text-gray-700 transition-colors py-2"
+        >
+          閉じる
+        </button>
       </motion.div>
     </motion.div>
   );
 }
 
-function GameOverScreen({ zeroGauge, gauges }: { zeroGauge: GaugeType; gauges: Gauges }) {
+function GameOverScreen({ zeroGauge, gauges, isGuest, onSaveRequest }: { zeroGauge: GaugeType; gauges: Gauges; isGuest: boolean; onSaveRequest: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -142,9 +148,15 @@ function GameOverScreen({ zeroGauge, gauges }: { zeroGauge: GaugeType; gauges: G
             </div>
           ))}
         </div>
+        <button
+          onClick={onSaveRequest}
+          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+        >
+          結果を保存・詳細を見る
+        </button>
         <Link
           href="/business/contact"
-          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
         >
           実地監査に申し込む
         </Link>
@@ -159,7 +171,7 @@ function GameOverScreen({ zeroGauge, gauges }: { zeroGauge: GaugeType; gauges: G
   );
 }
 
-function ClearScreen({ gauges, totalTurns }: { gauges: Gauges; totalTurns: number }) {
+function ClearScreen({ gauges, totalTurns, isGuest, onSaveRequest }: { gauges: Gauges; totalTurns: number; isGuest: boolean; onSaveRequest: () => void }) {
   const total = gauges.operation + gauges.morale + gauges.compliance;
   const maxTotal = 300;
   const grade = total >= 250 ? 'S' : total >= 200 ? 'A' : total >= 150 ? 'B' : 'C';
@@ -189,9 +201,15 @@ function ClearScreen({ gauges, totalTurns }: { gauges: Gauges; totalTurns: numbe
           ))}
         </div>
 
+        <button
+          onClick={onSaveRequest}
+          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+        >
+          結果を保存・詳細を見る
+        </button>
         <Link
           href="/business/contact"
-          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
         >
           実地監査に申し込む
         </Link>
@@ -208,7 +226,6 @@ function ClearScreen({ gauges, totalTurns }: { gauges: Gauges; totalTurns: numbe
 
 export function SimulationGame({ cards, config, isGuest }: Props) {
   const initialGauges = (config.initial_gauges ?? { operation: 30, morale: 60, compliance: 70 }) as Gauges;
-  const guestMaxTurns = Number(config.guest_max_turns ?? 3);
   const totalTurns = Number(config.total_turns ?? 10);
 
   const activeCards = cards
@@ -220,7 +237,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const [gauges, setGauges] = useState<Gauges>({ ...initialGauges });
   const [delayedPenalties, setDelayedPenalties] = useState<DelayedPenalty[]>([]);
   const [pendingAlert, setPendingAlert] = useState<string | null>(null);
-  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [gameOver, setGameOver] = useState<GaugeType | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -300,12 +317,10 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
 
     if (zeroAfterDelay) {
       setGameOver(zeroAfterDelay);
-    } else if (isGuest && nextIndex >= guestMaxTurns) {
-      setShowGuestModal(true);
     }
 
     setIsAnimating(false);
-  }, [isAnimating, currentCard, gauges, delayedPenalties, currentIndex, isGuest, guestMaxTurns, gameOver, processDelays]);
+  }, [isAnimating, currentCard, gauges, delayedPenalties, currentIndex, gameOver, processDelays]);
 
   const handleDragEnd = useCallback((_: unknown, info: PanInfo) => {
     const threshold = 100;
@@ -336,12 +351,31 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleChoice]);
 
+  const handleSaveRequest = useCallback(() => {
+    if (isGuest) {
+      setShowRegisterModal(true);
+    } else {
+      // TODO: ログイン済みユーザーの結果保存処理
+      alert('結果を保存しました');
+    }
+  }, [isGuest]);
+
   if (gameOver) {
-    return <GameOverScreen zeroGauge={gameOver} gauges={gauges} />;
+    return (
+      <>
+        <GameOverScreen zeroGauge={gameOver} gauges={gauges} isGuest={isGuest} onSaveRequest={handleSaveRequest} />
+        {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      </>
+    );
   }
 
   if (isFinished) {
-    return <ClearScreen gauges={gauges} totalTurns={activeCards.length} />;
+    return (
+      <>
+        <ClearScreen gauges={gauges} totalTurns={activeCards.length} isGuest={isGuest} onSaveRequest={handleSaveRequest} />
+        {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      </>
+    );
   }
 
   return (
@@ -351,7 +385,6 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
         <h1 className="text-lg font-bold text-gray-900">外国人雇用シミュレーション</h1>
         <p className="text-sm text-gray-500">
           ターン {currentTurn} / {activeCards.length}
-          {isGuest && <span className="ml-2 text-orange-500">(体験版: {guestMaxTurns}問まで)</span>}
         </p>
       </div>
 
@@ -429,9 +462,6 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
           onDismiss={() => setPendingAlert(null)}
         />
       )}
-
-      {/* Guest Modal */}
-      {showGuestModal && <GuestModal />}
     </div>
   );
 }

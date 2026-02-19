@@ -6,7 +6,8 @@
 INSERT INTO public.simulation_config (key, value, description) VALUES
   ('initial_gauges', '{"operation": 30, "morale": 60, "compliance": 70}', '初期ゲージ値'),
   ('guest_max_turns', '3', 'ゲストユーザーの最大ターン数'),
-  ('total_turns', '10', 'ログインユーザーの総ターン数');
+  ('total_turns', '10', 'ログインユーザーの総ターン数')
+ON CONFLICT (key) DO NOTHING;
 
 -- ========================================
 -- カード & エフェクト投入
