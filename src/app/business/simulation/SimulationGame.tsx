@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, SimulationConfig, GaugeType } from '@/types/database';
@@ -239,7 +239,8 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const [pendingAlert, setPendingAlert] = useState<string | null>(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [gameOver, setGameOver] = useState<GaugeType | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const processingRef = useRef(false);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
@@ -250,7 +251,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
 
-  const processDelays = useCallback((turn: number, currentGauges: Gauges, penalties: DelayedPenalty[]) => {
+  const processDelays = (turn: number, currentGauges: Gauges, penalties: DelayedPenalty[]) => {
     const triggered = penalties.filter((p) => p.triggerTurn === turn);
     const remaining = penalties.filter((p) => p.triggerTurn !== turn);
 
@@ -265,11 +266,12 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     }
 
     return { newGauges, remaining, messages };
-  }, []);
+  };
 
-  const handleChoice = useCallback((choice: 'yes' | 'no') => {
-    if (isAnimating || !currentCard || gameOver) return;
-    setIsAnimating(true);
+  const handleChoice = (choice: 'yes' | 'no') => {
+    if (processingRef.current || !currentCard || gameOver) return;
+    processingRef.current = true;
+    setIsProcessing(true);
 
     const effects = currentCard.simulation_effects.filter((e) => e.choice === choice);
 
@@ -294,7 +296,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
     if (zeroGauge) {
       setGauges(newGauges);
       setGameOver(zeroGauge);
-      setIsAnimating(false);
+      requestAnimationFrame(() => { processingRef.current = false; setIsProcessing(false); });
       return;
     }
 
@@ -319,37 +321,42 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       setGameOver(zeroAfterDelay);
     }
 
-    setIsAnimating(false);
-  }, [isAnimating, currentCard, gauges, delayedPenalties, currentIndex, gameOver, processDelays]);
+    // Re-enable after React re-render
+    requestAnimationFrame(() => { processingRef.current = false; setIsProcessing(false); });
+  };
+
+  // Stable ref for handlers that need latest handleChoice
+  const handleChoiceRef = useRef(handleChoice);
+  handleChoiceRef.current = handleChoice;
 
   const handleDragEnd = useCallback((_: unknown, info: PanInfo) => {
     const threshold = 100;
     if (info.offset.x > threshold) {
       animate(x, 300, { duration: 0.3 });
       setTimeout(() => {
-        handleChoice('yes');
+        handleChoiceRef.current('yes');
         x.set(0);
       }, 300);
     } else if (info.offset.x < -threshold) {
       animate(x, -300, { duration: 0.3 });
       setTimeout(() => {
-        handleChoice('no');
+        handleChoiceRef.current('no');
         x.set(0);
       }, 300);
     } else {
       animate(x, 0, { duration: 0.3 });
     }
-  }, [handleChoice, x]);
+  }, [x]);
 
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') handleChoice('yes');
-      if (e.key === 'ArrowLeft') handleChoice('no');
+      if (e.key === 'ArrowRight') handleChoiceRef.current('yes');
+      if (e.key === 'ArrowLeft') handleChoiceRef.current('no');
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleChoice]);
+  }, []);
 
   const handleSaveRequest = useCallback(() => {
     if (isGuest) {
@@ -440,14 +447,14 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => handleChoice('no')}
-            disabled={isAnimating}
+            disabled={isProcessing}
             className="py-4 px-3 bg-white border-2 border-blue-200 text-blue-700 rounded-xl font-medium text-sm hover:bg-blue-50 transition-colors disabled:opacity-50 leading-snug"
           >
             {currentCard.no_label}
           </button>
           <button
             onClick={() => handleChoice('yes')}
-            disabled={isAnimating}
+            disabled={isProcessing}
             className="py-4 px-3 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 leading-snug"
           >
             {currentCard.yes_label}
