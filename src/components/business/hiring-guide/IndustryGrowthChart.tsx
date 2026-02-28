@@ -12,14 +12,13 @@ import {
 import { useInView } from "./useInView";
 
 const data = [
-  { industry: "医療・福祉", growth: 28.1 },
-  { industry: "建設業", growth: 22.7 },
-  { industry: "宿泊・飲食サービス", growth: 16.9 },
-  { industry: "サービス業", growth: 14.3 },
-  { industry: "製造業（最多・59万人）", growth: 11.2 },
+  { industry: "医療・福祉", growth: 25.6 },
+  { industry: "宿泊・飲食サービス", growth: 17.1 },
+  { industry: "建設業", growth: 16.1 },
+  { industry: "製造業（最多・63万人）", growth: 5.3 },
 ];
 
-const opacities = [1, 0.85, 0.7, 0.55, 0.45];
+const opacities = [1, 0.85, 0.7, 0.5];
 
 export default function IndustryGrowthChart() {
   const { ref, inView } = useInView(0.2);
@@ -37,7 +36,7 @@ export default function IndustryGrowthChart() {
               >
                 <XAxis
                   type="number"
-                  domain={[0, 35]}
+                  domain={[0, 30]}
                   tick={{ fontSize: 12, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
@@ -77,7 +76,7 @@ export default function IndustryGrowthChart() {
         </div>
       </div>
       <p className="mt-3 text-xs text-gray-400">
-        出典：厚生労働省「外国人雇用状況」届出状況（2024年10月末時点）前年比伸び率
+        出典：厚生労働省「外国人雇用状況」届出状況（2025年10月末時点）前年比伸び率
       </p>
     </div>
   );

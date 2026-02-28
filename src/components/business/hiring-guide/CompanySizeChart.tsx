@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useInView } from "./useInView";
 
 const data = [
-  { name: "30人未満", value: 62.4, color: "#1a2f5e" },
+  { name: "30人未満", value: 63.1, color: "#1a2f5e" },
   { name: "30〜99人", value: 17.2, color: "#c9a84c" },
   { name: "100〜499人", value: 9.9, color: "#6b7280" },
   { name: "500人以上", value: 3.0, color: "#d1d5db" },
@@ -71,7 +71,7 @@ export default function CompanySizeChart() {
         </div>
       </div>
       <p className="mt-3 text-xs text-gray-400">
-        出典：厚生労働省「外国人雇用状況」届出状況（2024年10月末時点）
+        出典：厚生労働省「外国人雇用状況」届出状況（2025年10月末時点）
       </p>
     </div>
   );

@@ -22,7 +22,7 @@ const trendData = [
   { year: 2012, count: 68 },
   { year: 2017, count: 128 },
   { year: 2021, count: 173 },
-  { year: 2024, count: 230 },
+  { year: 2025, count: 257 },
 ];
 
 const canDo = [
@@ -81,7 +81,7 @@ function MiniBarChart() {
       {inView && (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={trendData}>
-            <YAxis domain={[0, 260]} hide />
+            <YAxis domain={[0, 290]} hide />
             <Bar
               dataKey="count"
               radius={[3, 3, 0, 0]}
@@ -144,7 +144,7 @@ export default function Step1Content() {
             同業他社の動向
           </h3>
           <p className="mb-3 text-xs text-[var(--muted-foreground)]">
-            外国人労働者230万人時代（2024年）
+            外国人労働者257万人時代（2025年）
           </p>
           <MiniBarChart />
           <p className="mt-2 text-right text-xs text-[var(--accent)] font-medium group-hover:underline">

@@ -28,6 +28,7 @@ const guideItems: NavLinkItem[] = [
   { label: '外国人スタッフ活用ハブ', href: '/business/existing-users' },
   { label: '育成就労ロードマップ', href: '/business/roadmap' },
   { label: '全19分野 解説', href: '/business/articles' },
+  { label: '19分野 制度比較マップ', href: '/business/articles/industry-overview' },
   { label: '助成金情報', href: '/business/subsidies' },
   { label: 'パートナー検索', href: '/business/partners' },
 ];

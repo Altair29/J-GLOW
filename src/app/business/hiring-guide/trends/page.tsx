@@ -7,9 +7,9 @@ import SubpageFooterCTA from "@/components/business/hiring-guide/SubpageFooterCT
 
 export const metadata: Metadata = {
   title:
-    "外国人採用の現状と中小企業のデータ【2024年最新】| 外国人雇用ガイド",
+    "外国人採用の現状と中小企業のデータ【2025年最新】| 外国人雇用ガイド",
   description:
-    "厚生労働省の最新データで見る外国人労働者230万人時代の実態。雇用事業所の62.4%が従業員30人未満の中小企業。業種別伸び率・国籍別推移を図解で解説。",
+    "厚生労働省の最新データで見る外国人労働者257.1万人時代の実態。雇用事業所の63.1%が従業員30人未満の中小企業。業種別伸び率・国籍別推移を図解で解説。",
 };
 
 export default function TrendsPage() {
@@ -45,10 +45,10 @@ export default function TrendsPage() {
       <div className="mt-12 grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 text-center">
           <p className="text-3xl font-bold text-[var(--primary)] font-countdown">
-            230万人
+            257.1万人
           </p>
           <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-            2024年10月末時点の外国人労働者数（過去最高）
+            2025年10月末時点の外国人労働者数（過去最高）
           </p>
           <p className="mt-1 text-xs text-gray-400">
             出典：厚生労働省
@@ -56,15 +56,15 @@ export default function TrendsPage() {
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 text-center">
           <p className="text-3xl font-bold text-[var(--accent)] font-countdown">
-            +12.4%
+            +11.7%
           </p>
           <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-            前年比増加率、増加幅25万3,912人も過去最大
+            前年比増加率、増加幅約26万8,000人（268,450人）も過去最大
           </p>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 text-center">
           <p className="text-3xl font-bold text-[var(--primary)] font-countdown">
-            62.4%
+            63.1%
           </p>
           <p className="mt-2 text-xs text-[var(--muted-foreground)]">
             外国人を雇う事業所のうち従業員30人未満の割合
@@ -75,7 +75,7 @@ export default function TrendsPage() {
       {/* メイングラフ：外国人労働者数の推移 */}
       <div className="mt-16">
         <h2 className="mb-6 text-xl font-bold text-[var(--foreground)]">
-          外国人労働者数の推移（2012年〜2024年）
+          外国人労働者数の推移（2012年〜2025年）
         </h2>
         <ForeignWorkerChart />
       </div>
@@ -83,7 +83,7 @@ export default function TrendsPage() {
       {/* 業種別前年比伸び率 */}
       <div className="mt-16">
         <h2 className="mb-6 text-xl font-bold text-[var(--foreground)]">
-          業種別 前年比伸び率（2024年）
+          業種別 前年比伸び率（2025年）
         </h2>
         <IndustryGrowthChart />
       </div>
@@ -108,7 +108,7 @@ export default function TrendsPage() {
             </h3>
             <ul className="space-y-2 text-sm text-[var(--muted-foreground)]">
               <li>2019年に特定技能制度が創設、即戦力としての採用が可能に</li>
-              <li>特定技能は2024年に約21万人（前年比+49.4%）と急増</li>
+              <li>特定技能は2025年10月時点で28.6万人（286,225人）、前年比38.3%増と急増</li>
               <li>2027年には育成就労制度がスタート、制度がさらに使いやすくなる</li>
             </ul>
             <p className="mt-2 text-xs text-gray-400">
@@ -134,6 +134,79 @@ export default function TrendsPage() {
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* 急増する国籍 */}
+      <div className="mt-16">
+        <h2 className="mb-6 text-xl font-bold text-[var(--foreground)]">
+          急増する国籍 — ミャンマー・インドネシアが牽引
+        </h2>
+        <div className="rounded-xl border-l-4 border-l-[var(--accent)] bg-[var(--surface-muted)] p-6">
+          <p className="text-sm leading-relaxed text-[var(--muted-foreground)] sm:text-base">
+            国籍別で特に増加が著しいのが東南アジア諸国。
+            ミャンマーからの外国人労働者は前年比<span className="font-bold text-[var(--foreground)]">+42.5%</span>（約4万8,700人増）、
+            インドネシアは<span className="font-bold text-[var(--foreground)]">+34.6%</span>（約5万8,600人増）と急増しており、
+            ベトナムに次ぐ新たな主要送出し国として台頭している。
+          </p>
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-center">
+            <p className="text-2xl font-bold text-[var(--primary)]">60.6万人</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">ベトナム（23.6%・最多）</p>
+          </div>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-center">
+            <p className="text-2xl font-bold text-[var(--accent)]">+42.5%</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">ミャンマー（前年比伸び率）</p>
+          </div>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-center">
+            <p className="text-2xl font-bold text-[var(--accent)]">+34.6%</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">インドネシア（前年比伸び率）</p>
+          </div>
+        </div>
+        <p className="mt-3 text-xs text-gray-400">
+          出典：厚生労働省「外国人雇用状況」届出状況（2025年10月末時点）
+        </p>
+      </div>
+
+      {/* 在留資格別の構成 */}
+      <div className="mt-16">
+        <h2 className="mb-6 text-xl font-bold text-[var(--foreground)]">
+          在留資格別の構成 — 専門人材が初の最多に
+        </h2>
+        <div className="mb-4 rounded-xl border-l-4 border-l-[var(--accent)] bg-[var(--surface-muted)] p-4">
+          <p className="text-sm font-bold text-[var(--foreground)]">
+            「専門的・技術的分野」が初めて在留資格カテゴリ別で最多に。特定技能の急拡大が牽引。
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { label: "専門的・技術的分野", value: "86.6万人", share: "33.7%", note: "前年比+20.4%", accent: true },
+            { label: "身分に基づく在留資格", value: "64.6万人", share: "25.1%", note: "前年比+2.6%", accent: false },
+            { label: "技能実習", value: "49.9万人", share: "19.4%", note: "前年比+6.1%", accent: false },
+            { label: "うち特定技能", value: "28.6万人", share: "11.1%", note: "前年比+38.3%", accent: true },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className={`flex items-center justify-between rounded-xl border p-4 ${
+                item.accent
+                  ? "border-[var(--accent)] bg-[var(--accent-muted)]"
+                  : "border-[var(--border)] bg-[var(--surface)]"
+              }`}
+            >
+              <div>
+                <p className="text-sm font-bold text-[var(--foreground)]">{item.label}</p>
+                <p className="text-xs text-[var(--muted-foreground)]">{item.note}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold text-[var(--primary)]">{item.value}</p>
+                <p className="text-xs text-[var(--muted-foreground)]">{item.share}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-xs text-gray-400">
+          出典：厚生労働省「外国人雇用状況」届出状況（2025年10月末時点）
+        </p>
       </div>
 
       {/* 外国人採用のポジティブ効果 */}
@@ -194,6 +267,22 @@ export default function TrendsPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 出典 */}
+      <div className="mt-16 rounded-xl bg-[var(--surface-muted)] p-6">
+        <p className="text-xs font-bold text-[var(--muted-foreground)] mb-2">出典・データソース</p>
+        <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
+          厚生労働省「外国人雇用状況の届出状況まとめ（令和7年10月末時点）」（2026年1月公表）
+        </p>
+        <a
+          href="https://www.mhlw.go.jp/stf/newpage_68794.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-block text-xs text-[var(--accent)] hover:underline"
+        >
+          厚生労働省 公式ページ →
+        </a>
       </div>
 
       <SubpageFooterCTA />

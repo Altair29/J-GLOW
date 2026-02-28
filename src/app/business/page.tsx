@@ -249,22 +249,6 @@ export default async function BusinessPage() {
             制度の今を知る
           </h2>
 
-          {/* 統計3つ */}
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12 text-center mb-14">
-            {[
-              { number: '230万人', label: '日本で働く外国人労働者数（2024年10月・過去最多）' },
-              { number: '60.5%', label: '2024年の就業者増加数に占める外国人の割合' },
-              { number: '1,100万人', label: '2040年に予測される労働力不足' },
-            ].map((s) => (
-              <div key={s.number}>
-                <p className="font-[family-name:var(--font-number)] text-4xl md:text-5xl font-bold mb-2" style={{ color: '#1a2f5e' }}>
-                  {s.number}
-                </p>
-                <p className="text-sm text-slate-500 leading-relaxed">{s.label}</p>
-              </div>
-            ))}
-          </div>
-
           {/* 記事3本 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link href="/business/hiring-guide/labor-shortage"
@@ -290,8 +274,8 @@ export default async function BusinessPage() {
               className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-36 bg-gradient-to-br from-[#2a6e4e] to-[#3a8e6e] flex items-center justify-center p-6">
                 <p className="text-white text-center font-bold text-lg leading-snug">
-                  284,466人<br />
-                  <span className="text-sm font-normal text-green-200">特定技能在留者数（2024年12月）</span>
+                  257万人<br />
+                  <span className="text-sm font-normal text-green-200">外国人労働者数（2025年10月・過去最多）</span>
                 </p>
               </div>
               <div className="p-5">

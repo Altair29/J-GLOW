@@ -24,6 +24,7 @@ const data = [
   { year: "2022", count: 182.3 },
   { year: "2023", count: 204.9 },
   { year: "2024", count: 230.3 },
+  { year: "2025", count: 257.1 },
 ];
 
 export default function ForeignWorkerChart() {
@@ -33,7 +34,7 @@ export default function ForeignWorkerChart() {
     <div ref={ref}>
       <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6">
         <p className="mb-4 text-center text-sm font-bold text-[var(--accent)]">
-          15年で約3.4倍
+          13年で約3.8倍
         </p>
         <div className="min-w-[600px]" style={{ height: 350 }}>
           {inView && (
@@ -53,7 +54,7 @@ export default function ForeignWorkerChart() {
                   tickLine={false}
                 />
                 <YAxis
-                  domain={[0, 260]}
+                  domain={[0, 290]}
                   tick={{ fontSize: 12, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}

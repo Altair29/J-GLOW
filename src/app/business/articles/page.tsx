@@ -106,6 +106,36 @@ export default async function ArticlesPage() {
         </div>
       </section>
 
+      {/* 制度比較マップ誘導カード */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-2">
+        <Link
+          href="/business/articles/industry-overview"
+          className="group block rounded-2xl overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+          style={{ background: 'linear-gradient(135deg, #0f1e3d 0%, #1a2f5e 60%, #2a4a8e 100%)' }}
+        >
+          <div className="flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8">
+            <div className="text-5xl shrink-0">🗺️</div>
+            <div className="flex-1 text-center sm:text-left">
+              <span className="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded mb-2" style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}>
+                NEW
+              </span>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
+                19分野 制度比較マップ
+              </h2>
+              <p className="text-sm text-blue-200 leading-relaxed">
+                育成就労・特定技能の全19分野を受入れ人数・転籍制限・試験難易度で比較。キャリアパスの全体像もわかります。
+              </p>
+            </div>
+            <span
+              className="shrink-0 inline-flex items-center gap-1.5 text-sm font-bold px-6 py-2.5 rounded-lg group-hover:gap-2.5 transition-all"
+              style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
+            >
+              比較マップを見る →
+            </span>
+          </div>
+        </Link>
+      </section>
+
       {/* カードグリッド */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
