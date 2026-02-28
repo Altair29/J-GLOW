@@ -4,21 +4,10 @@ import { ArrowRight, ClipboardCheck } from 'lucide-react';
 export function BusinessHubHero() {
   return (
     <section className="relative overflow-hidden">
-      {/* ネイビーグラデーション背景 */}
+      {/* 背景写真 + ネイビーオーバーレイ */}
       <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(135deg, #1a2f5e 0%, #14254b 50%, #1a2f5e 100%)',
-        }}
-      />
-      {/* 薄いゴールドのアクセントライン */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse at 70% 50%, #c9a84c 0%, transparent 60%)',
-        }}
+        className="absolute inset-0 bg-cover bg-center before:absolute before:inset-0 before:bg-[#1a2f5e]/60"
+        style={{ backgroundImage: "url('/images/5.png')" }}
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 py-20 md:py-28 text-center">

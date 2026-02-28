@@ -24,9 +24,9 @@ export default function HeroSection() {
           <a
             href="/business/cost-simulator"
             className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-8 py-3.5 text-sm font-bold text-[var(--primary)] transition-colors hover:bg-[var(--accent-light)]"
-            aria-label="費用をシミュレーションする - コストシミュレーターページへ"
+            aria-label="最適な在留資格×費用を確認する - コストシミュレーターページへ"
           >
-            費用をシミュレーションする
+            最適な在留資格×費用を確認する
             <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

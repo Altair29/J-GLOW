@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { BusinessHubHero } from '@/components/business/BusinessHubHero';
-import { BusinessHubPainCards } from '@/components/business/BusinessHubPainCards';
-import { BusinessHubSolutionMap } from '@/components/business/BusinessHubSolutionMap';
+import { ExistingUsersInteractive } from '@/components/business/ExistingUsersInteractive';
 import { BusinessHubTimeline } from '@/components/business/BusinessHubTimeline';
 import { BusinessHubCTA } from '@/components/business/BusinessHubCTA';
 
@@ -17,11 +16,8 @@ export default function ExistingUsersHubPage() {
       {/* 1. ヒーロー */}
       <BusinessHubHero />
 
-      {/* 2. あるある共感カード */}
-      <BusinessHubPainCards />
-
-      {/* 3. 解決の地図（3軸カード） */}
-      <BusinessHubSolutionMap />
+      {/* 2. あるある共感カード + 3. 解決の地図（インタラクティブ） */}
+      <ExistingUsersInteractive />
 
       {/* 4. 制度変更タイムライン */}
       <BusinessHubTimeline />

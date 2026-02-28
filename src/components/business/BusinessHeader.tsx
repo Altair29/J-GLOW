@@ -4,32 +4,33 @@ import Link from 'next/link';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import { getIcon } from '@/lib/icons';
 import type { NavigationItem } from '@/types/database';
 
 type Props = {
-  navItems: NavigationItem[];
+  navItems?: NavigationItem[];
   texts: Record<string, string>;
   theme: Record<string, string>;
 };
 
-/* ========================================
-   ナビゲーション構造定義
-   DB の navItems を href でグルーピング
-   ======================================== */
-const featureHrefs = ['/business/simulation', '/business/existing-users/ladder#diagnostic', '/business/ikusei', '/business/existing-users', '/business/tools/labor-notice', '/business/cost-simulator'];
-const resourceHrefs = ['/business/subsidies', '/business/partners'];
+type NavLinkItem = { label: string; href: string };
 
-function groupNavItems(items: NavigationItem[]) {
-  const features: NavigationItem[] = [];
-  const resources: NavigationItem[] = [];
-  for (const item of items) {
-    if (featureHrefs.includes(item.href)) features.push(item);
-    else if (resourceHrefs.includes(item.href)) resources.push(item);
-  }
+const toolItems: NavLinkItem[] = [
+  { label: '外国人採用ナビゲーター', href: '/business/cost-simulator' },
+  { label: '採用計画コストシミュレーター', href: '/business/hiring-guide/cost-simulator' },
+  { label: '労働条件通知書 生成ツール', href: '/business/tools/labor-notice' },
+  { label: '現場指示書ビルダー', href: '/business/existing-users/connect/templates' },
+  { label: '特定技能移行チェッカー', href: '/business/existing-users/ladder/checker' },
+  { label: '外国人雇用 適正診断', href: '/business/existing-users/ladder#diagnostic' },
+];
 
-  return { features, resources };
-}
+const guideItems: NavLinkItem[] = [
+  { label: 'はじめての外国人雇用', href: '/business/hiring-guide' },
+  { label: '外国人スタッフ活用ハブ', href: '/business/existing-users' },
+  { label: '育成就労ロードマップ', href: '/business/roadmap' },
+  { label: '全19分野 解説', href: '/business/articles' },
+  { label: '助成金情報', href: '/business/subsidies' },
+  { label: 'パートナー検索', href: '/business/partners' },
+];
 
 /* ========================================
    ドロップダウンコンポーネント
@@ -37,11 +38,9 @@ function groupNavItems(items: NavigationItem[]) {
 function NavDropdown({
   label,
   items,
-  theme,
 }: {
   label: string;
-  items: NavigationItem[];
-  theme: Record<string, string>;
+  items: NavLinkItem[];
 }) {
   const [open, setOpen] = useState(false);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -56,7 +55,6 @@ function NavDropdown({
     timeout.current = setTimeout(() => setOpen(false), 150);
   }, []);
 
-  /* キーボード ESC で閉じる */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
@@ -84,7 +82,6 @@ function NavDropdown({
         />
       </button>
 
-      {/* ドロップダウンパネル */}
       <div
         className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 transition-all duration-200 ${
           open
@@ -92,36 +89,17 @@ function NavDropdown({
             : 'opacity-0 -translate-y-1 pointer-events-none'
         }`}
       >
-        <div className="glass-dropdown rounded-xl py-2 min-w-[240px] shadow-xl">
-          {items.map((item) => {
-            const Icon = getIcon(item.icon);
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-colors"
-                onClick={() => setOpen(false)}
-              >
-                {Icon && (
-                  <span
-                    className="shrink-0 p-1.5 rounded-lg"
-                    style={{
-                      backgroundColor:
-                        theme['--biz-primary']
-                          ? `${theme['--biz-primary']}12`
-                          : 'rgba(26,47,94,0.07)',
-                    }}
-                  >
-                    <Icon
-                      size={16}
-                      style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
-                    />
-                  </span>
-                )}
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
+        <div className="glass-dropdown rounded-xl py-2 min-w-[260px] shadow-xl">
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-colors font-medium"
+              onClick={() => setOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
       </div>
     </div>
@@ -131,12 +109,10 @@ function NavDropdown({
 /* ========================================
    ヘッダー本体
    ======================================== */
-export function BusinessHeader({ navItems, texts, theme }: Props) {
+export function BusinessHeader({ texts, theme }: Props) {
   const { user, profile, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-
-  const { features, resources } = groupNavItems(navItems);
 
   return (
     <header className="sticky top-0 z-50 glass-header">
@@ -164,32 +140,8 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
 
           {/* ── デスクトップナビ ── */}
           <nav className="hidden lg:flex items-center gap-1 flex-1">
-            {/* サービス概要 */}
-            <Link
-              href="/business"
-              className="px-4 py-2 text-[13px] font-medium tracking-wide text-slate-600 hover:text-slate-900 rounded-lg hover:bg-white/50 transition-all"
-            >
-              {texts.nav_home || 'サービス概要'}
-            </Link>
-
-            {/* 主要機能 ドロップダウン */}
-            {features.length > 0 && (
-              <NavDropdown
-                label={texts.nav_features || '主要機能'}
-                items={features}
-                theme={theme}
-              />
-            )}
-
-            {/* リソース ドロップダウン */}
-            {resources.length > 0 && (
-              <NavDropdown
-                label={texts.nav_resources || 'リソース'}
-                items={resources}
-                theme={theme}
-              />
-            )}
-
+            <NavDropdown label="ツール" items={toolItems} />
+            <NavDropdown label="ガイド・情報" items={guideItems} />
           </nav>
 
           {/* ── 右側アクション ── */}
@@ -201,12 +153,21 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
                 <span className="text-sm text-slate-500 max-w-[140px] truncate">
                   {profile?.display_name || user.email}
                 </span>
-                {profile?.role === 'admin' && (
+                {profile?.role === 'admin' ? (
                   <Link
                     href="/admin"
-                    className="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full"
+                    className="text-[13px] px-5 py-2 rounded-lg font-semibold text-white shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
+                    style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
                   >
-                    {texts.admin_link || '管理'}
+                    管理パネル
+                  </Link>
+                ) : (
+                  <Link
+                    href="/business/mypage"
+                    className="text-[13px] px-5 py-2 rounded-lg font-semibold text-white shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
+                    style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
+                  >
+                    マイページ
                   </Link>
                 )}
                 <button
@@ -222,7 +183,7 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
                 className="text-[13px] px-5 py-2 rounded-lg font-semibold text-white shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
                 style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
               >
-                {texts.login_button || 'ログイン'}
+                ログイン
               </Link>
             )}
           </div>
@@ -240,53 +201,58 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
         {/* ── モバイルメニュー ── */}
         {menuOpen && (
           <div className="lg:hidden pb-4 border-t border-slate-200/60 pt-3 space-y-1">
-            {/* サービス概要 */}
-            <Link
-              href="/business"
-              className="block px-3 py-2.5 text-sm font-medium text-slate-700 rounded-lg hover:bg-white/60 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              {texts.nav_home || 'サービス概要'}
-            </Link>
+            <MobileAccordion
+              label="ツール"
+              items={toolItems}
+              expanded={mobileExpanded === 'tools'}
+              onToggle={() =>
+                setMobileExpanded((v) => (v === 'tools' ? null : 'tools'))
+              }
+              onNavigate={() => setMenuOpen(false)}
+            />
 
-            {/* 主要機能 (アコーディオン) */}
-            {features.length > 0 && (
-              <MobileAccordion
-                label={texts.nav_features || '主要機能'}
-                items={features}
-                expanded={mobileExpanded === 'features'}
-                onToggle={() =>
-                  setMobileExpanded((v) => (v === 'features' ? null : 'features'))
-                }
-                onNavigate={() => setMenuOpen(false)}
-              />
-            )}
+            <MobileAccordion
+              label="ガイド・情報"
+              items={guideItems}
+              expanded={mobileExpanded === 'guides'}
+              onToggle={() =>
+                setMobileExpanded((v) => (v === 'guides' ? null : 'guides'))
+              }
+              onNavigate={() => setMenuOpen(false)}
+            />
 
-            {/* リソース (アコーディオン) */}
-            {resources.length > 0 && (
-              <MobileAccordion
-                label={texts.nav_resources || 'リソース'}
-                items={resources}
-                expanded={mobileExpanded === 'resources'}
-                onToggle={() =>
-                  setMobileExpanded((v) => (v === 'resources' ? null : 'resources'))
-                }
-                onNavigate={() => setMenuOpen(false)}
-              />
-            )}
-
-            {/* ログイン/ログアウト */}
             <div className="border-t border-slate-200/60 mt-2 pt-2">
               {user ? (
-                <button
-                  onClick={() => {
-                    signOut();
-                    setMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2.5 text-sm text-slate-500 hover:text-slate-700 rounded-lg"
-                >
-                  {texts.logout_button || 'ログアウト'}
-                </button>
+                <>
+                  {profile?.role === 'admin' ? (
+                    <Link
+                      href="/admin"
+                      className="block px-3 py-2.5 text-sm font-semibold rounded-lg"
+                      style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      管理パネル
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/business/mypage"
+                      className="block px-3 py-2.5 text-sm font-semibold rounded-lg"
+                      style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      マイページ
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-3 py-2.5 text-sm text-slate-500 hover:text-slate-700 rounded-lg"
+                  >
+                    {texts.logout_button || 'ログアウト'}
+                  </button>
+                </>
               ) : (
                 <Link
                   href="/login"
@@ -294,7 +260,7 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
                   style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
                   onClick={() => setMenuOpen(false)}
                 >
-                  {texts.login_button || 'ログイン'}
+                  ログイン
                 </Link>
               )}
             </div>
@@ -316,7 +282,7 @@ function MobileAccordion({
   onNavigate,
 }: {
   label: string;
-  items: NavigationItem[];
+  items: NavLinkItem[];
   expanded: boolean;
   onToggle: () => void;
   onNavigate: () => void;
@@ -337,7 +303,7 @@ function MobileAccordion({
         <div className="pl-4 space-y-0.5 mt-0.5">
           {items.map((item) => (
             <Link
-              key={item.id}
+              key={item.href}
               href={item.href}
               className="block px-3 py-2 text-sm text-slate-500 hover:text-slate-800 rounded-lg hover:bg-white/50 transition-colors"
               onClick={onNavigate}

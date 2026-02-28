@@ -10,7 +10,7 @@ export default function DoubleCTASection() {
             </svg>
           </div>
           <h3 className="mb-2 text-lg font-bold text-white">
-            費用をシミュレーションする
+            最適な在留資格×費用を確認する
           </h3>
           <p className="mb-6 text-sm text-white/60">
             業種・人数・国籍から概算費用を無料で試算
