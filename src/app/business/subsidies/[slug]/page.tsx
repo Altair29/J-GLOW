@@ -63,14 +63,14 @@ export default async function SubsidyDetailPage({ params }: Props) {
         <Link
           href="/business/subsidies"
           className="text-sm mb-6 inline-block hover:opacity-80 transition-opacity"
-          style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+          style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
         >
           ← {labels.subsidy}一覧に戻る
         </Link>
 
         <div className="flex items-center gap-2 mb-4">
           <Badge style={{ backgroundColor: st.bg, color: st.color }}>{st.label}</Badge>
-          {sub.is_featured && <Badge style={{ backgroundColor: '#fef3c7', color: '#92400e' }}>注目</Badge>}
+          {sub.is_featured && <Badge style={{ backgroundColor: '#fdf5e0', color: '#8a7530' }}>注目</Badge>}
         </div>
 
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{sub.name}</h1>
@@ -81,7 +81,7 @@ export default async function SubsidyDetailPage({ params }: Props) {
           {sub.max_amount && (
             <div>
               <span className="text-xs text-gray-400">最大金額</span>
-              <p className="text-xl font-bold" style={{ color: theme['--biz-primary'] || '#1e3a5f' }}>{sub.max_amount}</p>
+              <p className="text-xl font-bold" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>{sub.max_amount}</p>
             </div>
           )}
           {sub.deadline && (
@@ -175,7 +175,7 @@ export default async function SubsidyDetailPage({ params }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
+              style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
             >
               {texts.apply_link || '申請ページへ'} ↗
             </a>

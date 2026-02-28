@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Noto_Sans_JP, Montserrat } from 'next/font/google';
+import { Geist, Geist_Mono, Noto_Sans_JP, Space_Mono } from 'next/font/google';
 import './globals.css';
 
 const geistSans = Geist({
@@ -14,14 +14,14 @@ const geistMono = Geist_Mono({
 
 const notoSansJP = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
-  weight: ['400', '500', '700'],
+  weight: ['400', '500', '700', '900'],
   subsets: ['latin'],
   preload: false,
 });
 
-const montserrat = Montserrat({
-  variable: '--font-montserrat',
-  weight: ['400', '500', '600', '700'],
+const spaceMono = Space_Mono({
+  variable: '--font-space-mono',
+  weight: ['400', '700'],
   subsets: ['latin'],
 });
 
@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} ${montserrat.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} ${spaceMono.variable} antialiased`}
       >
         {children}
       </body>

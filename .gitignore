@@ -44,3 +44,7 @@ picture/
 
 .vercel
 .env*.local
+
+# claude code
+.claude/
+.agents/

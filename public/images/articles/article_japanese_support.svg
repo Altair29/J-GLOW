@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="380" fill="#f5f6fa" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">日本語学習支援の3つの方法と助成金活用マップ</text>
+
+  <!-- 3つの方法 -->
+  <rect x="40" y="60" width="225" height="160" rx="10" fill="white" stroke="#4a90c4" stroke-width="2"/>
+  <rect x="40" y="60" width="225" height="40" rx="10" fill="#4a90c4"/>
+  <rect x="40" y="84" width="225" height="16" fill="#4a90c4"/>
+  <text x="152" y="84" text-anchor="middle" font-size="12" fill="white" font-weight="bold">方法1：業務時間内学習</text>
+  <text x="60" y="120" font-size="10" fill="#374151">
+    <tspan x="60" dy="0">週1〜2回 × 30分</tspan>
+    <tspan x="60" dy="18">テキスト自習 or オンライン</tspan>
+    <tspan x="60" dy="24" font-weight="bold" fill="#16a34a">メリット：継続しやすい</tspan>
+    <tspan x="60" dy="18" fill="#dc2626">注意：賃金の取り扱い</tspan>
+  </text>
+
+  <rect x="288" y="60" width="225" height="160" rx="10" fill="white" stroke="#2d6ea8" stroke-width="2"/>
+  <rect x="288" y="60" width="225" height="40" rx="10" fill="#2d6ea8"/>
+  <rect x="288" y="84" width="225" height="16" fill="#2d6ea8"/>
+  <text x="400" y="84" text-anchor="middle" font-size="12" fill="white" font-weight="bold">方法2：地域の日本語教室</text>
+  <text x="308" y="120" font-size="10" fill="#374151">
+    <tspan x="308" dy="0">自治体・NPO・国際交流協会</tspan>
+    <tspan x="308" dy="18">無料〜低コスト</tspan>
+    <tspan x="308" dy="24" font-weight="bold" fill="#16a34a">メリット：費用が安い</tspan>
+    <tspan x="308" dy="18" fill="#6b7280">監理団体に紹介を依頼</tspan>
+  </text>
+
+  <rect x="536" y="60" width="225" height="160" rx="10" fill="white" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="536" y="60" width="225" height="40" rx="10" fill="#c9a84c"/>
+  <rect x="536" y="84" width="225" height="16" fill="#c9a84c"/>
+  <text x="648" y="84" text-anchor="middle" font-size="12" fill="white" font-weight="bold">方法3：オンラインサービス</text>
+  <text x="556" y="120" font-size="10" fill="#374151">
+    <tspan x="556" dy="0">スマートフォンアプリ</tspan>
+    <tspan x="556" dy="18">外国語対応・自分のペース</tspan>
+    <tspan x="556" dy="24" font-weight="bold" fill="#16a34a">メリット：いつでも学習可能</tspan>
+    <tspan x="556" dy="18" fill="#6b7280">多数のサービスが存在</tspan>
+  </text>
+
+  <!-- 助成金セクション -->
+  <text x="400" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#1a2f5e">活用できる助成金・補助金</text>
+
+  <rect x="40" y="265" width="350" height="95" rx="10" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="40" y="265" width="350" height="32" rx="10" fill="url(#navyGrad)"/>
+  <rect x="40" y="283" width="350" height="14" fill="url(#navyGrad)"/>
+  <text x="215" y="286" text-anchor="middle" font-size="11" fill="white" font-weight="bold">人材開発支援助成金（厚労省）</text>
+  <text x="60" y="315" font-size="10" fill="#374151">
+    <tspan x="60" dy="0">中小企業：経費の45% + 賃金助成760円/時</tspan>
+    <tspan x="60" dy="18">OFF-JT訓練10時間以上が対象</tspan>
+    <tspan x="60" dy="16" fill="#dc2626" font-weight="bold">※ 訓練開始1ヶ月前までに計画届提出が必須</tspan>
+  </text>
+
+  <rect x="410" y="265" width="350" height="95" rx="10" fill="white" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="410" y="265" width="350" height="32" rx="10" fill="#c9a84c"/>
+  <rect x="410" y="283" width="350" height="14" fill="#c9a84c"/>
+  <text x="585" y="286" text-anchor="middle" font-size="11" fill="white" font-weight="bold">人材確保等支援助成金 + 自治体補助金</text>
+  <text x="430" y="315" font-size="10" fill="#374151">
+    <tspan x="430" dy="0">外国人就労環境整備助成コース</tspan>
+    <tspan x="430" dy="18">多言語就業規則整備・日本語学習支援</tspan>
+    <tspan x="430" dy="16" fill="#6b7280">自治体独自の補助金も要チェック</tspan>
+  </text>
+</svg>

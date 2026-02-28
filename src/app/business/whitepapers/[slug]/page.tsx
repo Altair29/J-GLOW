@@ -49,13 +49,13 @@ export default async function WhitepaperDetailPage({ params }: Props) {
         <Link
           href="/business/whitepapers"
           className="text-sm mb-6 inline-block hover:opacity-80 transition-opacity"
-          style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+          style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
         >
           ← {labels.whitepaper}一覧に戻る
         </Link>
 
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          {catName && <Badge style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>{catName}</Badge>}
+          {catName && <Badge style={{ backgroundColor: '#e8ecf5', color: '#1a2f5e' }}>{catName}</Badge>}
           {wp.industry && <Badge style={{ backgroundColor: '#f3f4f6', color: '#374151' }}>{wp.industry}</Badge>}
         </div>
 
@@ -65,14 +65,14 @@ export default async function WhitepaperDetailPage({ params }: Props) {
 
         {/* DLリンク */}
         {wp.download_url && (
-          <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-            <span className="text-sm text-blue-800">PDF版をダウンロードできます</span>
+          <div className="mb-8 p-4 bg-[#1a2f5e]/5 border border-[#1a2f5e]/20 rounded-lg flex items-center justify-between">
+            <span className="text-sm text-[#1a2f5e]">PDF版をダウンロードできます</span>
             <a
               href={wp.download_url}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-sm font-medium text-white rounded-lg"
-              style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
+              style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
             >
               {texts.download_cta || 'ダウンロード'}
             </a>

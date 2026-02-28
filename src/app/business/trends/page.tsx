@@ -32,7 +32,7 @@ export default async function TrendsPage() {
       <section
         className="py-16"
         style={{
-          backgroundColor: theme['--biz-hero-bg'] || '#1e3a5f',
+          backgroundColor: theme['--biz-hero-bg'] || '#1a2f5e',
           color: theme['--biz-hero-text'] || '#ffffff',
         }}
       >

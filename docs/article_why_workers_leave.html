@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外国人材が辞める本当の理由</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2f5e;
+    --gold: #c9a84c;
+    --gold-light: #f5e9c8;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --bg: #f8f9fc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --warn: #d97706;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  /* ヘッダー */
+  .article-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #2d4a8a 60%, #1a2f5e 100%);
+    color: white;
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .article-header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border: 2px solid rgba(201,168,76,0.2);
+    border-radius: 50%;
+  }
+  .article-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 200px; height: 200px;
+    border: 2px solid rgba(201,168,76,0.15);
+    border-radius: 50%;
+  }
+  .category-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+  .article-header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 680px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .article-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* コンテンツ */
+  .content-wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* リード */
+  .lead {
+    font-size: 16.5px;
+    line-height: 1.9;
+    color: var(--text);
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px;
+    background: var(--gold-light);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 52px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 32px 0 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--gold);
+  }
+
+  p { margin-bottom: 18px; font-size: 15.5px; }
+
+  /* ===== アニメーションSVG：数値カウンター ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 36px 0 48px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(26,47,94,0.08);
+    border-top: 3px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, transparent 50%, rgba(201,168,76,0.06) 50%);
+  }
+  .stat-number {
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-number span {
+    font-size: 22px;
+    color: var(--gold);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-sub);
+    line-height: 1.5;
+  }
+  .stat-source {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+
+  /* カウントアップアニメーション */
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .stat-card {
+    animation: countUp 0.6s ease forwards;
+    opacity: 0;
+  }
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.25s; }
+  .stat-card:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ===== 在留資格別比較表 ===== */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 28px 0 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(26,47,94,0.08);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 14px;
+  }
+  thead {
+    background: var(--navy);
+    color: white;
+  }
+  thead th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody tr:last-child { border-bottom: none; }
+  td {
+    padding: 14px 16px;
+    vertical-align: top;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  td:first-child {
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 4px;
+  }
+  .badge-high { background: #fee2e2; color: var(--danger); }
+  .badge-mid { background: #fef3c7; color: var(--warn); }
+  .badge-low { background: #dcfce7; color: #16a34a; }
+
+  /* ===== SVGフロー：離職後の行き先 ===== */
+  .flow-container {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    margin: 32px 0;
+    box-shadow: 0 2px 16px rgba(26,47,94,0.08);
+  }
+  .flow-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+    letter-spacing: 0.08em;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  /* ===== 離職後行き先の円グラフ風SVG ===== */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .donut-svg {
+    flex-shrink: 0;
+  }
+  .legend-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-pct {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    min-width: 52px;
+  }
+  .legend-text { color: var(--text-sub); font-size: 13px; line-height: 1.4; }
+
+  /* ドーナツチャートアニメーション */
+  .donut-ring {
+    transition: stroke-dashoffset 1.2s ease;
+    transform-origin: center;
+    transform: rotate(-90deg);
+  }
+  @keyframes drawArc {
+    from { stroke-dashoffset: var(--dash-total); }
+    to { stroke-dashoffset: var(--dash-offset); }
+  }
+  .arc-1 {
+    animation: drawArc 1.0s 0.3s ease forwards;
+    stroke-dasharray: var(--dash-total);
+    stroke-dashoffset: var(--dash-total);
+  }
+  .arc-2 {
+    animation: drawArc 1.0s 0.6s ease forwards;
+    stroke-dasharray: var(--dash-total);
+    stroke-dashoffset: var(--dash-total);
+  }
+  .arc-3 {
+    animation: drawArc 1.0s 0.9s ease forwards;
+    stroke-dasharray: var(--dash-total);
+    stroke-dashoffset: var(--dash-total);
+  }
+  .arc-4 {
+    animation: drawArc 1.0s 1.1s ease forwards;
+    stroke-dasharray: var(--dash-total);
+    stroke-dashoffset: var(--dash-total);
+  }
+
+  /* ===== モチベーション棒グラフ ===== */
+  .bar-chart {
+    background: white;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    box-shadow: 0 2px 16px rgba(26,47,94,0.08);
+  }
+  .bar-chart-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .bar-label {
+    font-size: 13px;
+    color: var(--text);
+    width: 180px;
+    flex-shrink: 0;
+    line-height: 1.4;
+  }
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    width: 0;
+    transition: width 1.2s ease;
+    white-space: nowrap;
+  }
+  .bar-fill.animated { width: var(--bar-width); }
+  .bar-fill-navy { background: var(--navy); }
+  .bar-fill-gold { background: var(--gold); }
+  .bar-fill-teal { background: #0d9488; }
+  .bar-fill-slate { background: #64748b; }
+  .bar-fill-red { background: #dc2626; }
+
+  /* ===== サインカード ===== */
+  .signs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 24px 0 40px;
+  }
+  .sign-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 1px 8px rgba(26,47,94,0.06);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .sign-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .sign-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .sign-sub {
+    font-size: 11.5px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+
+  /* チェックリスト */
+  .checklist {
+    background: white;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+  }
+  .checklist-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .checklist ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .checklist li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* まとめボックス */
+  .summary-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #2d4a8a 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-top: 52px;
+  }
+  .summary-box h2 {
+    color: var(--gold);
+    border-bottom-color: rgba(201,168,76,0.3);
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  .summary-box p {
+    font-size: 14.5px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.8;
+  }
+  .summary-box ul {
+    list-style: none;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .summary-box li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .summary-box li::before {
+    content: '→';
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .note {
+    font-size: 12px;
+    color: #94a3b8;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    padding-top: 16px;
+  }
+
+  /* ハイライトボックス */
+  .highlight-box {
+    background: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .highlight-box strong {
+    color: var(--navy);
+  }
+
+  /* 引用 */
+  blockquote {
+    border-left: 4px solid var(--gold);
+    padding: 16px 20px;
+    margin: 24px 0;
+    background: white;
+    border-radius: 0 8px 8px 0;
+    font-size: 14.5px;
+    color: var(--text);
+    box-shadow: 0 1px 8px rgba(26,47,94,0.05);
+  }
+  blockquote cite {
+    display: block;
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 8px;
+    font-style: normal;
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="article-header">
+  <div class="category-tag">STAGE 1 ｜ 定着の基礎を知る</div>
+  <h1>外国人材が辞める本当の理由<br>——在留資格別に見る離職の構造</h1>
+  <div class="article-meta">2026年2月更新 ｜ 推定読了時間：8分</div>
+</div>
+
+<!-- コンテンツ -->
+<div class="content-wrap">
+
+  <p class="lead">
+    「うちは待遇が良いから大丈夫」——そう思っていても離職が続く企業には、共通した見落としがあります。外国人材の離職は在留資格ごとに構造が異なります。給与・キャリア・生活支援・制度管理の4軸で原因を正確に把握することが、定着戦略の出発点です。
+  </p>
+
+  <!-- 数値カード -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">16.1<span>%</span></div>
+      <div class="stat-label">特定技能1号の<br>累計離職率</div>
+      <div class="stat-source">出入国在留管理庁（2023）<br>集計期間：2019年4月〜2022年11月末</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">53<span>%</span></div>
+      <div class="stat-label">離職せずとも<br>モチベーションが低下した割合</div>
+      <div class="stat-source">ヒューマングローバルホールディングス等<br>共同調査（2021年）</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">44<span>%</span></div>
+      <div class="stat-label">1年未満で<br>離職意志を持った割合</div>
+      <div class="stat-source">ウィルテック等3社共同調査（2021年）<br>「離職した」＋「したかったができなかった」計</div>
+    </div>
+  </div>
+
+  <h2>01 ｜ 「辞めない＝満足」は大きな誤解</h2>
+
+  <p>
+    特定技能1号の累計離職率16.1%は、日本人新規学卒就職者の3年以内離職率（30%以上）と比べると低水準です。この数字を見て「外国人材は定着している」と判断する経営者は少なくありません。しかし注目すべきは<strong>離職「後」の行き先</strong>と、<strong>在職中の心理状態</strong>です。
+  </p>
+
+  <!-- ドーナツチャート -->
+  <div class="flow-container">
+    <div class="flow-title">特定技能1号　自己都合離職後の在留状況</div>
+    <div class="donut-wrap">
+      <svg class="donut-svg" width="180" height="180" viewBox="0 0 180 180">
+        <!-- 背景リング -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#f1f5f9" stroke-width="28"/>
+        <!-- 帰国 31.4% -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#1a2f5e" stroke-width="28"
+          stroke-dasharray="439.82"
+          style="--dash-total:439.82; --dash-offset:301.84;"
+          class="arc-1"
+          transform="rotate(-90 90 90)"/>
+        <!-- 特定技能で転職 30.3% -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#c9a84c" stroke-width="28"
+          stroke-dasharray="439.82"
+          style="--dash-total:439.82; --dash-offset:167.59;"
+          class="arc-2"
+          transform="rotate(23.5 90 90)"/>
+        <!-- 他資格変更 21.5% -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#0d9488" stroke-width="28"
+          stroke-dasharray="439.82"
+          style="--dash-total:439.82; --dash-offset:344.35;"
+          class="arc-3"
+          transform="rotate(133.5 90 90)"/>
+        <!-- その他 16.8% -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#94a3b8" stroke-width="28"
+          stroke-dasharray="439.82"
+          style="--dash-total:439.82; --dash-offset:365.95;"
+          class="arc-4"
+          transform="rotate(211.5 90 90)"/>
+        <!-- 中央テキスト -->
+        <text x="90" y="85" text-anchor="middle" font-size="11" fill="#64748b" font-family="Noto Sans JP">離職後の</text>
+        <text x="90" y="100" text-anchor="middle" font-size="11" fill="#64748b" font-family="Noto Sans JP">行き先</text>
+      </svg>
+
+      <ul class="legend-list">
+        <li class="legend-item">
+          <div class="legend-dot" style="background:#1a2f5e;"></div>
+          <div class="legend-pct">31.4%</div>
+          <div class="legend-text">帰国<br><span style="font-size:11px;color:#94a3b8;">日本を離れる</span></div>
+        </li>
+        <li class="legend-item">
+          <div class="legend-dot" style="background:#c9a84c;"></div>
+          <div class="legend-pct">30.3%</div>
+          <div class="legend-text">特定技能で転職<br><span style="font-size:11px;color:#94a3b8;">国内に留まり他社へ</span></div>
+        </li>
+        <li class="legend-item">
+          <div class="legend-dot" style="background:#0d9488;"></div>
+          <div class="legend-pct">21.5%</div>
+          <div class="legend-text">他の在留資格へ変更</div>
+        </li>
+        <li class="legend-item">
+          <div class="legend-dot" style="background:#94a3b8;"></div>
+          <div class="legend-pct">16.8%</div>
+          <div class="legend-text">その他</div>
+        </li>
+      </ul>
+    </div>
+    <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px;">出典：出入国在留管理庁（2023）　集計期間：2019年4月〜2022年11月末</p>
+  </div>
+
+  <div class="highlight-box">
+    <strong>重要な示唆：</strong>離職した特定技能外国人のうち約30%が「日本国内で他社に転職」しています。つまり転籍自由化が実現した今、<strong>待遇の良い職場へ合法的に移る人材が増え続けている</strong>のです。「辞めて帰国した」ではなく「隣の会社に取られた」という構図が主流になりつつあります。
+  </div>
+
+  <h2>02 ｜ 在留資格別に見る「辞める理由」の違い</h2>
+
+  <p>
+    離職の構造は在留資格によって大きく異なります。一律の「給与を上げれば解決する」という対策は機能しません。下の比較表で自社が雇用している在留資格の特性を把握してください。
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:130px;">在留資格</th>
+          <th>転職の自由</th>
+          <th>主な離職理由</th>
+          <th>企業が最初に打つべき手</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>育成就労<br><span class="badge badge-high">転籍自由化</span></td>
+          <td>一定要件で可（旧技能実習より大幅緩和）</td>
+          <td>給与が技能向上に追いつかない／キャリアの見通しがない／生活孤立</td>
+          <td>特定技能1号移行後の昇給設計を入社時から明示する</td>
+        </tr>
+        <tr>
+          <td>特定技能1号<br><span class="badge badge-high">転職自由</span></td>
+          <td>同一分野内なら自由</td>
+          <td>2号移行サポートがない／他社と賃金比較して流出／日本語上達で選択肢が広がる</td>
+          <td>2号へのキャリアパスと試験サポートを提示する</td>
+        </tr>
+        <tr>
+          <td>技人国<br><span class="badge badge-mid">転職自由</span></td>
+          <td>分野問わず自由</td>
+          <td>昇進が滞る／評価基準が不透明／外資や大手への転職誘惑</td>
+          <td>等級制度・昇進基準を書面で明示する</td>
+        </tr>
+        <tr>
+          <td>留学生<br><span class="badge badge-low">卒業後切替</span></td>
+          <td>在資変更後は自由</td>
+          <td>ビザ手続きサポートが不十分な会社を避ける／入社後の職場適応ミスマッチ</td>
+          <td>変更申請スケジュールを企業主導で管理する</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>育成就労から来た人材が辞める3つの構造</h3>
+
+  <p>
+    育成就労制度は「特定技能1号への移行を前提とした育成」を目的としています。しかし多くの中小企業では、育成就労期間中の待遇と、特定技能1号移行後の待遇設計が連続していません。本人は「試験に合格して資格が上がったのに給与が変わらない」と感じ、転籍を検討し始めます。
+  </p>
+  <p>
+    また生活面の孤立も深刻です。日本語でのコミュニケーション・医療・役所手続き——これらのサポートがない職場では、精神的な消耗から「母国に帰りたい」という気持ちが積み重なります。技能や意欲があっても孤立感が離職を促します。
+  </p>
+
+  <h3>特定技能1号が「スキルの移転制約」で損をするとき</h3>
+
+  <p>
+    内閣府の令和6年度経済財政白書（2024年）は、興味深い分析を示しています。<strong>同一企業で技能実習を修了し特定技能に移行した外国人は日本人との賃金格差が見られなかった一方、他社から転籍してきた特定技能外国人は賃金が低下する傾向があった</strong>というものです。
+  </p>
+
+  <blockquote>
+    「技能実習2号及び3号を修了後、職場を変更せずに特定技能1号に移行した労働者に関しては日本人との賃金格差は確認されなかったものの、職場を変更して特定技能1号に移行した労働者に関しては、知識やスキルが評価されないという『スキルの移転制約』に直面し、日本人よりも賃金水準が低下する可能性が指摘されている」
+    <cite>内閣府 令和6年度年次経済財政報告（2024年）より</cite>
+  </blockquote>
+
+  <p>
+    つまり「自社で育てた人材を手放すと、その人は一時的に評価が下がる」という事実を本人に伝え、長期雇用への動機として活用することが可能です。「ここを辞めたら損をする」ではなく、「ここで積み上げることが自分のキャリアになる」という感覚を持てる環境が重要です。
+  </p>
+
+  <h2>03 ｜ モチベーションを下げる要因ランキング</h2>
+
+  <!-- 棒グラフ -->
+  <div class="bar-chart">
+    <div class="bar-chart-title">外国人材のモチベーションダウン要因（複数回答）</div>
+
+    <div class="bar-row">
+      <div class="bar-label">上司のマネジメント・<br>指導への不満</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-navy" style="--bar-width:68%;">68%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">業務内容の<br>ミスマッチ</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-navy" style="--bar-width:54%;">54%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">給料が上がらない</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-gold" style="--bar-width:52%;">52%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">職場の人間関係</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-teal" style="--bar-width:45%;">45%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">外国人への差別・<br>偏見</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-red" style="--bar-width:38%;">38%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">キャリアパスが<br>見えない</div>
+      <div class="bar-track">
+        <div class="bar-fill bar-fill-slate" style="--bar-width:35%;">35%</div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:#94a3b8;margin-top:16px;">出典：ヒューマングローバルホールディングス・ウィルテック等共同調査（2021年）、RISE for Business記事参照</p>
+  </div>
+
+  <p>
+    注目すべきは<strong>1位が「給与」ではなく「上司のマネジメント」</strong>であることです。「外国人だから伝わらない」と諦めてしまう管理職、曖昧な指示を繰り返す上司、成果を認めない環境——これらが定着を妨げる最大の要因です。給与改善より先に、現場の管理職教育が必要な企業が多いのが実態です。
+  </p>
+
+  <h2>04 ｜ 「辞める前のサイン」を見逃さない</h2>
+
+  <p>
+    離職は突然起きません。必ずその前に行動の変化があります。現場の管理職・担当者が以下のサインに早期に気づくことが、面談介入のタイミングを逃さないための鍵です。
+  </p>
+
+  <div class="signs-grid">
+    <div class="sign-card">
+      <div class="sign-icon">😶</div>
+      <div>
+        <div class="sign-text">笑顔・挨拶が減った</div>
+        <div class="sign-sub">以前は自分から挨拶していたのに、うなずくだけになった</div>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="sign-icon">🤐</div>
+      <div>
+        <div class="sign-text">仕事の質問をしなくなった</div>
+        <div class="sign-sub">「もうここで覚える必要がない」と感じているサインの場合がある</div>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="sign-icon">📱</div>
+      <div>
+        <div class="sign-text">休憩中のスマホ利用が増えた</div>
+        <div class="sign-sub">求人サイトの閲覧、他社との給与比較をしている可能性</div>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="sign-icon">👥</div>
+      <div>
+        <div class="sign-text">同国籍グループで固まり始めた</div>
+        <div class="sign-sub">日本人スタッフとの交流が減り、母国語での会話が増加</div>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="sign-icon">🏠</div>
+      <div>
+        <div class="sign-text">「帰国したい」発言の増加</div>
+        <div class="sign-sub">具体的な日程や理由を語り始めたら要注意</div>
+      </div>
+    </div>
+    <div class="sign-card">
+      <div class="sign-icon">📉</div>
+      <div>
+        <div class="sign-text">仕事の品質・スピードが落ちた</div>
+        <div class="sign-sub">意欲の低下が業務パフォーマンスに現れるタイミング</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <div class="checklist-title">📋 サイン検知後の対応ステップ</div>
+    <ul>
+      <li>サインを確認してから<strong>1週間以内</strong>に1対1の面談を設定する（放置すると手遅れになることが多い）</li>
+      <li>面談には<strong>通訳か多言語シート</strong>を用意し、「仕事・給与・生活・将来」の4軸で聞く</li>
+      <li>不満の内容を記録し、<strong>2週間以内に具体的な改善案</strong>を本人に伝える</li>
+      <li>改善できない内容については「なぜできないか」を正直に説明する（不誠実な約束は逆効果）</li>
+      <li>面談内容は<strong>人事記録として保管</strong>し、次の担当者に引き継げるようにする</li>
+    </ul>
+  </div>
+
+  <h2>05 ｜ 企業規模別の優先課題</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>企業規模</th>
+          <th>最も多い離職パターン</th>
+          <th>優先して取り組むべきこと</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>10人未満<br>（零細）</td>
+          <td>孤立・生活サポート不足からの離職<br>担当者が一人で抱え込む</td>
+          <td>監理支援機関との連携強化。生活相談の外部窓口を明示する</td>
+        </tr>
+        <tr>
+          <td>10〜50人<br>（小規模）</td>
+          <td>給与据え置きによる他社流出<br>昇格の仕組みがない</td>
+          <td>在留資格変更タイミングでの給与見直しルールを作る</td>
+        </tr>
+        <tr>
+          <td>50〜300人<br>（中規模）</td>
+          <td>管理職との摩擦<br>評価基準の不透明さ</td>
+          <td>多文化マネジメント研修の実施。等級制度の整備</td>
+        </tr>
+        <tr>
+          <td>300人以上<br>（大規模）</td>
+          <td>社内の横断的サポート不足<br>部署間の情報共有がない</td>
+          <td>外国人材専任担当者の設置。社内横断の情報共有体制</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary-box">
+    <h2>この記事のポイント</h2>
+    <p>外国人材の離職は「1つの原因」で起きません。在留資格・企業規模・業種ごとに構造が違います。定着戦略は「給与を上げる」という単純な解決策ではなく、4つの軸での分析から始まります。</p>
+    <ul>
+      <li>特定技能の離職後30%が国内他社へ——「帰国」ではなく「転職」が主流化している</li>
+      <li>モチベーション低下1位は「上司のマネジメント」——給与より先に管理職教育が必要な企業が多い</li>
+      <li>サインに気づいてから1週間以内の面談介入が、離職防止の黄金ルール</li>
+      <li>自社で育てた人材が最もスキルを評価される——転籍よりも定着が双方にとって合理的</li>
+    </ul>
+  </div>
+
+  <p class="note">本記事は2026年2月時点の情報をもとに作成しています。制度の詳細は出入国在留管理庁の最新情報をご確認ください。</p>
+
+</div>
+
+<script>
+// 棒グラフのアニメーション（IntersectionObserver）
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.classList.add('animated');
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.bar-chart').forEach(chart => observer.observe(chart));
+</script>
+
+</body>
+</html>

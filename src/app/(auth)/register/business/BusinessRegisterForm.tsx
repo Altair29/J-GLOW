@@ -16,6 +16,7 @@ export function BusinessRegisterForm({ texts, theme }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [organization, setOrganization] = useState('');
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -61,7 +62,15 @@ export function BusinessRegisterForm({ texts, theme }: Props) {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { role: 'business', display_name: displayName, organization } },
+      options: {
+        data: {
+          role: 'business',
+          display_name: displayName,
+          organization,
+          privacy_agreed_at: new Date().toISOString(),
+          privacy_policy_version: 'draft',
+        },
+      },
     });
 
     if (signUpError) { setError(signUpError.message); setLoading(false); return; }
@@ -75,7 +84,7 @@ export function BusinessRegisterForm({ texts, theme }: Props) {
           <h2 className="font-bold mb-2">{texts.success_title || '登録確認メールを送信しました'}</h2>
           <p>{email} に確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。</p>
         </Alert>
-        <Link href="/login" style={{ color: theme['--biz-primary'] || '#1d4ed8' }}>
+        <Link href="/login" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
           ログインページへ戻る
         </Link>
       </div>
@@ -106,14 +115,29 @@ export function BusinessRegisterForm({ texts, theme }: Props) {
         <Input label={texts.confirm_label || 'パスワード（確認）'} type="password" required minLength={8}
           value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
 
-        <Button type="submit" loading={loading} themeColor={theme['--biz-primary'] || '#1e3a5f'} size="lg" className="w-full">
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={privacyAgreed}
+            onChange={(e) => setPrivacyAgreed(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-gray-300"
+          />
+          <span className="text-sm text-gray-600">
+            <Link href="/privacy-policy" target="_blank" className="underline font-medium" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
+              プライバシーポリシー
+            </Link>
+            に同意する（必須）
+          </span>
+        </label>
+
+        <Button type="submit" loading={loading} disabled={!privacyAgreed} themeColor={theme['--biz-primary'] || '#1a2f5e'} size="lg" className="w-full">
           {loading ? (texts.submit_loading || '登録処理中...') : (texts.submit_button || '企業アカウントを作成')}
         </Button>
       </form>
 
       <p className="text-center text-sm text-gray-600">
         {texts.has_account || '既にアカウントをお持ちですか？'}{' '}
-        <Link href="/login" className="font-medium" style={{ color: theme['--biz-primary'] || '#1e3a5f' }}>
+        <Link href="/login" className="font-medium" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
           ログイン
         </Link>
       </p>

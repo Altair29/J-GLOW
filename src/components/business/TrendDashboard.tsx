@@ -81,7 +81,7 @@ export function TrendDashboard({ widgets, insights, sources, texts, theme }: Pro
                         <div className="h-8 bg-gray-100 rounded animate-pulse" />
                       ) : latestValue ? (
                         <>
-                          <p className="text-2xl font-bold" style={{ color: theme['--biz-primary'] || '#1e3a5f' }}>
+                          <p className="text-2xl font-bold" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
                             {Number(latestValue.value).toLocaleString()}{latestValue.unit || ''}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">{latestValue.period}</p>
@@ -151,7 +151,7 @@ export function TrendDashboard({ widgets, insights, sources, texts, theme }: Pro
                                         className="h-full rounded transition-all duration-500"
                                         style={{
                                           width: `${pct}%`,
-                                          backgroundColor: theme['--biz-primary'] || '#1e3a5f',
+                                          backgroundColor: theme['--biz-primary'] || '#1a2f5e',
                                         }}
                                       />
                                     </div>

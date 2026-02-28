@@ -5,11 +5,12 @@ import remarkGfm from 'remark-gfm';
 
 type Props = {
   content: string;
+  className?: string;
 };
 
-export function MarkdownPreview({ content }: Props) {
+export function MarkdownPreview({ content, className }: Props) {
   return (
-    <div className="prose prose-sm max-w-none">
+    <div className={className ?? 'prose prose-sm max-w-none'}>
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {content}
       </ReactMarkdown>

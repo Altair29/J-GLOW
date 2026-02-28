@@ -25,7 +25,7 @@ export default async function SubsidiesPage() {
       <section
         className="py-16"
         style={{
-          backgroundColor: theme['--biz-hero-bg'] || '#1e3a5f',
+          backgroundColor: theme['--biz-hero-bg'] || '#1a2f5e',
           color: theme['--biz-hero-text'] || '#ffffff',
         }}
       >
@@ -57,13 +57,13 @@ export default async function SubsidiesPage() {
                     <Badge style={{ backgroundColor: '#d1fae5', color: '#065f46' }}>
                       {sub.status === 'active' ? '受付中' : sub.status}
                     </Badge>
-                    {sub.is_featured && <Badge style={{ backgroundColor: '#fef3c7', color: '#92400e' }}>注目</Badge>}
+                    {sub.is_featured && <Badge style={{ backgroundColor: '#fdf5e0', color: '#8a7530' }}>注目</Badge>}
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors">{sub.name}</h3>
+                  <h3 className="font-bold text-gray-900 mb-1 group-hover:text-[#1a2f5e] transition-colors">{sub.name}</h3>
                   <p className="text-xs text-gray-500 mb-2">{sub.provider}</p>
                   <p className="text-sm text-gray-600 line-clamp-2 mb-3">{sub.summary}</p>
                   {sub.max_amount && (
-                    <span className="text-sm font-medium" style={{ color: theme['--biz-primary'] || '#1e3a5f' }}>
+                    <span className="text-sm font-medium" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
                       最大 {sub.max_amount}
                     </span>
                   )}

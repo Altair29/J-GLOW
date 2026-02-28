@@ -1,176 +1,180 @@
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getContentBlocks, getThemeVars } from '@/lib/data';
-import { Badge } from '@/components/shared';
-import { MarkdownPreview } from '@/components/admin/blog/MarkdownPreview';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import ArticleContent from '@/components/business/ArticleContent';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const blogBodyStyles = `
+  .blog-body {
+    color: #2c2c2c;
+    font-size: 16px;
+    line-height: 1.85;
+  }
+  .blog-body img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 2rem 0;
+  }
+  .blog-body h2 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #1a2f5e;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c9a84c;
+    line-height: 1.5;
+  }
+  .blog-body > div > h2:first-child,
+  .blog-body > h2:first-child {
+    margin-top: 0;
+  }
+  .blog-body h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a2f5e;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding-left: 14px;
+    border-left: 4px solid #c9a84c;
+    line-height: 1.5;
+  }
+  .blog-body p {
+    margin-bottom: 16px;
+    line-height: 1.9;
+  }
+  .blog-body strong {
+    color: #1a2f5e;
+    font-weight: 700;
+  }
+  .blog-body ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+    margin: 1rem 0;
+  }
+  .blog-body ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+    margin: 1rem 0;
+  }
+  .blog-body li {
+    margin-bottom: 0.35rem;
+    line-height: 1.8;
+    display: list-item !important;
+  }
+  .blog-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin: 1.5rem 0;
+    border-radius: 6px;
+    display: block;
+    overflow-x: auto;
+  }
+  .blog-body thead {
+    background-color: #1a2f5e;
+    color: #ffffff;
+  }
+  .blog-body th {
+    font-weight: 600;
+    padding: 0.625rem 1rem;
+    text-align: left;
+    font-size: 0.8125rem;
+  }
+  .blog-body td {
+    border: 1px solid #e2e5ea;
+    padding: 0.625rem 1rem;
+    vertical-align: top;
+  }
+  .blog-body tr:nth-child(even) td {
+    background-color: #f8f9fb;
+  }
+  .blog-body blockquote {
+    border-left: 4px solid #c9a84c;
+    background-color: #faf5e8;
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .blog-body blockquote p {
+    margin-bottom: 0;
+  }
+`;
+
 export default async function BlogDetailPage({ params }: Props) {
   const { slug } = await params;
   const supabase = await createClient();
 
-  const [texts, theme, { data: post }] = await Promise.all([
-    getContentBlocks(supabase, 'business_blog_detail'),
-    getThemeVars(supabase, 'business'),
-    supabase
-      .from('blog_posts')
-      .select('*, blog_categories(name, slug), profiles(display_name)')
-      .eq('slug', slug)
-      .eq('status', 'published')
-      .single(),
-  ]);
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single();
 
   if (!post) notFound();
 
-  // タグ取得
-  const { data: postTags } = await supabase
-    .from('blog_post_tags')
-    .select('blog_tags(name, slug)')
-    .eq('post_id', post.id);
+  const body = post.body ?? '';
+  const isFullHtml = body.trimStart().startsWith('<style>');
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tags = (postTags || []).map((pt: any) => pt.blog_tags).filter(Boolean);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const categoryName = (post as any).blog_categories?.name;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const authorName = (post as any).profiles?.display_name;
+  // フルHTML記事（自前のヘッダー・スタイルを持つ）
+  if (isFullHtml) {
+    return (
+      <div
+        style={{ minHeight: '100vh' }}
+        dangerouslySetInnerHTML={{ __html: body }}
+      />
+    );
+  }
 
-  // 関連記事 (同カテゴリ)
-  const { data: relatedPosts } = post.category_id
-    ? await supabase
-        .from('blog_posts')
-        .select('id, title, slug, cover_image_url, published_at')
-        .eq('status', 'published')
-        .eq('category_id', post.category_id)
-        .neq('id', post.id)
-        .order('published_at', { ascending: false })
-        .limit(3)
-    : { data: [] };
+  // Markdown / シンプルHTML記事
+  const publishedDate = post.published_at ?? post.created_at;
+  const dateStr = publishedDate
+    ? new Date(publishedDate).toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).replace(/\//g, '-')
+    : '';
 
   return (
-    <div>
-      {/* カバー画像 */}
-      {post.cover_image_url && (
-        <div className="w-full h-64 md:h-96 overflow-hidden">
-          <img
-            src={post.cover_image_url}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-
-      <article className="max-w-4xl mx-auto px-4 py-12">
-        {/* 戻るリンク */}
-        <Link
-          href="/business/blog"
-          className="text-sm mb-6 inline-block hover:opacity-80 transition-opacity"
-          style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
-        >
-          {texts.back_link || '← ブログ一覧に戻る'}
-        </Link>
-
-        {/* メタ情報 */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          {categoryName && (
-            <Badge style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>
-              {categoryName}
-            </Badge>
-          )}
-          {post.published_at && (
-            <span className="text-sm text-gray-500">
-              {new Date(post.published_at).toLocaleDateString('ja-JP', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-          )}
-          {authorName && (
-            <span className="text-sm text-gray-500">
-              / {authorName}
-            </span>
-          )}
-        </div>
-
-        {/* タイトル */}
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-          {post.title}
-        </h1>
-
-        {/* 本文 (Markdown) */}
-        <div className="mb-12">
-          <MarkdownPreview content={post.body} />
-        </div>
-
-        {/* タグ */}
-        {tags.length > 0 && (
-          <div className="border-t pt-6 mb-8">
-            <span className="text-sm font-medium text-gray-500 mr-2">
-              {texts.tags_label || 'タグ'}:
-            </span>
-            <div className="inline-flex flex-wrap gap-2">
-              {tags.map((tag: { name: string; slug: string }) => (
-                <Badge
-                  key={tag.slug}
-                  style={{ backgroundColor: '#f3f4f6', color: '#374151' }}
-                >
-                  #{tag.name}
-                </Badge>
-              ))}
-            </div>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: blogBodyStyles }} />
+      <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        {/* Hero */}
+        <div style={{ background: 'linear-gradient(135deg, #1a2f5e 0%, #0f1d3d 100%)' }}>
+          <div style={{ maxWidth: '820px', margin: '0 auto', padding: '2.5rem 1.5rem 4rem' }}>
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#93c5fd', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+              <Link href="/business" style={{ color: '#93c5fd', textDecoration: 'none' }}>企業向けトップ</Link>
+              <span style={{ color: '#6094d8' }}>/</span>
+              <span style={{ color: '#bfdbfe' }}>{post.title}</span>
+            </nav>
+            {dateStr && (
+              <span style={{ color: '#93c5fd', fontSize: '12px', display: 'block', marginBottom: '1rem' }}>{dateStr}</span>
+            )}
+            <h1 style={{ fontSize: 'clamp(1.35rem, 2.5vw, 1.75rem)', fontWeight: '700', color: '#fff', lineHeight: '1.45' }}>
+              {post.title}
+            </h1>
           </div>
-        )}
+        </div>
 
-        {/* 関連記事 */}
-        {relatedPosts && relatedPosts.length > 0 && (
-          <div className="border-t pt-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              {texts.related_heading || '関連記事'}
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4">
-              {relatedPosts.map((rp) => (
-                <Link
-                  key={rp.id}
-                  href={`/business/blog/${rp.slug}`}
-                  className="group block bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  <div className="aspect-[16/9] bg-gray-100 overflow-hidden">
-                    {rp.cover_image_url ? (
-                      <img
-                        src={rp.cover_image_url}
-                        alt={rp.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center"
-                        style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
-                      >
-                        <span className="text-white/40 text-xs">No Image</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <h3 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-blue-700 transition-colors">
-                      {rp.title}
-                    </h3>
-                    <span className="text-xs text-gray-400 mt-1 block">
-                      {rp.published_at
-                        ? new Date(rp.published_at).toLocaleDateString('ja-JP')
-                        : ''}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+        {/* Body */}
+        <div style={{ maxWidth: '820px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+          <div className="blog-body">
+            <ArticleContent content={body} />
           </div>
-        )}
-      </article>
-    </div>
+
+          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #e2e5ea' }}>
+            <Link href="/business" style={{ fontSize: '14px', fontWeight: '500', color: '#1a2f5e', textDecoration: 'none' }}>
+              &larr; 企業向けトップに戻る
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

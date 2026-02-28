@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Input, Button, Alert } from '@/components/shared';
 
+
 type Props = {
   texts: Record<string, string>;
   theme: Record<string, string>;
@@ -15,6 +16,7 @@ export function WorkerRegisterForm({ texts, theme }: Props) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,7 +41,14 @@ export function WorkerRegisterForm({ texts, theme }: Props) {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { role: 'worker', display_name: displayName || email.split('@')[0] } },
+      options: {
+        data: {
+          role: 'worker',
+          display_name: displayName || email.split('@')[0],
+          privacy_agreed_at: new Date().toISOString(),
+          privacy_policy_version: 'draft',
+        },
+      },
     });
 
     if (signUpError) { setError(signUpError.message); setLoading(false); return; }
@@ -80,7 +89,22 @@ export function WorkerRegisterForm({ texts, theme }: Props) {
         <Input label={texts.confirm_label || 'Confirm Password'} type="password" required minLength={8}
           value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
 
-        <Button type="submit" loading={loading} themeColor={theme['--wkr-primary'] || '#059669'} size="lg" className="w-full">
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={privacyAgreed}
+            onChange={(e) => setPrivacyAgreed(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-gray-300"
+          />
+          <span className="text-sm text-gray-600">
+            <Link href="/privacy-policy" target="_blank" className="underline font-medium" style={{ color: theme['--wkr-primary'] || '#059669' }}>
+              Privacy Policy / プライバシーポリシー
+            </Link>
+            {' '}に同意する / I agree（必須 / Required）
+          </span>
+        </label>
+
+        <Button type="submit" loading={loading} disabled={!privacyAgreed} themeColor={theme['--wkr-primary'] || '#059669'} size="lg" className="w-full">
           {loading ? (texts.submit_loading || 'Registering...') : (texts.submit_button || 'Create Account')}
         </Button>
       </form>

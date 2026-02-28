@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="360" fill="#f5f6fa" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">メンター制度の構造と運用サイクル</text>
+
+  <!-- 3原則 -->
+  <rect x="40" y="60" width="220" height="130" rx="10" fill="white" stroke="#4a90c4" stroke-width="2"/>
+  <rect x="40" y="60" width="220" height="36" rx="10" fill="#4a90c4"/>
+  <rect x="40" y="80" width="220" height="16" fill="#4a90c4"/>
+  <text x="150" y="84" text-anchor="middle" font-size="11" fill="white" font-weight="bold">原則1：役割を定義する</text>
+  <text x="60" y="115" font-size="10" fill="#374151">
+    <tspan x="60" dy="0">・1週目：毎日15分の確認</tspan>
+    <tspan x="60" dy="18">・1ヶ月：週2回ヒアリング</tspan>
+    <tspan x="60" dy="18">・3ヶ月：月1回進捗確認</tspan>
+  </text>
+
+  <rect x="290" y="60" width="220" height="130" rx="10" fill="white" stroke="#2d6ea8" stroke-width="2"/>
+  <rect x="290" y="60" width="220" height="36" rx="10" fill="#2d6ea8"/>
+  <rect x="290" y="80" width="220" height="16" fill="#2d6ea8"/>
+  <text x="400" y="84" text-anchor="middle" font-size="11" fill="white" font-weight="bold">原則2：負担を軽減する</text>
+  <text x="310" y="115" font-size="10" fill="#374151">
+    <tspan x="310" dy="0">・業務時間として認定</tspan>
+    <tspan x="310" dy="18">・月1回の上司との共有会議</tspan>
+    <tspan x="310" dy="18">・人事評価の加点項目化</tspan>
+  </text>
+
+  <rect x="540" y="60" width="220" height="130" rx="10" fill="white" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="540" y="60" width="220" height="36" rx="10" fill="#c9a84c"/>
+  <rect x="540" y="80" width="220" height="16" fill="#c9a84c"/>
+  <text x="650" y="84" text-anchor="middle" font-size="11" fill="white" font-weight="bold">原則3：聞きやすい環境</text>
+  <text x="560" y="115" font-size="10" fill="#374151">
+    <tspan x="560" dy="0">・週1回15分の定期1on1</tspan>
+    <tspan x="560" dy="18">・具体的な質問で引き出す</tspan>
+    <tspan x="560" dy="18">・翻訳アプリ活用OK</tspan>
+  </text>
+
+  <!-- 運用サイクル -->
+  <text x="400" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#1a2f5e">運用サイクル（設計 → 運用 → 評価）</text>
+
+  <rect x="60" y="240" width="190" height="55" rx="10" fill="url(#navyGrad)"/>
+  <text x="155" y="263" text-anchor="middle" font-size="12" fill="#c9a84c" font-weight="bold">STEP 1</text>
+  <text x="155" y="282" text-anchor="middle" font-size="11" fill="white" font-weight="bold">設計（役割・頻度を決定）</text>
+
+  <polygon points="262,267 278,257 278,277" fill="#c9a84c"/>
+  <line x1="250" y1="267" x2="278" y2="267" stroke="#c9a84c" stroke-width="2.5"/>
+
+  <rect x="295" y="240" width="200" height="55" rx="10" fill="url(#navyGrad)"/>
+  <text x="395" y="263" text-anchor="middle" font-size="12" fill="#c9a84c" font-weight="bold">STEP 2</text>
+  <text x="395" y="282" text-anchor="middle" font-size="11" fill="white" font-weight="bold">運用（1on1・情報共有）</text>
+
+  <polygon points="507,267 523,257 523,277" fill="#c9a84c"/>
+  <line x1="495" y1="267" x2="523" y2="267" stroke="#c9a84c" stroke-width="2.5"/>
+
+  <rect x="540" y="240" width="200" height="55" rx="10" fill="url(#navyGrad)"/>
+  <text x="640" y="263" text-anchor="middle" font-size="12" fill="#c9a84c" font-weight="bold">STEP 3</text>
+  <text x="640" y="282" text-anchor="middle" font-size="11" fill="white" font-weight="bold">評価（振り返り・改善）</text>
+
+  <!-- 連携 -->
+  <rect x="160" y="310" width="480" height="35" rx="8" fill="#fef3c7"/>
+  <text x="400" y="332" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">企業メンター × 監理団体担当者の定期情報共有が問題の早期発見につながる</text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <polygon points="0 2, 8 5, 0 8" fill="#1a2f5e"/>
+    </marker>
+    <linearGradient id="ng4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="#f8fafc" rx="12"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">特定技能1号 在留資格変更申請の流れ</text>
+  <rect x="30" y="50" width="740" height="32" rx="6" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="400" y="70" text-anchor="middle" font-size="11" fill="#92400e">⚠ 在留期限の2〜3ヶ月前には申請開始を。審査には約2〜3ヶ月かかります</text>
+  <rect x="30" y="100" width="130" height="130" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="30" y="100" width="130" height="36" rx="10" fill="url(#ng4)"/>
+  <rect x="30" y="122" width="130" height="14" fill="url(#ng4)"/>
+  <text x="95" y="117" text-anchor="middle" font-size="10" fill="#c9a84c" font-weight="bold">STEP 1</text>
+  <text x="95" y="131" text-anchor="middle" font-size="11" fill="white" font-weight="bold">試験合格</text>
+  <text x="95" y="158" text-anchor="middle" font-size="10" fill="#374151">技能測定試験</text>
+  <text x="95" y="174" text-anchor="middle" font-size="10" fill="#374151">＋ JFT-Basic / N4</text>
+  <text x="95" y="210" text-anchor="middle" font-size="9" fill="#9ca3af">※実習2号修了は免除</text>
+  <line x1="162" y1="165" x2="186" y2="165" stroke="#1a2f5e" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="188" y="100" width="130" height="130" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="188" y="100" width="130" height="36" rx="10" fill="url(#ng4)"/>
+  <rect x="188" y="122" width="130" height="14" fill="url(#ng4)"/>
+  <text x="253" y="117" text-anchor="middle" font-size="10" fill="#c9a84c" font-weight="bold">STEP 2</text>
+  <text x="253" y="131" text-anchor="middle" font-size="11" fill="white" font-weight="bold">書類準備</text>
+  <text x="253" y="158" text-anchor="middle" font-size="10" fill="#374151">申請人側書類</text>
+  <text x="253" y="174" text-anchor="middle" font-size="10" fill="#374151">（住民票・納税証明等）</text>
+  <text x="253" y="192" text-anchor="middle" font-size="10" fill="#374151">企業側書類</text>
+  <text x="253" y="208" text-anchor="middle" font-size="10" fill="#374151">（登記簿・支援計画等）</text>
+  <rect x="204" y="218" width="118" height="18" rx="9" fill="#fef3c7"/>
+  <text x="263" y="230" text-anchor="middle" font-size="9" fill="#92400e" font-weight="bold">2〜4週間かかる</text>
+  <line x1="320" y1="165" x2="344" y2="165" stroke="#1a2f5e" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="346" y="100" width="130" height="130" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="346" y="100" width="130" height="36" rx="10" fill="url(#ng4)"/>
+  <rect x="346" y="122" width="130" height="14" fill="url(#ng4)"/>
+  <text x="411" y="117" text-anchor="middle" font-size="10" fill="#c9a84c" font-weight="bold">STEP 3</text>
+  <text x="411" y="131" text-anchor="middle" font-size="11" fill="white" font-weight="bold">入管へ申請</text>
+  <text x="411" y="160" text-anchor="middle" font-size="10" fill="#374151">窓口持参</text>
+  <text x="411" y="176" text-anchor="middle" font-size="10" fill="#374151">郵送</text>
+  <text x="411" y="192" text-anchor="middle" font-size="10" fill="#374151">オンライン申請</text>
+  <text x="411" y="208" text-anchor="middle" font-size="9" fill="#9ca3af">（24時間365日）</text>
+  <line x1="478" y1="165" x2="502" y2="165" stroke="#1a2f5e" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="504" y="100" width="130" height="130" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+  <rect x="504" y="100" width="130" height="36" rx="10" fill="#6b7280"/>
+  <rect x="504" y="122" width="130" height="14" fill="#6b7280"/>
+  <text x="569" y="117" text-anchor="middle" font-size="10" fill="#e5e7eb" font-weight="bold">STEP 4</text>
+  <text x="569" y="131" text-anchor="middle" font-size="11" fill="white" font-weight="bold">審査中</text>
+  <text x="569" y="162" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">2〜3</text>
+  <text x="569" y="178" text-anchor="middle" font-size="12" fill="#1a2f5e">ヶ月</text>
+  <text x="569" y="198" text-anchor="middle" font-size="10" fill="#374151">書類不備で再提出が</text>
+  <text x="569" y="214" text-anchor="middle" font-size="10" fill="#374151">あると追加で1〜2ヶ月</text>
+  <line x1="636" y1="165" x2="660" y2="165" stroke="#1a2f5e" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="662" y="100" width="110" height="130" rx="10" fill="white" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="662" y="100" width="110" height="36" rx="10" fill="#c9a84c"/>
+  <rect x="662" y="122" width="110" height="14" fill="#c9a84c"/>
+  <text x="717" y="117" text-anchor="middle" font-size="10" fill="white" font-weight="bold">STEP 5</text>
+  <text x="717" y="131" text-anchor="middle" font-size="11" fill="white" font-weight="bold">在留カード交付</text>
+  <text x="717" y="160" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a2f5e">特定技能1号</text>
+  <text x="717" y="178" text-anchor="middle" font-size="10" fill="#374151">就労開始</text>
+  <text x="717" y="198" text-anchor="middle" font-size="10" fill="#374151">最長5年（更新可）</text>
+  <rect x="30" y="260" width="360" height="130" rx="10" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="30" y="260" width="360" height="30" rx="10" fill="#1a2f5e"/>
+  <rect x="30" y="275" width="360" height="15" fill="#1a2f5e"/>
+  <text x="210" y="280" text-anchor="middle" font-size="11" fill="white" font-weight="bold">申請人（外国人本人）が準備する主な書類</text>
+  <text x="50" y="308" font-size="10" fill="#374151">• 在留資格変更許可申請書　• 顔写真（3ヶ月以内）</text>
+  <text x="50" y="326" font-size="10" fill="#374151">• 試験合格証明書（技能＋日本語）または技能実習修了証明書</text>
+  <text x="50" y="344" font-size="10" fill="#374151">• 住民税課税証明書・納税証明書</text>
+  <text x="50" y="362" font-size="10" fill="#374151">• パスポート・在留カード（持参）　• 健康診断書</text>
+  <rect x="410" y="260" width="360" height="130" rx="10" fill="white" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="410" y="260" width="360" height="30" rx="10" fill="#c9a84c"/>
+  <rect x="410" y="275" width="360" height="15" fill="#c9a84c"/>
+  <text x="590" y="280" text-anchor="middle" font-size="11" fill="white" font-weight="bold">所属機関（受入企業）が準備する主な書類</text>
+  <text x="430" y="308" font-size="10" fill="#374151">• 1号特定技能外国人支援計画書　• 雇用条件書の写し</text>
+  <text x="430" y="326" font-size="10" fill="#374151">• 法人履歴事項全部証明書（3ヶ月以内）</text>
+  <text x="430" y="344" font-size="10" fill="#374151">• 直近年度の決算書　• 源泉徴収票等の法定調書合計表</text>
+  <text x="430" y="362" font-size="10" fill="#374151">• 役員の住民票または誓約書　• 分野別追加書類</text>
+  <text x="400" y="405" text-anchor="middle" font-size="10" fill="#6b7280">💡 在留申請オンラインシステムを使えば24時間申請可・電子交付も可。行政書士や登録支援機関への委託も有効</text>
+</svg>

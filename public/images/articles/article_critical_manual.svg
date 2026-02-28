@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="340" fill="#f5f6fa" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">口頭伝達のリスク vs マニュアル化の効果</text>
+
+  <!-- 左側：口頭のリスク -->
+  <rect x="40" y="60" width="340" height="250" rx="10" fill="white" stroke="#dc2626" stroke-width="2"/>
+  <rect x="40" y="60" width="340" height="40" rx="10" fill="#dc2626"/>
+  <rect x="40" y="84" width="340" height="16" fill="#dc2626"/>
+  <text x="210" y="86" text-anchor="middle" font-size="13" fill="white" font-weight="bold">口頭で伝えるリスク</text>
+
+  <text x="65" y="125" font-size="12" fill="#374151">
+    <tspan x="65" dy="0" fill="#dc2626" font-weight="bold">✕</tspan>
+    <tspan dx="8">記憶に頼る → 忘れる・歪む</tspan>
+  </text>
+  <text x="65" y="155" font-size="12" fill="#374151">
+    <tspan x="65" dy="0" fill="#dc2626" font-weight="bold">✕</tspan>
+    <tspan dx="8">「言った」「聞いてない」の水掛け論</tspan>
+  </text>
+  <text x="65" y="185" font-size="12" fill="#374151">
+    <tspan x="65" dy="0" fill="#dc2626" font-weight="bold">✕</tspan>
+    <tspan dx="8">母国語で確認できない</tspan>
+  </text>
+  <text x="65" y="215" font-size="12" fill="#374151">
+    <tspan x="65" dy="0" fill="#dc2626" font-weight="bold">✕</tspan>
+    <tspan dx="8">担当者が変わると引き継げない</tspan>
+  </text>
+  <text x="65" y="245" font-size="12" fill="#374151">
+    <tspan x="65" dy="0" fill="#dc2626" font-weight="bold">✕</tspan>
+    <tspan dx="8">安全情報の抜け漏れ → 事故リスク</tspan>
+  </text>
+
+  <rect x="65" y="270" width="290" height="28" rx="6" fill="#fef2f2"/>
+  <text x="210" y="289" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">労災発生率：外国人 2.77 vs 全体平均 2.36</text>
+
+  <!-- 矢印 -->
+  <polygon points="400,185 420,170 420,200" fill="#c9a84c"/>
+  <line x1="380" y1="185" x2="420" y2="185" stroke="#c9a84c" stroke-width="3"/>
+
+  <!-- 右側：マニュアル化の効果 -->
+  <rect x="430" y="60" width="340" height="250" rx="10" fill="white" stroke="#16a34a" stroke-width="2"/>
+  <rect x="430" y="60" width="340" height="40" rx="10" fill="#16a34a"/>
+  <rect x="430" y="84" width="340" height="16" fill="#16a34a"/>
+  <text x="600" y="86" text-anchor="middle" font-size="13" fill="white" font-weight="bold">マニュアル化の効果</text>
+
+  <text x="455" y="125" font-size="12" fill="#374151">
+    <tspan x="455" dy="0" fill="#16a34a" font-weight="bold">◯</tspan>
+    <tspan dx="8">手元に残る → 何度でも確認できる</tspan>
+  </text>
+  <text x="455" y="155" font-size="12" fill="#374151">
+    <tspan x="455" dy="0" fill="#16a34a" font-weight="bold">◯</tspan>
+    <tspan dx="8">多言語化すれば母国語で読める</tspan>
+  </text>
+  <text x="455" y="185" font-size="12" fill="#374151">
+    <tspan x="455" dy="0" fill="#16a34a" font-weight="bold">◯</tspan>
+    <tspan dx="8">担当者が変わっても同じ品質</tspan>
+  </text>
+  <text x="455" y="215" font-size="12" fill="#374151">
+    <tspan x="455" dy="0" fill="#16a34a" font-weight="bold">◯</tspan>
+    <tspan dx="8">安全情報を確実にカバー</tspan>
+  </text>
+  <text x="455" y="245" font-size="12" fill="#374151">
+    <tspan x="455" dy="0" fill="#16a34a" font-weight="bold">◯</tspan>
+    <tspan dx="8">トラブル時の証拠にもなる</tspan>
+  </text>
+
+  <rect x="455" y="270" width="290" height="28" rx="6" fill="#f0fdf4"/>
+  <text x="600" y="289" text-anchor="middle" font-size="11" fill="#16a34a" font-weight="bold">優先：安全 → 緊急 → 法律 → 日常ルール</text>
+</svg>

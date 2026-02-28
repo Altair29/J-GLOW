@@ -17,21 +17,18 @@ type Props = {
    ナビゲーション構造定義
    DB の navItems を href でグルーピング
    ======================================== */
-const featureHrefs = ['/business/simulation', '/business/diagnosis', '/business/ikusei'];
-const resourceHrefs = ['/business/whitepapers', '/business/subsidies', '/business/trends'];
+const featureHrefs = ['/business/simulation', '/business/diagnosis', '/business/ikusei', '/business/existing-users', '/business/tools/labor-notice'];
+const resourceHrefs = ['/business/subsidies', '/business/partners'];
 
 function groupNavItems(items: NavigationItem[]) {
   const features: NavigationItem[] = [];
   const resources: NavigationItem[] = [];
-  let newsItem: NavigationItem | null = null;
-
   for (const item of items) {
     if (featureHrefs.includes(item.href)) features.push(item);
     else if (resourceHrefs.includes(item.href)) resources.push(item);
-    else if (item.href === '/business/blog' || item.href === '/business/news') newsItem = item;
   }
 
-  return { features, resources, newsItem };
+  return { features, resources };
 }
 
 /* ========================================
@@ -112,12 +109,12 @@ function NavDropdown({
                       backgroundColor:
                         theme['--biz-primary']
                           ? `${theme['--biz-primary']}12`
-                          : 'rgba(30,58,95,0.07)',
+                          : 'rgba(26,47,94,0.07)',
                     }}
                   >
                     <Icon
                       size={16}
-                      style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+                      style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
                     />
                   </span>
                 )}
@@ -139,7 +136,7 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
 
-  const { features, resources, newsItem } = groupNavItems(navItems);
+  const { features, resources } = groupNavItems(navItems);
 
   return (
     <header className="sticky top-0 z-50 glass-header">
@@ -149,15 +146,15 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
           <Link href="/business" className="flex items-center gap-2.5 mr-10 lg:mr-14 shrink-0">
             <span
               className="font-[family-name:var(--font-heading)] text-xl font-bold tracking-tight"
-              style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+              style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
             >
               {texts.brand_name || 'J-GLOW'}
             </span>
             <span
               className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border"
               style={{
-                color: theme['--biz-primary'] || '#1e3a5f',
-                borderColor: theme['--biz-primary'] || '#1e3a5f',
+                color: theme['--biz-primary'] || '#1a2f5e',
+                borderColor: theme['--biz-primary'] || '#1a2f5e',
                 opacity: 0.5,
               }}
             >
@@ -193,13 +190,6 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
               />
             )}
 
-            {/* 業界最新動向 */}
-            <Link
-              href={newsItem?.href || '/business/blog'}
-              className="px-4 py-2 text-[13px] font-medium tracking-wide text-slate-600 hover:text-slate-900 rounded-lg hover:bg-white/50 transition-all"
-            >
-              {texts.nav_news || '業界最新動向'}
-            </Link>
           </nav>
 
           {/* ── 右側アクション ── */}
@@ -230,7 +220,7 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
               <Link
                 href="/login"
                 className="text-[13px] px-5 py-2 rounded-lg font-semibold text-white shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
-                style={{ backgroundColor: theme['--biz-primary'] || '#1e3a5f' }}
+                style={{ backgroundColor: theme['--biz-primary'] || '#1a2f5e' }}
               >
                 {texts.login_button || 'ログイン'}
               </Link>
@@ -285,15 +275,6 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
               />
             )}
 
-            {/* 業界最新動向 */}
-            <Link
-              href={newsItem?.href || '/business/blog'}
-              className="block px-3 py-2.5 text-sm font-medium text-slate-700 rounded-lg hover:bg-white/60 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              {texts.nav_news || '業界最新動向'}
-            </Link>
-
             {/* ログイン/ログアウト */}
             <div className="border-t border-slate-200/60 mt-2 pt-2">
               {user ? (
@@ -310,7 +291,7 @@ export function BusinessHeader({ navItems, texts, theme }: Props) {
                 <Link
                   href="/login"
                   className="block px-3 py-2.5 text-sm font-semibold rounded-lg"
-                  style={{ color: theme['--biz-primary'] || '#1e3a5f' }}
+                  style={{ color: theme['--biz-primary'] || '#1a2f5e' }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {texts.login_button || 'ログイン'}

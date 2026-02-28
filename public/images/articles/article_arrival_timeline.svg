@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <rect width="800" height="380" fill="#f8fafc" rx="12"/>
+  <text x="400" y="36" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">受入れ準備タイムライン</text>
+  <line x1="120" y1="80" x2="120" y2="350" stroke="#e5e7eb" stroke-width="3"/>
+  <circle cx="120" cy="90" r="14" fill="#1a2f5e"/>
+  <text x="120" y="94" text-anchor="middle" font-size="10" fill="white" font-weight="bold">1</text>
+  <rect x="148" y="68" width="620" height="62" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="148" y="68" width="160" height="62" rx="8" fill="#1a2f5e"/>
+  <rect x="288" y="68" width="20" height="62" fill="#1a2f5e"/>
+  <text x="228" y="89" text-anchor="middle" font-size="11" fill="#c9a84c" font-weight="bold">入国1ヶ月前〜</text>
+  <text x="228" y="106" text-anchor="middle" font-size="11" fill="white" font-weight="bold">入国前</text>
+  <text x="430" y="86" font-size="10.5" fill="#374151">宿舎確保・生活用品準備　/　雇用契約書（母国語版）送付</text>
+  <text x="430" y="103" font-size="10.5" fill="#374151">在留資格認定証明書の確認　/　社会保険加入の準備</text>
+  <text x="430" y="120" font-size="10.5" fill="#374151">緊急連絡先リスト作成</text>
+  <circle cx="120" cy="162" r="14" fill="#c9a84c"/>
+  <text x="120" y="166" text-anchor="middle" font-size="10" fill="white" font-weight="bold">2</text>
+  <rect x="148" y="140" width="620" height="46" rx="8" fill="white" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="148" y="140" width="160" height="46" rx="8" fill="#c9a84c"/>
+  <rect x="288" y="140" width="20" height="46" fill="#c9a84c"/>
+  <text x="228" y="162" text-anchor="middle" font-size="11" fill="white" font-weight="bold">入国当日</text>
+  <text x="430" y="158" font-size="10.5" fill="#374151">空港・駅への出迎え　/　宿舎案内・生活説明</text>
+  <text x="430" y="175" font-size="10.5" fill="#374151">在留カードの確認　/　当日の食事確保</text>
+  <circle cx="120" cy="228" r="14" fill="#dc2626"/>
+  <text x="120" y="232" text-anchor="middle" font-size="10" fill="white" font-weight="bold">3</text>
+  <rect x="148" y="208" width="620" height="46" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <rect x="148" y="208" width="160" height="46" rx="8" fill="#dc2626"/>
+  <rect x="288" y="208" width="20" height="46" fill="#dc2626"/>
+  <text x="228" y="224" text-anchor="middle" font-size="10" fill="white" font-weight="bold">⚠ 入国後</text>
+  <text x="228" y="242" text-anchor="middle" font-size="12" fill="white" font-weight="bold">14日以内</text>
+  <text x="430" y="226" font-size="10.5" fill="#374151">住民票登録（市区町村役所）※義務・罰則あり</text>
+  <text x="430" y="243" font-size="10.5" fill="#374151">在留カードへの住所記載　/　マイナンバー手続き</text>
+  <circle cx="120" cy="294" r="14" fill="#1a2f5e"/>
+  <text x="120" y="298" text-anchor="middle" font-size="10" fill="white" font-weight="bold">4</text>
+  <rect x="148" y="274" width="620" height="46" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="148" y="274" width="160" height="46" rx="8" fill="#1a2f5e"/>
+  <rect x="288" y="274" width="20" height="46" fill="#1a2f5e"/>
+  <text x="228" y="296" text-anchor="middle" font-size="11" fill="#c9a84c" font-weight="bold">入国後</text>
+  <text x="228" y="312" text-anchor="middle" font-size="12" fill="white" font-weight="bold">1ヶ月以内</text>
+  <text x="430" y="292" font-size="10.5" fill="#374151">銀行口座開設サポート（在留カード住所記載後）</text>
+  <text x="430" y="309" font-size="10.5" fill="#374151">スマートフォンSIM契約　/　初回給与の振込確認</text>
+  <text x="148" y="358" font-size="10" fill="#6b7280">💡 銀行口座は在留カードへの住所記載後に申込可能。初回給与支払いまでに間に合わない場合は現金手渡しも可</text>
+</svg>

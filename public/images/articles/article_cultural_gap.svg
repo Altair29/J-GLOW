@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="380" fill="#f5f6fa" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">現場でよく起きる5つの誤解パターン</text>
+
+  <!-- パターン1 -->
+  <rect x="40" y="60" width="340" height="65" rx="10" fill="white" stroke="#4a90c4" stroke-width="1.5"/>
+  <rect x="40" y="60" width="6" height="65" rx="3" fill="#4a90c4"/>
+  <text x="65" y="82" font-size="11" fill="#4a90c4" font-weight="bold">パターン 1</text>
+  <text x="65" y="100" font-size="13" fill="#1a2f5e" font-weight="bold">時間感覚の違い</text>
+  <text x="65" y="116" font-size="10" fill="#6b7280">「早めに」→ 具体的な時刻で指定する</text>
+
+  <!-- パターン2 -->
+  <rect x="40" y="135" width="340" height="65" rx="10" fill="white" stroke="#2d6ea8" stroke-width="1.5"/>
+  <rect x="40" y="135" width="6" height="65" rx="3" fill="#2d6ea8"/>
+  <text x="65" y="157" font-size="11" fill="#2d6ea8" font-weight="bold">パターン 2</text>
+  <text x="65" y="175" font-size="13" fill="#1a2f5e" font-weight="bold">報連相の概念がない</text>
+  <text x="65" y="191" font-size="10" fill="#6b7280">問題の報告＝仕事のうちと明示する</text>
+
+  <!-- パターン3 -->
+  <rect x="40" y="210" width="340" height="65" rx="10" fill="white" stroke="#1a4f8c" stroke-width="1.5"/>
+  <rect x="40" y="210" width="6" height="65" rx="3" fill="#1a4f8c"/>
+  <text x="65" y="232" font-size="11" fill="#1a4f8c" font-weight="bold">パターン 3</text>
+  <text x="65" y="250" font-size="13" fill="#1a2f5e" font-weight="bold">5Sへの温度差</text>
+  <text x="65" y="266" font-size="10" fill="#6b7280">「なぜ必要か」の理由を具体的に説明</text>
+
+  <!-- パターン4 -->
+  <rect x="40" y="285" width="340" height="65" rx="10" fill="white" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="40" y="285" width="6" height="65" rx="3" fill="#c9a84c"/>
+  <text x="65" y="307" font-size="11" fill="#c9a84c" font-weight="bold">パターン 4</text>
+  <text x="65" y="325" font-size="13" fill="#1a2f5e" font-weight="bold">曖昧な指示への対応差</text>
+  <text x="65" y="341" font-size="10" fill="#6b7280">何を・いつ・どの品質でを明確にする</text>
+
+  <!-- 右側：共通解決策 -->
+  <rect x="420" y="60" width="350" height="140" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="420" y="60" width="350" height="40" rx="10" fill="url(#navyGrad)"/>
+  <rect x="420" y="84" width="350" height="16" fill="url(#navyGrad)"/>
+  <text x="595" y="86" text-anchor="middle" font-size="12" fill="white" font-weight="bold">共通する解決策</text>
+  <text x="445" y="120" font-size="11" fill="#374151">
+    <tspan x="445" dy="0">1. 「日本の当たり前」を入社時に明文化する</tspan>
+    <tspan x="445" dy="22">2. 文化の違いを「知らなかっただけ」と捉える</tspan>
+    <tspan x="445" dy="22">3. 入社時必須情報マニュアルに盛り込む</tspan>
+  </text>
+
+  <!-- パターン5（右下） -->
+  <rect x="420" y="220" width="350" height="65" rx="10" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <rect x="420" y="220" width="6" height="65" rx="3" fill="#dc2626"/>
+  <text x="445" y="242" font-size="11" fill="#dc2626" font-weight="bold">パターン 5</text>
+  <text x="445" y="260" font-size="13" fill="#1a2f5e" font-weight="bold">「No」と言えない文化</text>
+  <text x="445" y="276" font-size="10" fill="#6b7280">オープン質問に変える + 心理的安全性</text>
+
+  <!-- サイクル矢印（右下） -->
+  <rect x="420" y="300" width="350" height="60" rx="10" fill="#fef3c7"/>
+  <text x="595" y="325" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">誤解 → 不信感 → コミュニケーション減少 → さらなる誤解</text>
+  <text x="595" y="348" text-anchor="middle" font-size="10" fill="#92400e">このサイクルを断ち切るのが「つなぐ」セクションの目的</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="#f5f6fa" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">やさしい日本語 NG→OK 変換フロー</text>
+
+  <!-- パターン1 -->
+  <rect x="40" y="60" width="320" height="44" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="52" y="76" font-size="10" fill="#dc2626" font-weight="bold">NG</text>
+  <text x="52" y="93" font-size="11" fill="#374151">「ガンガン叩いてサッと引き抜いて」</text>
+  <polygon points="370,82 385,75 385,89" fill="#c9a84c"/>
+  <line x1="360" y1="82" x2="385" y2="82" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="395" y="60" width="370" height="44" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="407" y="76" font-size="10" fill="#16a34a" font-weight="bold">OK</text>
+  <text x="407" y="93" font-size="11" fill="#374151">「強く叩いて、素早く引き抜いてください」</text>
+  <text x="770" y="86" text-anchor="end" font-size="9" fill="#6b7280">オノマトペ</text>
+
+  <!-- パターン2 -->
+  <rect x="40" y="116" width="320" height="44" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="52" y="132" font-size="10" fill="#dc2626" font-weight="bold">NG</text>
+  <text x="52" y="149" font-size="11" fill="#374151">「ご確認いただけますでしょうか」</text>
+  <polygon points="370,138 385,131 385,145" fill="#c9a84c"/>
+  <line x1="360" y1="138" x2="385" y2="138" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="395" y="116" width="370" height="44" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="407" y="132" font-size="10" fill="#16a34a" font-weight="bold">OK</text>
+  <text x="407" y="149" font-size="11" fill="#374151">「この書類を見てください」</text>
+  <text x="770" y="142" text-anchor="end" font-size="9" fill="#6b7280">敬語</text>
+
+  <!-- パターン3 -->
+  <rect x="40" y="172" width="320" height="44" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="52" y="188" font-size="10" fill="#dc2626" font-weight="bold">NG</text>
+  <text x="52" y="205" font-size="11" fill="#374151">「報告して確認してから再起動して」</text>
+  <polygon points="370,194 385,187 385,201" fill="#c9a84c"/>
+  <line x1="360" y1="194" x2="385" y2="194" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="395" y="172" width="370" height="44" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="407" y="188" font-size="10" fill="#16a34a" font-weight="bold">OK</text>
+  <text x="407" y="205" font-size="11" fill="#374151">「1. 上司に言う → 2. 確認する → 3. 再起動」</text>
+  <text x="770" y="198" text-anchor="end" font-size="9" fill="#6b7280">情報過多</text>
+
+  <!-- パターン4 -->
+  <rect x="40" y="228" width="320" height="44" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="52" y="244" font-size="10" fill="#dc2626" font-weight="bold">NG</text>
+  <text x="52" y="261" font-size="11" fill="#374151">「ちょっとそれはどうかな…」</text>
+  <polygon points="370,250 385,243 385,257" fill="#c9a84c"/>
+  <line x1="360" y1="250" x2="385" y2="250" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="395" y="228" width="370" height="44" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="407" y="244" font-size="10" fill="#16a34a" font-weight="bold">OK</text>
+  <text x="407" y="261" font-size="11" fill="#374151">「それはしないでください」</text>
+  <text x="770" y="254" text-anchor="end" font-size="9" fill="#6b7280">婉曲表現</text>
+
+  <!-- パターン5 -->
+  <rect x="40" y="284" width="320" height="44" rx="8" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="52" y="300" font-size="10" fill="#dc2626" font-weight="bold">NG</text>
+  <text x="52" y="317" font-size="11" fill="#374151">「適当にやっておいて」</text>
+  <polygon points="370,306 385,299 385,313" fill="#c9a84c"/>
+  <line x1="360" y1="306" x2="385" y2="306" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="395" y="284" width="370" height="44" rx="8" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="407" y="300" font-size="10" fill="#16a34a" font-weight="bold">OK</text>
+  <text x="407" y="317" font-size="11" fill="#374151">「この方法でやってください」</text>
+  <text x="770" y="310" text-anchor="end" font-size="9" fill="#6b7280">曖昧指示</text>
+
+  <!-- チェックポイント -->
+  <rect x="100" y="345" width="600" height="40" rx="8" fill="url(#navyGrad)"/>
+  <text x="400" y="370" text-anchor="middle" font-size="12" fill="white" font-weight="bold">原則：1文＝1情報 ／ 丁寧語（〜です・〜ます）で十分 ／ 数字で具体的に</text>
+</svg>

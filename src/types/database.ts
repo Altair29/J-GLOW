@@ -15,6 +15,15 @@ export type Profile = {
   updated_at: string;
 };
 
+export type BusinessType = 'supervisory' | 'support' | 'accepting_existing' | 'accepting_new';
+
+export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
+  supervisory: '監理団体',
+  support: '登録支援機関',
+  accepting_existing: '受入れ企業（経験あり）',
+  accepting_new: '採用検討中の企業',
+};
+
 export type BusinessProfile = {
   id: string;
   company_name: string;
@@ -24,6 +33,8 @@ export type BusinessProfile = {
   business_email: string;
   email_domain: string;
   phone: string | null;
+  business_type: BusinessType | null;
+  industry: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -555,4 +566,55 @@ export type BlogTag = {
 export type BlogPostTag = {
   post_id: number;
   tag_id: number;
+};
+
+// ========================================
+// パートナーディレクトリ
+// ========================================
+
+export type PartnerType = 'supervisory' | 'admin_scrivener' | 'support_org';
+export type PartnerPlan = 'sponsor' | 'member';
+
+export const PARTNER_TYPE_LABELS: Record<PartnerType, string> = {
+  supervisory: '監理団体',
+  admin_scrivener: '行政書士',
+  support_org: '登録支援機関',
+};
+
+export const PARTNER_PLAN_LABELS: Record<PartnerPlan, string> = {
+  sponsor: 'スポンサー',
+  member: 'メンバー',
+};
+
+export type Partner = {
+  id: string;
+  name: string;
+  type: PartnerType;
+  plan: PartnerPlan;
+  prefecture: string | null;
+  industries: string[];
+  visas: string[];
+  languages: string[];
+  origin_countries: string[];
+  description: string | null;
+  contact_email: string | null;
+  website_url: string | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+// ========================================
+// お知らせ・通知
+// ========================================
+
+export type Notification = {
+  id: string;
+  user_id: string | null;
+  title: string;
+  body: string;
+  link_url: string | null;
+  is_read: boolean;
+  send_email: boolean;
+  created_at: string;
 };

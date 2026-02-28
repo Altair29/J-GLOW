@@ -5,6 +5,7 @@ import { getHomePath } from '@/lib/utils/routing';
 // ログイン必須パス（これ以外の /business/* /worker/* はゲスト公開）
 const AUTH_REQUIRED_PATHS = [
   '/business/mypage',
+  '/business/onboarding',
   '/worker/mypage',
   '/admin',
 ];
@@ -70,6 +71,15 @@ export async function updateSession(request: NextRequest) {
   // /admin/* — adminロール必須
   // ========================================
   if (pathname.startsWith('/admin') && role !== 'admin') {
+    const url = request.nextUrl.clone();
+    url.pathname = getHomePath(role);
+    return NextResponse.redirect(url);
+  }
+
+  // ========================================
+  // /business/onboarding — businessロール必須
+  // ========================================
+  if (pathname.startsWith('/business/onboarding') && role !== 'business') {
     const url = request.nextUrl.clone();
     url.pathname = getHomePath(role);
     return NextResponse.redirect(url);

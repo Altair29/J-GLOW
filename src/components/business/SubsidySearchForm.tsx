@@ -135,7 +135,7 @@ export function SubsidySearchForm({ texts, theme }: Props) {
       </div>
       <Button
         type="button"
-        themeColor={theme['--biz-primary'] || '#1e3a5f'}
+        themeColor={theme['--biz-primary'] || '#1a2f5e'}
         loading={loading}
         onClick={handleSearch}
       >
@@ -176,7 +176,7 @@ export function SubsidySearchForm({ texts, theme }: Props) {
                     {sub.max_amount && (
                       <div className="text-right flex-shrink-0">
                         <span className="text-xs text-gray-400">最大金額</span>
-                        <p className="text-lg font-bold" style={{ color: theme['--biz-primary'] || '#1e3a5f' }}>
+                        <p className="text-lg font-bold" style={{ color: theme['--biz-primary'] || '#1a2f5e' }}>
                           {sub.max_amount}
                         </p>
                       </div>

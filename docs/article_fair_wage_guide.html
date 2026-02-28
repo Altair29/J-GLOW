@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外国人材の給与設定ガイド</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2f5e;
+    --gold: #c9a84c;
+    --gold-light: #f5e9c8;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --bg: #f8f9fc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --warn: #d97706;
+    --green: #16a34a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+
+  .article-header {
+    background: linear-gradient(135deg, #0f2044 0%, var(--navy) 50%, #2d4a8a 100%);
+    color: white; padding: 60px 40px 50px;
+    position: relative; overflow: hidden;
+  }
+  .article-header::before {
+    content: '¥'; position: absolute;
+    right: 60px; top: 30px;
+    font-size: 180px; font-weight: 700;
+    color: rgba(201,168,76,0.08);
+    line-height: 1;
+  }
+  .category-tag {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 16px;
+  }
+  .article-header h1 {
+    font-family: 'Noto Serif JP', serif; font-size: 28px; font-weight: 700;
+    line-height: 1.4; max-width: 680px; margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .article-meta { font-size: 13px; color: rgba(255,255,255,0.7); position: relative; z-index: 1; }
+
+  .content-wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .lead {
+    font-size: 16px; line-height: 1.9;
+    border-left: 4px solid var(--gold); padding: 20px 24px;
+    background: var(--gold-light); border-radius: 0 8px 8px 0; margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700;
+    color: var(--navy); margin: 52px 0 20px; padding-bottom: 10px;
+    border-bottom: 2px solid var(--gold);
+  }
+  h3 {
+    font-size: 17px; font-weight: 700; color: var(--navy);
+    margin: 32px 0 14px; padding-left: 12px; border-left: 3px solid var(--gold);
+  }
+  p { margin-bottom: 18px; font-size: 15.5px; }
+
+  /* ===== 賃金比較アニメーションバーチャート ===== */
+  .wage-chart {
+    background: white; border-radius: 14px; padding: 36px 40px;
+    margin: 32px 0; box-shadow: 0 4px 24px rgba(26,47,94,0.1);
+  }
+  .wage-chart-title {
+    font-size: 14px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wage-row {
+    display: flex; align-items: center; gap: 0; margin-bottom: 22px;
+  }
+  .wage-label {
+    width: 150px; flex-shrink: 0;
+    font-size: 13px; color: var(--text); line-height: 1.4;
+  }
+  .wage-label .sub { font-size: 11px; color: var(--text-sub); }
+  .wage-bar-wrap { flex: 1; }
+  .wage-bar-track {
+    height: 36px; background: #f1f5f9; border-radius: 6px;
+    overflow: visible; position: relative;
+  }
+  .wage-bar-fill {
+    height: 100%; border-radius: 6px;
+    display: flex; align-items: center;
+    padding: 0 14px;
+    font-size: 13px; font-weight: 700; color: white;
+    width: 0; transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+    position: relative; white-space: nowrap; overflow: visible;
+  }
+  .wage-bar-fill.animated { width: var(--w); }
+  .wage-bar-fill .amount {
+    position: absolute; right: -70px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px; font-weight: 700; color: var(--navy);
+    white-space: nowrap;
+  }
+  .wage-note { font-size: 11px; color: #94a3b8; margin-top: 20px; }
+
+  /* 差額ハイライト */
+  .gap-callout {
+    display: flex; align-items: center; gap: 20px;
+    background: #fff7ed; border: 1px solid #fed7aa;
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+  }
+  .gap-number {
+    font-size: 40px; font-weight: 700; color: var(--warn);
+    flex-shrink: 0; line-height: 1;
+  }
+  .gap-number span { font-size: 18px; }
+  .gap-desc { font-size: 14px; line-height: 1.7; color: var(--text); }
+
+  /* 法的義務タイムライン */
+  .legal-timeline {
+    position: relative; margin: 32px 0;
+    padding-left: 28px;
+  }
+  .legal-timeline::before {
+    content: ''; position: absolute;
+    left: 10px; top: 8px; bottom: 8px;
+    width: 2px; background: linear-gradient(to bottom, var(--gold), var(--navy));
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 28px;
+    background: white; border-radius: 10px;
+    padding: 20px 24px; box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+    border-left: 4px solid var(--gold);
+  }
+  .timeline-item::before {
+    content: ''; position: absolute;
+    left: -22px; top: 22px;
+    width: 12px; height: 12px;
+    background: var(--gold); border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 0 2px var(--gold);
+  }
+  .timeline-visa {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    color: white; background: var(--navy);
+    padding: 3px 10px; border-radius: 20px;
+    display: inline-block; margin-bottom: 8px;
+  }
+  .timeline-rule {
+    font-size: 15px; font-weight: 700; color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .timeline-detail { font-size: 13.5px; color: var(--text-sub); line-height: 1.7; }
+  .timeline-penalty {
+    margin-top: 10px; font-size: 12.5px;
+    background: #fee2e2; color: var(--danger);
+    padding: 6px 12px; border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* 昇給設計 ステップ図 */
+  .step-flow {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 32px 0;
+  }
+  .step-item {
+    display: flex; gap: 0; align-items: stretch;
+  }
+  .step-left {
+    display: flex; flex-direction: column; align-items: center;
+    width: 52px; flex-shrink: 0;
+  }
+  .step-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--navy); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .step-line {
+    width: 2px; flex: 1; background: var(--border);
+    margin: 4px 0;
+  }
+  .step-content {
+    flex: 1; background: white; border-radius: 10px;
+    padding: 18px 22px; margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(26,47,94,0.06);
+  }
+  .step-timing {
+    font-size: 11px; font-weight: 700; color: var(--gold);
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .step-desc { font-size: 13.5px; color: var(--text-sub); line-height: 1.6; }
+  .step-amount {
+    display: inline-block; background: var(--gold-light);
+    color: var(--navy); font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; margin-top: 8px;
+  }
+
+  /* 7%格差SVG図 */
+  .gap-visual {
+    background: white; border-radius: 14px; padding: 32px 36px;
+    margin: 32px 0; box-shadow: 0 4px 24px rgba(26,47,94,0.1);
+  }
+  .gap-visual-title {
+    font-size: 14px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em; margin-bottom: 28px;
+  }
+  .persons-row {
+    display: flex; gap: 40px; align-items: flex-end; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .person-block { text-align: center; }
+  .person-bar-wrap { display: flex; align-items: flex-end; gap: 0; justify-content: center; }
+  .person-bar {
+    width: 64px; border-radius: 6px 6px 0 0;
+    position: relative; transition: height 1.2s ease;
+  }
+  .person-bar .bar-top-label {
+    position: absolute; top: -28px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px; font-weight: 700; color: var(--navy);
+    white-space: nowrap;
+  }
+  .person-label {
+    font-size: 12px; color: var(--text-sub);
+    margin-top: 8px; text-align: center;
+  }
+  .vs-text {
+    font-size: 16px; font-weight: 700; color: var(--text-sub);
+    margin-bottom: 24px; flex-shrink: 0;
+  }
+
+  /* テーブル */
+  .table-wrap {
+    overflow-x: auto; margin: 28px 0 40px;
+    border-radius: 10px; box-shadow: 0 2px 12px rgba(26,47,94,0.08);
+  }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+  thead { background: var(--navy); color: white; }
+  thead th { padding: 14px 16px; text-align: left; font-weight: 600; font-size: 13px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 14px 16px; vertical-align: top; font-size: 13.5px; line-height: 1.6; }
+  td:first-child { font-weight: 600; color: var(--navy); }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+  .badge-must { background: #fee2e2; color: var(--danger); }
+  .badge-rec { background: #fef3c7; color: var(--warn); }
+
+  /* チェックリスト */
+  .checklist {
+    background: white; border-radius: 10px; padding: 24px 28px;
+    margin: 24px 0; box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+  }
+  .checklist-title {
+    font-size: 14px; font-weight: 700; color: var(--navy);
+    margin-bottom: 16px;
+  }
+  .checklist ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .checklist li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .highlight-box {
+    background: var(--gold-light); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+  .highlight-box strong { color: var(--navy); }
+
+  blockquote {
+    border-left: 4px solid var(--gold); padding: 16px 20px;
+    margin: 24px 0; background: white; border-radius: 0 8px 8px 0;
+    font-size: 14.5px; color: var(--text); box-shadow: 0 1px 8px rgba(26,47,94,0.05);
+  }
+  blockquote cite { display: block; font-size: 12px; color: var(--text-sub); margin-top: 8px; font-style: normal; }
+
+  .summary-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #2d4a8a 100%);
+    color: white; border-radius: 12px; padding: 36px 40px; margin-top: 52px;
+  }
+  .summary-box h2 { color: var(--gold); border-bottom-color: rgba(201,168,76,0.3); font-size: 18px; margin-top: 0; margin-bottom: 20px; }
+  .summary-box p { font-size: 14.5px; color: rgba(255,255,255,0.88); line-height: 1.8; }
+  .summary-box ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .summary-box li { font-size: 14px; color: rgba(255,255,255,0.85); display: flex; align-items: flex-start; gap: 10px; }
+  .summary-box li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  .note { font-size: 12px; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 48px; padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="article-header">
+  <div class="category-tag">STAGE 2 ｜ 給与・待遇で向き合う</div>
+  <h1>外国人材の給与設定ガイド<br>——同等待遇の義務と、定着につながる昇給設計の実務</h1>
+  <div class="article-meta">2026年2月更新 ｜ 推定読了時間：10分</div>
+</div>
+
+<div class="content-wrap">
+
+  <p class="lead">
+    「最低賃金以上払っているから問題ない」——この認識で雇用を続けると、法的リスクと定着率低下の両方を招きます。在留資格別に異なる「同等待遇義務」の内容を正確に理解し、キャリアの節目と連動した昇給設計を持つことが、長期定着の土台です。
+  </p>
+
+  <h2>01 ｜ 現実の賃金格差——数字で見る実態</h2>
+
+  <p>
+    厚生労働省の外国人雇用実態調査（2023年）が示すデータは、在留資格間の格差の大きさと、日本人との比較の両方で厳しい現実を示しています。
+  </p>
+
+  <!-- 賃金比較バーチャート -->
+  <div class="wage-chart">
+    <div class="wage-chart-title">📊 在留資格別 平均月額賃金（2023年）</div>
+
+    <div class="wage-row">
+      <div class="wage-label">日本人平均<div class="sub">比較基準</div></div>
+      <div class="wage-bar-wrap">
+        <div class="wage-bar-track">
+          <div class="wage-bar-fill" style="--w:100%; background:#94a3b8;">
+            <span class="amount">318,300円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wage-row">
+      <div class="wage-label">専門・技術的分野<div class="sub">（技人国等）</div></div>
+      <div class="wage-bar-wrap">
+        <div class="wage-bar-track">
+          <div class="wage-bar-fill" style="--w:95%; background:#1a2f5e;">
+            <span class="amount">302,200円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wage-row">
+      <div class="wage-label">身分に基づく<div class="sub">（永住・定住等）</div></div>
+      <div class="wage-bar-wrap">
+        <div class="wage-bar-track">
+          <div class="wage-bar-fill" style="--w:81%; background:#2d6a4f;">
+            <span class="amount">257,000円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wage-row">
+      <div class="wage-label">外国人労働者<div class="sub">全体平均</div></div>
+      <div class="wage-bar-wrap">
+        <div class="wage-bar-track">
+          <div class="wage-bar-fill" style="--w:73%; background:#c9a84c;">
+            <span class="amount">232,600円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wage-row">
+      <div class="wage-label">技能実習<div class="sub">（最低水準）</div></div>
+      <div class="wage-bar-wrap">
+        <div class="wage-bar-track">
+          <div class="wage-bar-fill" style="--w:51%; background:#dc2626;">
+            <span class="amount">161,700円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="wage-note">出典：厚生労働省「外国人雇用実態調査」（2023年）</p>
+  </div>
+
+  <!-- 差額ハイライト -->
+  <div class="gap-callout">
+    <div class="gap-number">85,700<span>円</span></div>
+    <div class="gap-desc">
+      外国人労働者全体の平均と、日本人平均との差額。<br>
+      しかし内閣府の分析では、学歴・職種・勤続年数などの属性を調整した後でも<strong>説明のつかない純粋な格差が約7%残存</strong>することが明らかになっています（令和6年度経済財政白書）。
+    </div>
+  </div>
+
+  <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:20px 24px;margin:24px 0;">
+    <strong style="color:#1a2f5e;">内閣府の分析が示す事実：</strong><br>
+    学歴・職種・勤続年数・企業規模などの条件を揃えて比較しても、外国人労働者の賃金は日本人より約7%低い状態が続いています。「外国人だから安くて良い」という慣行が数字として現れています。（出典：内閣府 令和6年度年次経済財政報告 2024年）
+  </div>
+
+  <h2>02 ｜ 在留資格別の「同等待遇義務」</h2>
+
+  <p>
+    給与設定において最も重要なのは「最低賃金を守っているか」ではなく「在留資格ごとの法的義務を満たしているか」です。義務の内容は在留資格によって異なります。
+  </p>
+
+  <!-- 法的義務タイムライン -->
+  <div class="legal-timeline">
+    <div class="timeline-item">
+      <div class="timeline-visa">特定技能1号・2号</div>
+      <div class="timeline-rule">「日本人が従事する場合の報酬と同等以上」（法令で明記）</div>
+      <div class="timeline-detail">
+        特定技能雇用契約及び一号特定技能外国人支援計画の基準等を定める省令（第1条第2項第3号）に直接規定されています。「同等以上」の判断は同一業務・同程度の経験年数の日本人との比較が基準になります。「日本人高卒者と同等程度以上」という目安が出入国在留管理庁の運営要領に示されています。
+      </div>
+      <div class="timeline-penalty">⚠ 違反時：在留資格の更新不許可・受入れ停止処分</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-visa">技術・人文知識・国際業務</div>
+      <div class="timeline-rule">「日本人と同等額以上の報酬」（在留資格審査基準）</div>
+      <div class="timeline-detail">
+        在留資格申請・更新の審査において「日本人社員と同等額以上の報酬」が許可基準の一つです。日本人同職種の給与水準を下回ると申請が不許可になる可能性があります。更新を繰り返す中でも、給与が市場水準を大きく下回り続けると審査官の判断に影響します。
+      </div>
+      <div class="timeline-penalty">⚠ 違反時：在留資格更新の不許可</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-visa">育成就労</div>
+      <div class="timeline-rule">最低賃金以上 + 同等待遇義務（移行後）</div>
+      <div class="timeline-detail">
+        育成就労期間中は最低賃金以上の支払いが基本ですが、同一業務の日本人労働者と著しく異なる賃金設定は問題になり得ます。特定技能1号への移行後は「同等以上」が義務化されます。住居費・食費の控除は本人の書面同意と合理的な金額の範囲内に限られます。
+      </div>
+      <div class="timeline-penalty">⚠ 移行後の賃金設定漏れに注意</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-visa">すべての在留資格に共通</div>
+      <div class="timeline-rule">同一労働同一賃金（2020年4月施行）</div>
+      <div class="timeline-detail">
+        パートタイム・有期雇用労働法の改正により、日本人・外国人を問わず「同一労働に対する不合理な待遇差」が禁止されています。業務内容・責任レベルが同じ日本人社員と比較して、合理的な理由のない賃金差は違法となります。
+      </div>
+      <div class="timeline-penalty">⚠ 違反時：行政指導・損害賠償請求の対象になる可能性</div>
+    </div>
+  </div>
+
+  <h2>03 ｜ 「給与以外の待遇」も差別的取扱いは禁止</h2>
+
+  <p>
+    特定技能の規定では、「外国人であることを理由として、報酬の決定、教育訓練の実施、福利厚生施設の利用その他の待遇について差別的な取扱いをしていないこと」が明記されています（出入国在留管理庁 特定技能外国人受入れに関する運用要領）。
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>待遇の種類</th>
+          <th>外国人への適用</th>
+          <th>よくある問題事例</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>研修・教育訓練 <span class="badge badge-must">義務</span></td>
+          <td>日本人と同等の機会を提供</td>
+          <td>「言葉が通じないから」という理由で参加させない</td>
+        </tr>
+        <tr>
+          <td>社会保険 <span class="badge badge-must">義務</span></td>
+          <td>健康保険・厚生年金・労災の加入必須</td>
+          <td>「短期だから」という理由で未加入のまま。在留更新審査に影響</td>
+        </tr>
+        <tr>
+          <td>割増賃金 <span class="badge badge-must">義務</span></td>
+          <td>時間外25%・深夜25%・休日35%以上</td>
+          <td>外国人労働者の残業代を計算せず固定額のみ支払う</td>
+        </tr>
+        <tr>
+          <td>福利厚生 <span class="badge badge-rec">推奨</span></td>
+          <td>社員旅行・健康診断等に参加させる</td>
+          <td>外国人だけ除外されている（意図せず除外されていることも）</td>
+        </tr>
+        <tr>
+          <td>育児・介護休業 <span class="badge badge-must">義務</span></td>
+          <td>労働基準法・育児介護休業法は全員に適用</td>
+          <td>「外国人には関係ない」という誤解で申請を受け付けない</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>04 ｜ 定着につながる昇給設計——タイミングと金額の実務</h2>
+
+  <p>
+    昇給が定着に効く最大の理由は「見通しが持てる」からです。「頑張ればいつか上がるかも」では外国人材の心には響きません。<strong>在留資格の変更・更新タイミングと連動した昇給ルール</strong>を就業規則や雇用契約書に明記することで、本人が「この会社での未来」を具体的にイメージできます。
+  </p>
+
+  <!-- 昇給ステップフロー -->
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-left">
+        <div class="step-dot">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-timing">入社〜1年目</div>
+        <div class="step-title">育成就労スタート：基本給の設定</div>
+        <div class="step-desc">
+          最低賃金＋αの設定が一般的ですが、同一業務の日本人アルバイト・パートとの比較を必ず行います。住居費・光熱費の控除がある場合は控除後の手取り額が最低賃金を下回っていないか確認します。
+        </div>
+        <div class="step-amount">目安：地域最低賃金 × 1.05〜1.10倍</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-left">
+        <div class="step-dot">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-timing">育成就労2〜3年目</div>
+        <div class="step-title">技能向上評価：中間昇給</div>
+        <div class="step-desc">
+          業務の習熟度・日本語能力（N4取得等）・欠勤率を基準に評価面談を実施。定量的な基準を書面で事前に本人に渡しておくことが重要です。
+        </div>
+        <div class="step-amount">目安：月3,000〜8,000円程度の昇給</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-left">
+        <div class="step-dot">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-timing">特定技能1号移行時（重要）</div>
+        <div class="step-title">法的義務に対応した昇給：同等待遇へ</div>
+        <div class="step-desc">
+          このタイミングで「日本人と同等以上」への切替えが法的に必要になります。同一業務・同経験年数の日本人社員の給与を確認し、下回る場合は引き上げます。多くの企業では月1〜3万円程度の見直しが発生します。
+        </div>
+        <div class="step-amount" style="background:#fee2e2; color:#dc2626;">⚠ 省令上の必須対応</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-left">
+        <div class="step-dot">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-timing">特定技能1号 2〜4年目</div>
+        <div class="step-title">リーダー職就任：役職手当の追加</div>
+        <div class="step-desc">
+          班長・チームリーダーへの昇格時に役職手当（月5,000〜15,000円）を設けます。この手当は特定技能2号の試験出願時に「管理業務の実績」として証明できる実態づくりにもなります。
+        </div>
+        <div class="step-amount">役職手当：月5,000〜15,000円</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-left">
+        <div class="step-dot">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-timing">特定技能2号取得・永住申請</div>
+        <div class="step-title">長期雇用報奨：上位等級への昇格</div>
+        <div class="step-desc">
+          2号取得は企業にとっても「戦力として長く働いてもらえる」確定的なシグナルです。この節目に等級を一段引き上げ、給与水準を正社員中堅層に合わせる設計が最も定着効果が高いです。
+        </div>
+        <div class="step-amount">正社員中堅層の給与水準へ</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>05 ｜ 「給与を上げると転籍リスクが下がる」の根拠</h2>
+
+  <blockquote>
+    「同一企業で技能実習を修了し特定技能に移行した外国人労働者については日本人との賃金格差は確認されなかった。一方、職場を変更して特定技能1号に移行した外国人労働者については、スキルの移転制約に直面し賃金水準が低下する可能性が指摘されている」
+    <cite>内閣府 令和6年度年次経済財政報告（2024年）第2章第3節</cite>
+  </blockquote>
+
+  <p>
+    この分析が意味することは明確です。自社で育てて適正な給与を払っている企業は、人材が転職しても「その会社を出たらスキルが評価されなくなる」という現実があります。企業側からは「囲い込み」ではなく、「自社でのキャリア継続が本人にとっても合理的」という状況を作れます。
+  </p>
+
+  <div class="highlight-box">
+    <strong>実務上の活用方法：</strong>「この会社を離れると、習得したスキルが次の会社では評価されにくくなる可能性があります。だからこそ、ここでキャリアを積み続けることが皆さんにとっても有利です」——このメッセージを、在留資格変更・更新の面談時に伝えることで、定着への動機付けとして機能します。
+  </div>
+
+  <h2>06 ｜ 給与設計の確認チェックリスト</h2>
+
+  <div class="checklist">
+    <div class="checklist-title">📋 今すぐ確認すべき10項目</div>
+    <ul>
+      <li>特定技能・技人国の外国人に対して、同一業務の日本人社員と比較した給与確認を行ったか</li>
+      <li>育成就労から特定技能1号に移行したタイミングで給与を見直したか</li>
+      <li>地域別最低賃金の毎年10月改定に合わせて、住居費控除後の手取り額を確認しているか</li>
+      <li>時間外・深夜・休日労働の割増賃金（25%・25%・35%）を正しく計算して支払っているか</li>
+      <li>社会保険（健康保険・厚生年金・労災）に加入させているか</li>
+      <li>研修・教育訓練の機会が日本人と同等に与えられているか</li>
+      <li>昇給の基準を書面（就業規則・雇用契約書）に明記しているか</li>
+      <li>役職手当・資格手当など、外国人が取得しやすい手当の設計があるか</li>
+      <li>給与明細を本人が理解できる言語で説明しているか（控除内訳の説明）</li>
+      <li>在留資格更新の申請書類に最新の給与水準が正確に記載されているか</li>
+    </ul>
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary-box">
+    <h2>この記事のポイント</h2>
+    <p>外国人材の給与は「法的義務の遵守」と「定着への投資」の両面で設計する必要があります。最低賃金ギリギリの設定は法的リスクを抱えながら定着率も下げる最悪の選択です。</p>
+    <ul>
+      <li>特定技能・技人国は「日本人と同等以上の報酬」が法的義務——違反は在留資格不許可の直接原因</li>
+      <li>属性調整後も残る7%の純粋格差は差別的取扱いのリスク領域——内閣府白書が警告</li>
+      <li>在留資格の変更・更新タイミングを昇給の節目として活用する設計が最も効果的</li>
+      <li>自社で育てた人材への適正給与は転籍抑止にもなる——スキルの移転制約の活用</li>
+    </ul>
+  </div>
+
+  <p class="note">本記事は2026年2月時点の情報をもとに作成しています。給与設定の詳細は社会保険労務士へのご相談を推奨します。</p>
+
+</div>
+
+<script>
+// 棒グラフのアニメーション
+const wageObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.wage-bar-fill').forEach(bar => {
+        bar.classList.add('animated');
+      });
+      wageObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.wage-chart').forEach(c => wageObs.observe(c));
+
+</script>
+
+</body>
+</html>

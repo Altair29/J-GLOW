@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="#f8fafc" rx="12"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">特定技能2号 対象分野と試験の特徴</text>
+  <rect x="30" y="52" width="740" height="64" rx="10" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="30" y="52" width="220" height="64" rx="10" fill="url(#ng)"/>
+  <rect x="220" y="52" width="30" height="64" fill="url(#ng)"/>
+  <text x="140" y="80" text-anchor="middle" font-size="12" fill="#c9a84c" font-weight="bold">2号試験の特徴</text>
+  <text x="140" y="101" text-anchor="middle" font-size="11" fill="white">多くの分野で合格率30%以下</text>
+  <text x="490" y="76" text-anchor="middle" font-size="12" fill="#374151">「実務経験7年以上の熟練者を想定した水準」</text>
+  <text x="490" y="97" text-anchor="middle" font-size="11" fill="#6b7280">技能実習・育成就労を経た実務経験者でも油断できない難易度</text>
+  <rect x="30" y="132" width="112" height="110" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="30" y="132" width="112" height="30" rx="8" fill="#1a2f5e"/>
+  <rect x="30" y="150" width="112" height="12" fill="#1a2f5e"/>
+  <text x="86" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">建設</text>
+  <text x="86" y="175" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">17</text>
+  <text x="86" y="193" text-anchor="middle" font-size="10" fill="#6b7280">業務区分</text>
+  <text x="86" y="213" text-anchor="middle" font-size="9" fill="#374151">施工管理の実務要件あり</text>
+  <rect x="152" y="132" width="112" height="110" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="152" y="132" width="112" height="30" rx="8" fill="#1a2f5e"/>
+  <rect x="152" y="150" width="112" height="12" fill="#1a2f5e"/>
+  <text x="208" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">造船・舶用工業</text>
+  <text x="208" y="175" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">6</text>
+  <text x="208" y="193" text-anchor="middle" font-size="10" fill="#6b7280">業務区分</text>
+  <text x="208" y="213" text-anchor="middle" font-size="9" fill="#374151">溶接・塗装・電気機器組立等</text>
+  <rect x="274" y="132" width="112" height="110" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="274" y="132" width="112" height="30" rx="8" fill="#1a2f5e"/>
+  <rect x="274" y="150" width="112" height="12" fill="#1a2f5e"/>
+  <text x="330" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">自動車整備</text>
+  <text x="330" y="175" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">1</text>
+  <text x="330" y="193" text-anchor="middle" font-size="10" fill="#6b7280">業務区分</text>
+  <text x="330" y="213" text-anchor="middle" font-size="9" fill="#374151">2級整備士相当の実務能力</text>
+  <rect x="396" y="132" width="112" height="110" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="396" y="132" width="112" height="30" rx="8" fill="#1a2f5e"/>
+  <rect x="396" y="150" width="112" height="12" fill="#1a2f5e"/>
+  <text x="452" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">航空</text>
+  <text x="452" y="175" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">2</text>
+  <text x="452" y="193" text-anchor="middle" font-size="10" fill="#6b7280">業務区分</text>
+  <text x="452" y="213" text-anchor="middle" font-size="9" fill="#374151">空港グランドハンドリング等</text>
+  <rect x="518" y="132" width="112" height="110" rx="8" fill="white" stroke="#1a2f5e" stroke-width="1.5"/>
+  <rect x="518" y="132" width="112" height="30" rx="8" fill="#1a2f5e"/>
+  <rect x="518" y="150" width="112" height="12" fill="#1a2f5e"/>
+  <text x="574" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">宿泊</text>
+  <text x="574" y="175" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a2f5e">1</text>
+  <text x="574" y="193" text-anchor="middle" font-size="10" fill="#6b7280">業務区分</text>
+  <text x="574" y="213" text-anchor="middle" font-size="9" fill="#374151">フロント・接客・レストラン</text>
+  <rect x="640" y="132" width="130" height="110" rx="8" fill="white" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="640" y="132" width="130" height="30" rx="8" fill="#c9a84c"/>
+  <rect x="640" y="150" width="130" height="12" fill="#c9a84c"/>
+  <text x="705" y="152" text-anchor="middle" font-size="11" fill="white" font-weight="bold">その他9分野</text>
+  <text x="705" y="178" text-anchor="middle" font-size="10" fill="#374151">製造3分野・農業・漁業</text>
+  <text x="705" y="196" text-anchor="middle" font-size="10" fill="#374151">飲食料品製造・外食</text>
+  <text x="705" y="214" text-anchor="middle" font-size="10" fill="#374151">ビルクリーニング他</text>
+  <text x="705" y="232" text-anchor="middle" font-size="9" fill="#c9a84c" font-weight="bold">※介護は2号なし</text>
+  <rect x="30" y="258" width="740" height="100" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+  <text x="400" y="282" text-anchor="middle" font-size="13" font-weight="bold" fill="#1a2f5e">2号試験の共通構成</text>
+  <rect x="60" y="296" width="180" height="46" rx="8" fill="#dbeafe"/>
+  <text x="150" y="317" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="bold">学科試験</text>
+  <text x="150" y="334" text-anchor="middle" font-size="10" fill="#1e40af">正答率65〜70%以上（分野別）</text>
+  <text x="270" y="322" text-anchor="middle" font-size="18" fill="#9ca3af">＋</text>
+  <rect x="295" y="296" width="180" height="46" rx="8" fill="#dbeafe"/>
+  <text x="385" y="317" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="bold">実技試験</text>
+  <text x="385" y="334" text-anchor="middle" font-size="10" fill="#1e40af">作業・判断・計画立案等</text>
+  <text x="505" y="322" text-anchor="middle" font-size="18" fill="#9ca3af">＝</text>
+  <rect x="530" y="296" width="210" height="46" rx="8" fill="#d1fae5"/>
+  <text x="635" y="313" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">両方合格で特定技能2号</text>
+  <text x="635" y="331" text-anchor="middle" font-size="10" fill="#059669">在留期限なし・家族帯同可</text>
+  <text x="30" y="378" font-size="10" fill="#6b7280">💡 日本語試験は2号に不要（1号取得時に証明済みのため）。実務経験年数の要件は分野によって異なる</text>
+</svg>

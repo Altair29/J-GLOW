@@ -68,7 +68,7 @@ function DelayAlert({ message, onDismiss }: { message: string; onDismiss: () => 
         <p className="text-gray-700 mb-6 leading-relaxed">{message}</p>
         <button
           onClick={onDismiss}
-          className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+          className="w-full py-3 bg-[#1a2f5e] text-white rounded-xl font-medium hover:bg-[#14254b] transition-colors"
         >
           確認
         </button>
@@ -88,13 +88,13 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
         </p>
         <Link
           href="/register/business"
-          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+          className="block w-full py-3 bg-[#1a2f5e] text-white rounded-xl font-medium hover:bg-[#14254b] transition-colors mb-3"
         >
           無料会員登録
         </Link>
         <Link
           href="/login"
-          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
+          className="block w-full py-3 border-2 border-[#c9a84c]/40 text-[#1a2f5e] rounded-xl font-medium hover:bg-[#1a2f5e]/5 transition-colors mb-3"
         >
           ログイン
         </Link>
@@ -131,13 +131,13 @@ function GameOverScreen({ zeroGauge, gauges, onSaveRequest }: { zeroGauge: Gauge
         </div>
         <button
           onClick={onSaveRequest}
-          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+          className="block w-full py-3 bg-[#1a2f5e] text-white rounded-xl font-medium hover:bg-[#14254b] transition-colors mb-3"
         >
           結果を保存・詳細を見る
         </button>
         <Link
           href="/business/contact"
-          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
+          className="block w-full py-3 border-2 border-[#c9a84c]/40 text-[#1a2f5e] rounded-xl font-medium hover:bg-[#1a2f5e]/5 transition-colors mb-3"
         >
           実地監査に申し込む
         </Link>
@@ -156,7 +156,7 @@ function ClearScreen({ gauges, totalTurns, onSaveRequest }: { gauges: Gauges; to
   const total = gauges.operation + gauges.morale + gauges.compliance;
   const maxTotal = 300;
   const grade = total >= 250 ? 'S' : total >= 200 ? 'A' : total >= 150 ? 'B' : 'C';
-  const gradeColor = grade === 'S' ? '#eab308' : grade === 'A' ? '#3b82f6' : grade === 'B' ? '#10b981' : '#6b7280';
+  const gradeColor = grade === 'S' ? '#c9a84c' : grade === 'A' ? '#1a2f5e' : grade === 'B' ? '#10b981' : '#6b7280';
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center p-4">
@@ -180,13 +180,13 @@ function ClearScreen({ gauges, totalTurns, onSaveRequest }: { gauges: Gauges; to
 
         <button
           onClick={onSaveRequest}
-          className="block w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors mb-3"
+          className="block w-full py-3 bg-[#1a2f5e] text-white rounded-xl font-medium hover:bg-[#14254b] transition-colors mb-3"
         >
           結果を保存・詳細を見る
         </button>
         <Link
           href="/business/contact"
-          className="block w-full py-3 border-2 border-blue-200 text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-colors mb-3"
+          className="block w-full py-3 border-2 border-[#c9a84c]/40 text-[#1a2f5e] rounded-xl font-medium hover:bg-[#1a2f5e]/5 transition-colors mb-3"
         >
           実地監査に申し込む
         </Link>
@@ -293,7 +293,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/3.png')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-blue-50/80 to-white/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-[#1a2f5e]/5 to-white/90" />
 
         {/* Content */}
         <div className="relative z-10 max-w-xl w-full px-6 py-12 text-center">
@@ -338,7 +338,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setStarted(true)}
-            className="px-10 py-4 bg-blue-600 text-white rounded-xl font-medium text-[1.25rem] hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25"
+            className="px-10 py-4 bg-[#1a2f5e] text-white rounded-xl font-medium text-[1.25rem] hover:bg-[#14254b] transition-colors shadow-lg shadow-[#1a2f5e]/25"
           >
             シミュレーションを始める
           </motion.button>
@@ -385,7 +385,7 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
       {/* Card */}
       {currentCard && (
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-6 min-h-[200px] flex flex-col justify-center">
-          <div className="text-xs text-blue-500 font-medium mb-3">
+          <div className="text-xs text-[#c9a84c] font-medium mb-3">
             第{currentCard.turn_order}問
           </div>
           <p className="text-gray-800 leading-relaxed text-[15px]">
@@ -400,14 +400,14 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
           <button
             onClick={() => handleChoice('no')}
             disabled={isProcessing}
-            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
+            className="py-4 px-3 bg-[#1a2f5e]/5 border-2 border-[#1a2f5e]/20 text-[#1a2f5e] rounded-xl font-medium text-sm hover:bg-[#1a2f5e]/10 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
           >
             {currentCard.no_label}
           </button>
           <button
             onClick={() => handleChoice('yes')}
             disabled={isProcessing}
-            className="py-4 px-3 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-xl font-medium text-sm hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
+            className="py-4 px-3 bg-[#1a2f5e]/5 border-2 border-[#1a2f5e]/20 text-[#1a2f5e] rounded-xl font-medium text-sm hover:bg-[#1a2f5e]/10 transition-colors disabled:opacity-50 disabled:pointer-events-none leading-snug"
           >
             {currentCard.yes_label}
           </button>

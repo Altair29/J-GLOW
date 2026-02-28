@@ -1,0 +1,2374 @@
+{
+  "_meta": {
+    "source": "厚生労働省「外国人労働者向けモデル労働条件通知書」公式PDF",
+    "version": "v4-final 2026-02-26",
+    "languages": ["ja", "en", "zh", "vi", "id", "tl", "km", "my"],
+    "legal_basis": "労働基準法第15条・労基則第5条（2024年4月改正対応）"
+  },
+
+  "document_title": {
+    "ja": "労働条件通知書",
+    "en": "Notification of Working Conditions",
+    "zh": "劳动条件通知书",
+    "vi": "Thông báo về điều kiện lao động",
+    "id": "Pemberitahuan Syarat dan Kondisi Kerja",
+    "tl": "Abiso ng mga Kondisyon sa Pagtatrabaho",
+    "km": "សេចក្តីជូនដំណឹងស្តីពីលក្ខខណ្ឌការងារ",
+    "my": "အလုပ်အကိုင်အခြေအနေ အကြောင်းကြားစာ"
+  },
+
+  "document_subtitle_general": {
+    "ja": "（一般労働者用；常用、有期雇用型）",
+    "en": "(For General workers; Permanent, fixed-term employment)",
+    "zh": "（一般劳动者用；常用，有期限雇用型）",
+    "vi": "(Dùng cho người lao động nói chung; hình thức tuyển dụng vô thời hạn, có thời hạn)",
+    "id": "(Untuk pekerja umum; jenis pekerjaan tetap dan jangka tetap)",
+    "tl": "(Para sa karaniwang manggagawa; permanente, fixed-term na trabaho)",
+    "km": "(សម្រាប់បុគ្គលិកទូទៅ ការងារអចិន្រ្តៃយ៍ រយៈកាលកំណត់)",
+    "my": "(ယေဘုယျ အလုပ်သမားများအတွက်; အမြဲတမ်း၊ သတ်မှတ်ကာလ ခေါ်ယူမှုပုံစံ)"
+  },
+
+  "section_company": {
+    "ja": "会社情報",
+    "en": "Company Information",
+    "zh": "公司信息",
+    "vi": "Thông tin công ty",
+    "id": "Informasi Perusahaan",
+    "tl": "Impormasyon ng Kumpanya",
+    "km": "ព័ត៌មានក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီအချက်အလက်"
+  },
+
+  "section_worker": {
+    "ja": "労働者情報",
+    "en": "Worker Information",
+    "zh": "劳动者信息",
+    "vi": "Thông tin người lao động",
+    "id": "Informasi Pekerja",
+    "tl": "Impormasyon ng Manggagawa",
+    "km": "ព័ត៌មានកម្មករ",
+    "my": "အလုပ်သမားအချက်အလက်"
+  },
+
+  "label_company_name": {
+    "ja": "会社名",
+    "en": "Company Name",
+    "zh": "公司名称",
+    "vi": "Tên công ty",
+    "id": "Nama Perusahaan",
+    "tl": "Pangalan ng Kumpanya",
+    "km": "ឈ្មោះក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီအမည်"
+  },
+
+  "label_company_address": {
+    "ja": "会社住所",
+    "en": "Company Address",
+    "zh": "公司地址",
+    "vi": "Địa chỉ công ty",
+    "id": "Alamat Perusahaan",
+    "tl": "Address ng Kumpanya",
+    "km": "អាស័យដ្ឋានក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီလိပ်စာ"
+  },
+
+  "label_company_phone": {
+    "ja": "電話番号",
+    "en": "Phone Number",
+    "zh": "电话号码",
+    "vi": "Số điện thoại",
+    "id": "Nomor Telepon",
+    "tl": "Numero ng Telepono",
+    "km": "លេខទូរស័ព្ទ",
+    "my": "ဖုန်းနံပါတ်"
+  },
+
+  "label_employer_name": {
+    "ja": "雇用主氏名",
+    "en": "Employer Name",
+    "zh": "雇主姓名",
+    "vi": "Tên người sử dụng lao động",
+    "id": "Nama Pemberi Kerja",
+    "tl": "Pangalan ng Employer",
+    "km": "ឈ្មោះនិយោជក",
+    "my": "အလုပ်ရှင်အမည်"
+  },
+
+  "label_worker_name": {
+    "ja": "労働者氏名",
+    "en": "Worker Name",
+    "zh": "劳动者姓名",
+    "vi": "Tên người lao động",
+    "id": "Nama Pekerja",
+    "tl": "Pangalan ng Manggagawa",
+    "km": "ឈ្មោះកម្មករ",
+    "my": "အလုပ်သမားအမည်"
+  },
+
+  "label_output_language": {
+    "ja": "出力言語",
+    "en": "Output Language",
+    "zh": "输出语言",
+    "vi": "Ngôn ngữ đầu ra",
+    "id": "Bahasa Output",
+    "tl": "Wika ng Output",
+    "km": "ភាសាលទ្ធផល",
+    "my": "ထုတ်ပေးသည့်ဘာသာစကား"
+  },
+
+  "label_issue_date": {
+    "ja": "発行日",
+    "en": "Issue Date",
+    "zh": "发行日",
+    "vi": "Ngày phát hành",
+    "id": "Tanggal Terbit",
+    "tl": "Petsa ng Pag-isyu",
+    "km": "កាលបរិច្ឆេទចេញផ្សាយ",
+    "my": "ထုတ်ပေးသည့်ရက်စွဲ"
+  },
+
+  "section_contract": {
+    "ja": "契約期間・就業場所・業務内容",
+    "en": "Contract Period / Workplace / Job Description",
+    "zh": "合同期限·工作地点·业务内容",
+    "vi": "Thời hạn hợp đồng / Nơi làm việc / Mô tả công việc",
+    "id": "Masa Kontrak / Tempat Kerja / Deskripsi Pekerjaan",
+    "tl": "Panahon ng Kontrata / Lugar ng Trabaho / Paglalarawan ng Trabaho",
+    "km": "រយៈពេលកិច្ចសន្យា / កន្លែងធ្វើការ / បរិយាយការងារ",
+    "my": "စာချုပ်ကာလ / အလုပ်ခွင် / အလုပ်ဖော်ပြချက်"
+  },
+
+  "label_visa_type": {
+    "ja": "ビザ種別",
+    "en": "Visa Type",
+    "zh": "签证类型",
+    "vi": "Loại thị thực",
+    "id": "Jenis Visa",
+    "tl": "Uri ng Visa",
+    "km": "ប្រភេទទិដ្ឋាការ",
+    "my": "ဗီဇာအမျိုးအစား"
+  },
+
+  "visa_ikusei": {
+    "ja": "育成就労",
+    "en": "Training Employment (Ikusei Shuro)",
+    "zh": "育成就劳",
+    "vi": "Lao động đào tạo (Ikusei Shuro)",
+    "id": "Pelatihan Kerja (Ikusei Shuro)",
+    "tl": "Pagsasanay sa Trabaho (Ikusei Shuro)",
+    "km": "ការបណ្តុះបណ្តាលការងារ (Ikusei Shuro)",
+    "my": "သင်တန်းအလုပ် (Ikusei Shuro)"
+  },
+
+  "visa_tokutei1": {
+    "ja": "特定技能1号",
+    "en": "Specified Skilled Worker (Type 1)",
+    "zh": "特定技能1号",
+    "vi": "Lao động kỹ năng đặc định loại 1",
+    "id": "Pekerja Terampil Tertentu (Tipe 1)",
+    "tl": "Espesipikong Bihasang Manggagawa (Uri 1)",
+    "km": "កម្មករជំនាញពិសេស (ប្រភេទ ១)",
+    "my": "သတ်မှတ်ကျွမ်းကျင်လုပ်သား (အမျိုးအစား ၁)"
+  },
+
+  "visa_tokutei2": {
+    "ja": "特定技能2号",
+    "en": "Specified Skilled Worker (Type 2)",
+    "zh": "特定技能2号",
+    "vi": "Lao động kỹ năng đặc định loại 2",
+    "id": "Pekerja Terampil Tertentu (Tipe 2)",
+    "tl": "Espesipikong Bihasang Manggagawa (Uri 2)",
+    "km": "កម្មករជំនាញពិសេស (ប្រភេទ ២)",
+    "my": "သတ်မှတ်ကျွမ်းကျင်လုပ်သား (အမျိုးအစား ၂)"
+  },
+
+  "visa_gino": {
+    "ja": "技能実習（旧）",
+    "en": "Technical Intern Training (Legacy)",
+    "zh": "技能实习（旧）",
+    "vi": "Thực tập kỹ năng (cũ)",
+    "id": "Pelatihan Teknis Magang (Lama)",
+    "tl": "Teknikal na Pagsasanay sa Internship (Luma)",
+    "km": "ការបណ្តុះបណ្តាលជំនាញបច្ចេកទេស (ចាស់)",
+    "my": "နည်းပညာသင်တန်း (ဟောင်း)"
+  },
+
+  "label_contract_start": {
+    "ja": "契約開始日",
+    "en": "Contract Start Date",
+    "zh": "合同开始日期",
+    "vi": "Ngày bắt đầu hợp đồng",
+    "id": "Tanggal Mulai Kontrak",
+    "tl": "Petsa ng Pagsisimula ng Kontrata",
+    "km": "កាលបរិច្ឆេទចាប់ផ្តើមកិច្ចសន្យា",
+    "my": "စာချုပ်စတင်သည့်ရက်စွဲ"
+  },
+
+  "label_contract_end": {
+    "ja": "契約終了日",
+    "en": "Contract End Date",
+    "zh": "合同结束日期",
+    "vi": "Ngày kết thúc hợp đồng",
+    "id": "Tanggal Berakhir Kontrak",
+    "tl": "Petsa ng Pagtatapos ng Kontrata",
+    "km": "កាលបរិច្ឆេទបញ្ចប់កិច្ចសន្យា",
+    "my": "စာချုပ်ကုန်ဆုံးသည့်ရက်စွဲ"
+  },
+
+  "label_contract_max": {
+    "ja": "契約期間上限",
+    "en": "Maximum Contract Period",
+    "zh": "合同期限上限",
+    "vi": "Giới hạn thời hạn hợp đồng tối đa",
+    "id": "Batas Maksimum Masa Kontrak",
+    "tl": "Pinakamataas na Panahon ng Kontrata",
+    "km": "រយៈពេលកិច្ចសន្យាអតិបរមា",
+    "my": "အများဆုံးစာချုပ်ကာလ"
+  },
+
+  "value_contract_fixed": {
+    "ja": "期間の定めあり",
+    "en": "Fixed",
+    "zh": "有期限",
+    "vi": "có thời hạn",
+    "id": "Tetap",
+    "tl": "Nakatakda",
+    "km": "មានកំណត់",
+    "my": "ကာလသတ်မှတ်ချက်ရှိ"
+  },
+
+  "value_contract_indefinite": {
+    "ja": "期間の定めなし",
+    "en": "Permanent",
+    "zh": "无期限",
+    "vi": "Không quy định thời hạn",
+    "id": "Tidak tetap",
+    "tl": "Walang takdang panahon",
+    "km": "គ្មានកំណត់",
+    "my": "ကာလသတ်မှတ်ချက်မရှိ"
+  },
+
+  "label_contract_renewal": {
+    "ja": "契約の更新の有無",
+    "en": "Contract renewal",
+    "zh": "有无合同更新",
+    "vi": "Hợp đồng có được gia hạn hay không?",
+    "id": "Apakah kontraknya akan diperpanjang atau tidak",
+    "tl": "Pagbabago ng kontrata",
+    "km": "មានឬគ្មានការចុះកិច្ចសន្យាថ្មី",
+    "my": "စာချုပ်သက်တမ်းတိုးခြင်း ရှိ/မရှိ"
+  },
+
+  "value_renewal_auto": {
+    "ja": "自動的に更新する",
+    "en": "Automatic renewal",
+    "zh": "自动更新",
+    "vi": "Tự động gia hạn",
+    "id": "Otomatis diperpanjang",
+    "tl": "Awtomatikong i-renew",
+    "km": "ចុះកិច្ចសន្យាថ្មីដោយស្វ័យប្រវត្តិ",
+    "my": "အလိုအလျောက် သက်တမ်းတိုးသည်"
+  },
+
+  "value_renewal_possible": {
+    "ja": "更新する場合があり得る",
+    "en": "Possible renewal",
+    "zh": "有可能更新的情况",
+    "vi": "Có khả năng gia hạn",
+    "id": "Mungkin akan diperpanjang",
+    "tl": "Maaaring i-renew",
+    "km": "អាចនឹងមានការចុះកិច្ចសន្យាថ្មី",
+    "my": "သက်တမ်းတိုးနိုင်သည်"
+  },
+
+  "value_renewal_no": {
+    "ja": "契約の更新はしない",
+    "en": "No renewal",
+    "zh": "不进行合同更新",
+    "vi": "Không gia hạn hợp đồng",
+    "id": "Kontraknya tidak diperpanjang",
+    "tl": "Hindi ire-renew ang kontrata",
+    "km": "មិនមានការចុះកិច្ចសន្យាថ្មី",
+    "my": "စာချုပ်သက်တမ်းမတိုးပါ"
+  },
+
+  "value_renewal_other": {
+    "ja": "その他（　　）",
+    "en": "Others ( )",
+    "zh": "其他（　　）",
+    "vi": "Khác ( )",
+    "id": "Lainnya （　　 ）",
+    "tl": "Iba pa (　　　　　　)",
+    "km": "ផ្សេងៗ （　 　）",
+    "my": "အခြား ( )"
+  },
+
+  "label_renewal_criteria": {
+    "ja": "契約の更新は次により判断する。",
+    "en": "Renewal criteria",
+    "zh": "合同的更新根据下列情况判断",
+    "vi": "Việc gia hạn hợp đồng được căn cứ theo những tiêu chuẩn sau:",
+    "id": "Perpanjangan kontrak akan ditentukan berdasarkan hal-hal berikut.",
+    "tl": "Ang pag-renew ng kontrata ay maaaring husgahan batay sa mga sumusunod.",
+    "km": "ការចុះកិច្ចសន្យាគឺតាមការកំណត់ដោយចំណុចខាងក្រោម",
+    "my": "စာချုပ်သက်တမ်းတိုးခြင်းကို အောက်ပါအချက်များဖြင့် ဆုံးဖြတ်သည်။"
+  },
+
+  "criteria_workload": {
+    "ja": "契約期間満了時の業務量",
+    "en": "Workload at the end of the contract period",
+    "zh": "合同期限结束时的业务量",
+    "vi": "Lượng công việc khi kết thúc thời hạn hợp đồng",
+    "id": "Volume pekerjaan pada akhir masa kontrak",
+    "tl": "Dami ng trabaho sa pagtatapos ng panahon ng kontrata",
+    "km": "បរិមាណការងារបន្ទាប់ពីបញ្ចប់រយៈកាលកិច្ចសន្យា",
+    "my": "စာချုပ်ကာလကုန်ချိန်တွင် လုပ်ငန်းပမာဏ"
+  },
+
+  "criteria_performance": {
+    "ja": "勤務成績、態度",
+    "en": "Work performance and attitude",
+    "zh": "工作成绩，态度",
+    "vi": "Thành tích trong công việc, thái độ làm việc",
+    "id": "Prestasi kerja, sikap",
+    "tl": "Work performance",
+    "km": "សមិទ្ធផលការងារ, កម្ចាត់កិរិយា",
+    "my": "အလုပ်ဆောင်ရွက်မှုစွမ်းရည်၊ သဘောထား"
+  },
+
+  "criteria_ability": {
+    "ja": "能力",
+    "en": "Competence",
+    "zh": "能力",
+    "vi": "Năng lực",
+    "id": "Kemampuan",
+    "tl": "Kakayahan",
+    "km": "សមត្ថភាព",
+    "my": "စွမ်းရည်"
+  },
+
+  "criteria_company_condition": {
+    "ja": "会社の経営状況",
+    "en": "Company's business conditions",
+    "zh": "公司的经营状况",
+    "vi": "Tình hình kinh doanh của công ty",
+    "id": "Situasi bisnis perusahaan",
+    "tl": "Lagay ng pamamahala ng kumpanya",
+    "km": "លទ្ធផល​ប្រតិបត្តិការ​ក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီ စီးပွားရေးအခြေအနေ"
+  },
+
+  "criteria_work_progress": {
+    "ja": "従事している業務の進捗状況",
+    "en": "Progress of the work engaged in",
+    "zh": "从事中的业务的进展状况",
+    "vi": "Tiến độ của công việc đang thực hiện",
+    "id": "Status kemajuan pekerjaan yang dilakukan",
+    "tl": "Pag-unlad sa ginagawang trabaho",
+    "km": "វឌ្ឍនភាពការងាររបស់អ្នក",
+    "my": "လက်ရှိလုပ်ဆောင်နေသော အလုပ်ပြီးစီးမှု"
+  },
+
+  "label_workplace": {
+    "ja": "就業場所（最初の就業場所）",
+    "en": "Workplace (Initial Workplace)",
+    "zh": "工作地点（最初的工作地点）",
+    "vi": "Nơi làm việc (nơi làm việc ban đầu)",
+    "id": "Tempat Kerja (Tempat Kerja Awal)",
+    "tl": "Lugar ng Trabaho (Unang Lugar ng Trabaho)",
+    "km": "កន្លែងធ្វើការ (កន្លែងធ្វើការដំបូង)",
+    "my": "အလုပ်ခွင် (ပထမဦးဆုံးအလုပ်ခွင်)"
+  },
+
+  "label_workplace_range": {
+    "ja": "就業場所の変更の範囲",
+    "en": "Scope of Possible Workplace Changes",
+    "zh": "工作地点变更范围",
+    "vi": "Phạm vi thay đổi nơi làm việc",
+    "id": "Ruang Lingkup Perubahan Tempat Kerja",
+    "tl": "Saklaw ng mga Pagbabago sa Lugar ng Trabaho",
+    "km": "វិស័យនៃការផ្លាស់ប្តូរកន្លែងធ្វើការ",
+    "my": "အလုပ်ခွင်ပြောင်းရွှေ့မှုနယ်ပယ်"
+  },
+
+  "label_job_description": {
+    "ja": "業務内容",
+    "en": "Job Description",
+    "zh": "业务内容",
+    "vi": "Mô tả công việc",
+    "id": "Deskripsi Pekerjaan",
+    "tl": "Paglalarawan ng Trabaho",
+    "km": "បរិយាយការងារ",
+    "my": "အလုပ်ဖော်ပြချက်"
+  },
+
+  "label_job_scope_range": {
+    "ja": "業務内容の変更の範囲",
+    "en": "Scope of Possible Job Description Changes",
+    "zh": "业务内容变更范围",
+    "vi": "Phạm vi thay đổi nội dung công việc",
+    "id": "Ruang Lingkup Perubahan Deskripsi Pekerjaan",
+    "tl": "Saklaw ng mga Pagbabago sa Paglalarawan ng Trabaho",
+    "km": "វិស័យនៃការផ្លាស់ប្តូរបរិយាយការងារ",
+    "my": "အလုပ်ဖော်ပြချက်ပြောင်းလဲမှုနယ်ပယ်"
+  },
+
+  "label_transfer_clause": {
+    "ja": "転籍条項",
+    "en": "Transfer Clause",
+    "zh": "转籍条款",
+    "vi": "Điều khoản chuyển công ty",
+    "id": "Klausul Transfer",
+    "tl": "Sugnay ng Paglipat",
+    "km": "ប្រការផ្ទេរ",
+    "my": "လွှဲပြောင်းချက်"
+  },
+
+  "label_transfer_yes": {
+    "ja": "転籍あり（本人同意による）",
+    "en": "Transfer allowed (with employee consent)",
+    "zh": "可转籍（需本人同意）",
+    "vi": "Được chuyển công ty (có sự đồng ý của người lao động)",
+    "id": "Transfer diizinkan (dengan persetujuan karyawan)",
+    "tl": "Pinahintulutang paglipat (may pahintulot ng empleyado)",
+    "km": "ការផ្ទេរត្រូវបានអនុញ្ញាត (ជាមួយការយល់ព្រមរបស់និយោជិត)",
+    "my": "လွှဲပြောင်းခွင့်ပြုသည် (ဝန်ထမ်း၏သဘောတူညီချက်ဖြင့်)"
+  },
+
+  "section_hours": {
+    "ja": "労働時間・休日・休暇",
+    "en": "Working Hours / Holidays / Leave",
+    "zh": "劳动时间·休息日·休假",
+    "vi": "Giờ làm việc / Ngày nghỉ / Nghỉ phép",
+    "id": "Jam Kerja / Hari Libur / Cuti",
+    "tl": "Oras ng Trabaho / Bakasyon / Pahinga",
+    "km": "ម៉ោងធ្វើការ / ថ្ងៃឈប់សម្រាក / ច្បាប់ឈប់",
+    "my": "အလုပ်ချိန် / အားလပ်ရက် / ခွင့်"
+  },
+
+  "label_start_time": {
+    "ja": "始業時刻",
+    "en": "Start Time",
+    "zh": "开始时间",
+    "vi": "Giờ bắt đầu làm việc",
+    "id": "Waktu Mulai",
+    "tl": "Oras ng Pagsisimula",
+    "km": "ពេលវេលាចាប់ផ្តើម",
+    "my": "စတင်ချိန်"
+  },
+
+  "label_end_time": {
+    "ja": "終業時刻",
+    "en": "End Time",
+    "zh": "结束时间",
+    "vi": "Giờ kết thúc làm việc",
+    "id": "Waktu Selesai",
+    "tl": "Oras ng Pagtatapos",
+    "km": "ពេលវេលាបញ្ចប់",
+    "my": "ပြီးဆုံးချိန်"
+  },
+
+  "label_break_time": {
+    "ja": "休憩時間",
+    "en": "Break Time",
+    "zh": "休息时间",
+    "vi": "Thời gian nghỉ giải lao",
+    "id": "Waktu Istirahat",
+    "tl": "Oras ng Pahinga",
+    "km": "ម៉ោងសម្រាក",
+    "my": "အနားယူချိန်"
+  },
+
+  "label_overtime": {
+    "ja": "時間外労働",
+    "en": "Overtime Work",
+    "zh": "加班",
+    "vi": "Làm thêm giờ",
+    "id": "Lembur",
+    "tl": "Overtime na Trabaho",
+    "km": "ការងារបន្ថែមម៉ោង",
+    "my": "အချိန်ပိုအလုပ်"
+  },
+
+  "label_overtime_yes": {
+    "ja": "あり",
+    "en": "Yes",
+    "zh": "有",
+    "vi": "Có",
+    "id": "Ada",
+    "tl": "Oo",
+    "km": "មាន",
+    "my": "ရှိသည်"
+  },
+
+  "label_overtime_no": {
+    "ja": "なし",
+    "en": "None",
+    "zh": "无",
+    "vi": "Không",
+    "id": "Tidak ada",
+    "tl": "Wala",
+    "km": "គ្មាន",
+    "my": "မရှိ"
+  },
+
+  "label_holidays": {
+    "ja": "休日",
+    "en": "Holidays",
+    "zh": "休息日",
+    "vi": "Ngày nghỉ",
+    "id": "Hari Libur",
+    "tl": "Mga Holiday",
+    "km": "ថ្ងៃឈប់សម្រាក",
+    "my": "အားလပ်ရက်"
+  },
+
+  "label_paid_leave": {
+    "ja": "年次有給休暇",
+    "en": "Annual Paid Leave",
+    "zh": "年次带薪休假",
+    "vi": "Nghỉ phép có lương hàng năm",
+    "id": "Cuti Tahunan Berbayar",
+    "tl": "Taunang Bayad na Bakasyon",
+    "km": "ច្បាប់ឈប់ប្រចាំឆ្នាំដែលបង់ប្រាក់",
+    "my": "နှစ်ပတ်လည်လစာနှင့်ခွင့်"
+  },
+
+  "section_wages": {
+    "ja": "賃金・退職",
+    "en": "Wages / Retirement",
+    "zh": "工资·退职",
+    "vi": "Lương / Nghỉ hưu",
+    "id": "Upah / Pensiun",
+    "tl": "Sahod / Pagreretiro",
+    "km": "ប្រាក់ខែ / ចូលនិវត្តន៍",
+    "my": "လစာ / အငြိမ်းစားယူခြင်း"
+  },
+
+  "label_wage_type": {
+    "ja": "賃金形態",
+    "en": "Wage Type",
+    "zh": "工资形式",
+    "vi": "Hình thức trả lương",
+    "id": "Jenis Upah",
+    "tl": "Uri ng Sahod",
+    "km": "ប្រភេទប្រាក់ខែ",
+    "my": "လစာပုံစံ"
+  },
+
+  "label_monthly": {
+    "ja": "月給",
+    "en": "Monthly Salary",
+    "zh": "月薪",
+    "vi": "Lương tháng",
+    "id": "Gaji Bulanan",
+    "tl": "Buwanang Sahod",
+    "km": "ប្រាក់ខែ",
+    "my": "လစဉ်လစာ"
+  },
+
+  "label_hourly": {
+    "ja": "時給",
+    "en": "Hourly Wage",
+    "zh": "时薪",
+    "vi": "Lương theo giờ",
+    "id": "Upah Per Jam",
+    "tl": "Oras-Orasyong Sahod",
+    "km": "ប្រាក់ខែប្រចាំម៉ោង",
+    "my": "နာရီပေးလစာ"
+  },
+
+  "label_base_wage": {
+    "ja": "基本給",
+    "en": "Basic Wage",
+    "zh": "基本工资",
+    "vi": "Lương cơ bản",
+    "id": "Gaji Pokok",
+    "tl": "Pangunahing Sahod",
+    "km": "ប្រាក់ខែមូលដ្ឋាន",
+    "my": "အခြေခံလစာ"
+  },
+
+  "label_allowances": {
+    "ja": "各種手当",
+    "en": "Various Allowances",
+    "zh": "各种补贴",
+    "vi": "Các loại phụ cấp",
+    "id": "Berbagai Tunjangan",
+    "tl": "Iba't ibang Allowance",
+    "km": "ប្រាក់ឧបត្ថម្ភផ្សេងៗ",
+    "my": "ထောက်ပံ့ကြေးအမျိုးမျိုး"
+  },
+
+  "label_allowance_housing": {
+    "ja": "住宅手当",
+    "en": "Housing Allowance",
+    "zh": "住房补贴",
+    "vi": "Phụ cấp nhà ở",
+    "id": "Tunjangan Perumahan",
+    "tl": "Allowance sa Tirahan",
+    "km": "ប្រាក់ឧបត្ថម្ភលំនៅ",
+    "my": "အိမ်ရာခွင့်ပြုငွေ"
+  },
+
+  "label_allowance_transport": {
+    "ja": "通勤手当",
+    "en": "Commuting Allowance",
+    "zh": "交通补贴",
+    "vi": "Phụ cấp đi lại",
+    "id": "Tunjangan Transportasi",
+    "tl": "Allowance sa Pagbiyahe",
+    "km": "ប្រាក់ឧបត្ថម្ភការធ្វើដំណើរ",
+    "my": "သွားလာစရိတ်ခွင့်ပြုငွေ"
+  },
+
+  "label_wage_cutoff": {
+    "ja": "賃金締切日",
+    "en": "Wage Cutoff Date",
+    "zh": "工资结算日",
+    "vi": "Ngày chốt lương",
+    "id": "Tanggal Penutupan Upah",
+    "tl": "Petsa ng Pagsasara ng Sahod",
+    "km": "កាលបរិច្ឆេទបិទប្រាក់ខែ",
+    "my": "လစာပိတ်သည့်ရက်"
+  },
+
+  "label_payment_date": {
+    "ja": "賃金支払日",
+    "en": "Payment Date",
+    "zh": "工资发放日",
+    "vi": "Ngày trả lương",
+    "id": "Tanggal Pembayaran",
+    "tl": "Petsa ng Pagbabayad",
+    "km": "កាលបរិច្ឆេទបង់ប្រាក់",
+    "my": "လစာပေးသည့်ရက်"
+  },
+
+  "label_pay_raise": {
+    "ja": "昇給",
+    "en": "Pay Raise",
+    "zh": "涨薪",
+    "vi": "Tăng lương",
+    "id": "Kenaikan Gaji",
+    "tl": "Pagtaas ng Sahod",
+    "km": "ការឡើងប្រាក់ខែ",
+    "my": "လစာတိုးမြှင့်ခြင်း"
+  },
+
+  "label_bonus": {
+    "ja": "賞与",
+    "en": "Bonus",
+    "zh": "奖金",
+    "vi": "Thưởng",
+    "id": "Bonus",
+    "tl": "Bonus",
+    "km": "ប្រាក់រង្វាន់",
+    "my": "ဘောနပ်စ်"
+  },
+
+  "label_retirement_pay": {
+    "ja": "退職金",
+    "en": "Retirement Pay",
+    "zh": "退职金",
+    "vi": "Trợ cấp thôi việc",
+    "id": "Pesangon",
+    "tl": "Sahod sa Pagreretiro",
+    "km": "ប្រាក់ចូលនិវត្តន៍",
+    "my": "အငြိမ်းစားပင်ဆင်ငွေ"
+  },
+
+  "label_notice_days": {
+    "ja": "自己都合退職予告日数",
+    "en": "Notice Period for Voluntary Resignation",
+    "zh": "自愿离职提前通知天数",
+    "vi": "Số ngày thông báo trước khi tự ý nghỉ việc",
+    "id": "Hari Pemberitahuan untuk Pengunduran Diri Sukarela",
+    "tl": "Bilang ng Araw ng Paunawa para sa Boluntaryong Pagbibitiw",
+    "km": "ចំនួនថ្ងៃជូនដំណឹងជាមុនក្នុងករណីចាកចេញដោយស្ម័គ្រចិត្ត",
+    "my": "စေတနာဆန္ဒဖြင့်နုတ်ထွက်ရန်ကြိုတင်အကြောင်းကြားသည့်ရက်"
+  },
+
+  "label_dismissal": {
+    "ja": "解雇の理由・手続き",
+    "en": "Grounds and procedure for dismissal",
+    "zh": "解雇的理由・手续",
+    "vi": "Thủ tục sa thải",
+    "id": "Alasan dan prosedur untuk pemutusan hubungan kerja",
+    "tl": "Mga batayan o rason at proseso para sa pagpapaalis sa trabaho",
+    "km": "មូលហេតុ​ និង​ ​នីតិ​វិធី​",
+    "my": "အလုပ်ဖြုတ်ခြင်းအကြောင်းရင်းနှင့် လုပ်ထုံးလုပ်နည်း"
+  },
+
+  "label_pension_insurance": {
+    "ja": "厚生年金保険",
+    "en": "Employees' Pension Insurance",
+    "zh": "厚生年金保险",
+    "vi": "Bảo hiểm hưu trí",
+    "id": "Asuransi pensiun karyawan",
+    "tl": "Insurance sa Pensiyon ng mga Empleyado",
+    "km": "ប្រាក់ធន​ និវត្តន៍",
+    "my": "အလုပ်သမားပင်စင်အာမခံ"
+  },
+
+  "label_health_insurance": {
+    "ja": "健康保険",
+    "en": "Health Insurance",
+    "zh": "健康保险",
+    "vi": "Bảo hiểm sức khỏe",
+    "id": "Asuransi kesehatan",
+    "tl": "Health Insurance",
+    "km": "ធានា​រ៉ាប់​រង​សុខភាព",
+    "my": "ကျန်းမာရေးအာမခံ"
+  },
+
+  "label_employment_insurance": {
+    "ja": "雇用保険",
+    "en": "Unemployment Insurance",
+    "zh": "雇用保险",
+    "vi": "Bảo hiểm thất nghiệp",
+    "id": "Keikutsertaan dalam asuransi ketenagakerjaan",
+    "tl": "Unemployment Insurance",
+    "km": "ធានា​រ៉ាប់​រង​ការ​ងារ",
+    "my": "အလုပ်လက်မဲ့အာမခံ"
+  },
+
+  "label_workers_comp": {
+    "ja": "労働者災害補償保険（労災保険）",
+    "en": "Workers' Accident Compensation Insurance",
+    "zh": "工伤保险",
+    "vi": "Bảo hiểm tai nạn lao động",
+    "id": "Asuransi kecelakaan kerja",
+    "tl": "Insurance sa Aksidente sa Trabaho",
+    "km": "ធានា​រ៉ាប់​រង​គ្រោះ​ថ្នាក់​ការ​ងារ",
+    "my": "အလုပ်သမားပျက်ကွက်မှုလျော်ကြေးအာမခံ"
+  },
+
+  "label_union": {
+    "ja": "労働組合",
+    "en": "Labor Union",
+    "zh": "劳动组合",
+    "vi": "Công đoàn",
+    "id": "Serikat Pekerja",
+    "tl": "Unyon ng Manggagawa",
+    "km": "សហជីពការងារ",
+    "my": "အလုပ်သမားသမဂ္ဂ"
+  },
+
+  "label_union_yes": {
+    "ja": "あり",
+    "en": "Yes",
+    "zh": "有",
+    "vi": "Có",
+    "id": "Ada",
+    "tl": "Oo",
+    "km": "មាន",
+    "my": "ရှိသည်"
+  },
+
+  "label_union_no": {
+    "ja": "なし",
+    "en": "None",
+    "zh": "无",
+    "vi": "Không",
+    "id": "Tidak ada",
+    "tl": "Wala",
+    "km": "គ្មាន",
+    "my": "မရှိ"
+  },
+
+  "notice_union_agreement": {
+    "ja": "労働組合がない場合、労使協定に代わる誓約書テンプレートを使用してください。",
+    "en": "If no labor union exists, please use the pledge agreement template in lieu of a labor-management agreement.",
+    "zh": "如无劳动组合，请使用代替劳使协议的誓约书模板。",
+    "vi": "Nếu không có công đoàn, vui lòng sử dụng mẫu cam kết thay thế thỏa thuận lao động-quản lý.",
+    "id": "Jika tidak ada serikat pekerja, gunakan template perjanjian janji sebagai pengganti perjanjian manajemen-buruh.",
+    "tl": "Kung walang unyon ng manggagawa, mangyaring gumamit ng template ng kasunduan sa pangako sa halip na kasunduan sa pamamahala ng paggawa.",
+    "km": "ប្រសិនបើគ្មានសហជីពការងារ សូមប្រើគំរូកិច្ចព្រមព្រៀង។",
+    "my": "အလုပ်သမားသမဂ္ဂ မရှိပါက ကတိကဝတ်သဘောတူညီချက်ပုံစံကို အသုံးပြုပါ။"
+  },
+
+  "label_minutes": {
+    "ja": "分",
+    "en": "min",
+    "zh": "分钟",
+    "vi": "phút",
+    "id": "menit",
+    "tl": "minuto",
+    "km": "នាទី",
+    "my": "မိနစ်"
+  },
+
+  "label_days": {
+    "ja": "日",
+    "en": "days",
+    "zh": "天",
+    "vi": "ngày",
+    "id": "hari",
+    "tl": "araw",
+    "km": "ថ្ងៃ",
+    "my": "ရက်"
+  },
+
+  "label_yen": {
+    "ja": "円",
+    "en": "JPY",
+    "zh": "日元",
+    "vi": "Yên",
+    "id": "Yen",
+    "tl": "Yen",
+    "km": "យ៉េន",
+    "my": "ယင်း"
+  },
+
+  "placeholder_company_name": {
+    "ja": "例：株式会社サンプル",
+    "en": "e.g. Sample Co., Ltd.",
+    "zh": "例：样本株式会社",
+    "vi": "Ví dụ: Công ty TNHH Mẫu",
+    "id": "mis. PT. Contoh",
+    "tl": "hal. Sample Corporation",
+    "km": "ឧ. ក្រុមហ៊ុន Sample",
+    "my": "ဥပမာ - Sample Co., Ltd."
+  },
+
+  "placeholder_worker_name": {
+    "ja": "例：グエン　ヴァン　アン",
+    "en": "e.g. Nguyen Van An",
+    "zh": "例：阮文安",
+    "vi": "Ví dụ: Nguyễn Văn An",
+    "id": "mis. Budi Santoso",
+    "tl": "hal. Juan dela Cruz",
+    "km": "ឧ. ណូ ហ្វារ៉ា",
+    "my": "ဥပမာ - မောင်မောင်"
+  },
+
+  "step1_title": {
+    "ja": "会社・労働者情報",
+    "en": "Company & Worker Info",
+    "zh": "公司和劳动者信息",
+    "vi": "Thông tin công ty & người lao động",
+    "id": "Info Perusahaan & Pekerja",
+    "tl": "Info ng Kumpanya at Manggagawa",
+    "km": "ព័ត៌មានក្រុមហ៊ុន និងកម្មករ",
+    "my": "ကုမ္ပဏီနှင့်အလုပ်သမားအချက်အလက်"
+  },
+
+  "step2_title": {
+    "ja": "契約・就業場所",
+    "en": "Contract & Workplace",
+    "zh": "合同和工作地点",
+    "vi": "Hợp đồng & Nơi làm việc",
+    "id": "Kontrak & Tempat Kerja",
+    "tl": "Kontrata at Lugar ng Trabaho",
+    "km": "កិច្ចសន្យា និងកន្លែងធ្វើការ",
+    "my": "စာချုပ်နှင့်အလုပ်ခွင်"
+  },
+
+  "step3_title": {
+    "ja": "労働時間・休日",
+    "en": "Working Hours & Holidays",
+    "zh": "劳动时间和休日",
+    "vi": "Giờ làm việc & Ngày nghỉ",
+    "id": "Jam Kerja & Hari Libur",
+    "tl": "Oras ng Trabaho at Bakasyon",
+    "km": "ម៉ោងធ្វើការ និងថ្ងៃឈប់",
+    "my": "အလုပ်ချိန်နှင့်အားလပ်ရက်"
+  },
+
+  "step4_title": {
+    "ja": "賃金・退職",
+    "en": "Wages & Retirement",
+    "zh": "工资和退职",
+    "vi": "Lương & Nghỉ hưu",
+    "id": "Upah & Pensiun",
+    "tl": "Sahod at Pagreretiro",
+    "km": "ប្រាក់ខែ និងចូលនិវត្តន៍",
+    "my": "လစာနှင့်အငြိမ်းစားယူခြင်း"
+  },
+
+  "step5_title": {
+    "ja": "確認・ダウンロード",
+    "en": "Review & Download",
+    "zh": "确认与下载",
+    "vi": "Xem lại & Tải xuống",
+    "id": "Tinjau & Unduh",
+    "tl": "Suriin at I-download",
+    "km": "ត្រួតពិនិត្យ & ទាញយក",
+    "my": "စစ်ဆေးပြီး ဒေါင်းလုဒ်"
+  },
+
+  "btn_next": {
+    "ja": "次へ",
+    "en": "Next",
+    "zh": "下一步",
+    "vi": "Tiếp theo",
+    "id": "Selanjutnya",
+    "tl": "Susunod",
+    "km": "បន្ទាប់",
+    "my": "နောက်တစ်ဆင့်"
+  },
+
+  "btn_back": {
+    "ja": "戻る",
+    "en": "Back",
+    "zh": "返回",
+    "vi": "Quay lại",
+    "id": "Kembali",
+    "tl": "Bumalik",
+    "km": "ត្រឡប់ក្រោយ",
+    "my": "နောက်သို့"
+  },
+
+  "btn_generate_pdf": {
+    "ja": "PDFを生成・ダウンロード",
+    "en": "Generate & Download PDF",
+    "zh": "生成并下载PDF",
+    "vi": "Tạo và tải xuống PDF",
+    "id": "Buat dan Unduh PDF",
+    "tl": "Gumawa at Mag-download ng PDF",
+    "km": "បង្កើត និងទាញយក PDF",
+    "my": "PDF ဖန်တီးပြီး ဒေါင်းလုဒ်လုပ်ပါ"
+  },
+
+  "ui_required": {
+    "ja": "必須",
+    "en": "Required",
+    "zh": "必填",
+    "vi": "Bắt buộc",
+    "id": "Wajib",
+    "tl": "Kinakailangan",
+    "km": "ចាំបាច់",
+    "my": "မဖြစ်မနေ"
+  },
+
+  "ui_optional": {
+    "ja": "任意",
+    "en": "Optional",
+    "zh": "可选",
+    "vi": "Tùy chọn",
+    "id": "Opsional",
+    "tl": "Opsyonal",
+    "km": "ជម្រើស",
+    "my": "မဖြစ်မနေမဟုတ်"
+  },
+
+  "ui_disclaimer": {
+    "ja": "※本ツールで作成した書類は参考用です。法的効力については専門家にご確認ください。",
+    "en": "※ Documents created with this tool are for reference purposes only. Please consult a professional regarding legal validity.",
+    "zh": "※本工具创建的文件仅供参考。法律效力请咨询专业人士确认。",
+    "vi": "※ Tài liệu được tạo bằng công cụ này chỉ có mục đích tham khảo. Vui lòng tham khảo ý kiến chuyên gia về tính hợp lệ pháp lý.",
+    "id": "※ Dokumen yang dibuat dengan alat ini hanya untuk referensi. Harap konsultasikan dengan profesional mengenai keabsahan hukum.",
+    "tl": "※ Ang mga dokumentong nilikha gamit ang tool na ito ay para sa layuning sanggunian lamang. Mangyaring kumonsulta sa isang propesyonal tungkol sa legal na bisa.",
+    "km": "※ ឯកសារដែលបង្កើតដោយឧបករណ៍នេះគឺសម្រាប់ជាឯកសារយោងតែប៉ុណ្ណោះ។ សូមពិគ្រោះជាមួយអ្នកជំនាញអំពីសុពលភាពផ្នែកច្បាប់។",
+    "my": "※ ဤကိရိယာဖြင့်ဖန်တီးထားသောစာရွက်စာတမ်းများသည် ကိုးကားရန်သာဖြစ်သည်။ တရားဝင်မှုနှင့်ပတ်သက်ပြီး ကျွမ်းကျင်သူနှင့် တိုင်ပင်ပါ။"
+  },
+
+  "cta_partner_title": {
+    "ja": "PDF生成完了！管理団体・登録支援機関をお探しですか？",
+    "en": "PDF Generated! Looking for a supervisory or registered support organization?",
+    "zh": "PDF生成完毕！正在寻找管理团体或登记支援机构？",
+    "vi": "Đã tạo PDF! Bạn đang tìm tổ chức quản lý hoặc tổ chức hỗ trợ đã đăng ký?",
+    "id": "PDF Berhasil Dibuat! Mencari organisasi pengawas atau organisasi dukungan terdaftar?",
+    "tl": "Natapos ang PDF! Naghahanap ng supervisory o rehistradong organisasyong sumusuporta?",
+    "km": "PDF ត្រូវបានបង្កើតរួច! កំពុងរកអង្គការត្រួតពិនិត្យ ឬអង្គការគាំទ្រដែលបានចុះឈ្មោះ?",
+    "my": "PDF ပြီးသွားပြီ! ကြီးကြပ်ရေးအဖွဲ့အစည်း သို့မဟုတ် မှတ်ပုံတင်ထားသောပံ့ပိုးရေးအဖွဲ့အစည်းရှာနေသလား?"
+  },
+
+  "cta_partner_link": {
+    "ja": "パートナーディレクトリを見る →",
+    "en": "View Partner Directory →",
+    "zh": "查看合作伙伴目录 →",
+    "vi": "Xem thư mục đối tác →",
+    "id": "Lihat Direktori Mitra →",
+    "tl": "Tingnan ang Direktoryo ng Kasosyo →",
+    "km": "មើលបញ្ជីដៃគូ →",
+    "my": "မိတ်ဖက်လမ်းညွှန် →"
+  },
+
+  "clause_1_title": {
+    "ja": "第1条（在留資格・雇用契約の効力）",
+    "en": "Article 1 (Residence Status / Validity of Employment Contract)",
+    "zh": "第1条（在留资格・雇用合同的效力）",
+    "vi": "Điều 1 (Tư cách lưu trú / Hiệu lực của hợp đồng lao động)",
+    "id": "Pasal 1 (Status Kependudukan / Keabsahan Kontrak Kerja)",
+    "tl": "Artikulo 1 (Katayuan ng Tirahan / Bisa ng Kontrata sa Trabaho)",
+    "km": "មាត្រា ១ (ស្ថានភាពការស្នាក់នៅ / សុពលភាពនៃកិច្ចសន្យាការងារ)",
+    "my": "အပိုဒ် ၁ (နေထိုင်ခွင့်အခြေအနေ / အလုပ်ခန့်ထားမှုစာချုပ်တရားဝင်မှု)"
+  },
+
+  "clause_1_body": {
+    "ja": "本契約は、労働者が在留資格を有することを条件とする。在留資格が取り消された場合、または在留期限の更新がなされなかった場合、本契約は当然に終了する。",
+    "en": "This contract is conditional upon the worker holding a valid residence status. If the worker's residence status is revoked or not renewed upon expiry, this contract shall automatically terminate.",
+    "zh": "本合同以劳动者持有在留资格为前提。如在留资格被撤销或到期未续签，本合同自动终止。",
+    "vi": "Hợp đồng này có điều kiện là người lao động phải có tư cách lưu trú hợp lệ. Nếu tư cách lưu trú bị thu hồi hoặc không được gia hạn khi hết hạn, hợp đồng này sẽ tự động chấm dứt.",
+    "id": "Kontrak ini bergantung pada pekerja yang memiliki status kependudukan yang valid. Jika status kependudukan pekerja dicabut atau tidak diperbarui saat habis masa berlaku, kontrak ini akan berakhir secara otomatis.",
+    "tl": "Ang kontratang ito ay nakasalalay sa manggagawa na may wastong katayuan ng tirahan. Kung ang katayuan ng tirahan ng manggagawa ay binawi o hindi na-renew sa pag-expire nito, ang kontratang ito ay awtomatikong matatapos.",
+    "km": "កិច្ចសន្យានេះអាស្រ័យលើការដែលកម្មករមានស្ថានភាពការស្នាក់នៅត្រឹមត្រូវ។ ប្រសិនបើស្ថានភាពការស្នាក់នៅត្រូវបានដកហូត ឬមិនត្រូវបានបន្ត នៅពេលផុតកំណត់ កិច្ចសន្យានេះនឹងបញ្ចប់ដោយស្វ័យប្រវត្តិ។",
+    "my": "ဤစာချုပ်သည် အလုပ်သမားသည် တရားဝင်နေထိုင်ခွင့်အခြေအနေရှိမှသာ ဆက်လက်တည်ရှိမည်။ နေထိုင်ခွင့်ကို ရုပ်သိမ်းပါက သို့မဟုတ် သက်တမ်းကုန်ဆုံးသောအခါ မတိုးမြှင့်ပါက ဤစာချုပ်သည် အလိုအလျောက်ပြတ်ငြိမ်းမည်ဖြစ်သည်။"
+  },
+
+  "clause_2_title": {
+    "ja": "第2条（賃金控除）",
+    "en": "Article 2 (Wage Deductions)",
+    "zh": "第2条（工资扣除）",
+    "vi": "Điều 2 (Khấu trừ lương)",
+    "id": "Pasal 2 (Pemotongan Upah)",
+    "tl": "Artikulo 2 (Pagbabawas ng Sahod)",
+    "km": "មាត្រា ២ (ការកាត់ប្រាក់ខែ)",
+    "my": "အပိုဒ် ၂ (လစာနှုတ်ယူခြင်း)"
+  },
+
+  "clause_2_body": {
+    "ja": "会社は、法令に別段の定めがある場合または労使協定がある場合を除き、賃金から控除を行わない。家賃・食費等を控除する場合は、別途労使協定を締結する。",
+    "en": "The company shall not make deductions from wages except as provided by law or under a labor-management agreement. If deductions such as rent or meal costs are made, a separate labor-management agreement shall be concluded.",
+    "zh": "公司除法令另有规定或劳使协议约定外，不得从工资中扣除。若扣除房租、伙食费等，须另行签订劳使协议。",
+    "vi": "Công ty không được khấu trừ lương trừ trường hợp luật pháp quy định hoặc có thỏa thuận lao động-quản lý. Nếu khấu trừ tiền thuê nhà, tiền ăn, v.v., phải ký kết thỏa thuận lao động-quản lý riêng.",
+    "id": "Perusahaan tidak boleh melakukan pemotongan upah kecuali ditentukan oleh hukum atau berdasarkan perjanjian manajemen-buruh. Jika pemotongan seperti sewa atau biaya makan dilakukan, perjanjian manajemen-buruh terpisah harus dibuat.",
+    "tl": "Hindi maaaring magbawas ng sahod ang kumpanya maliban kung itinakda ng batas o sa ilalim ng kasunduan sa pamamahala ng paggawa. Kung magbabawas ng upa o gastos sa pagkain, kinakailangan ng hiwalay na kasunduan.",
+    "km": "ក្រុមហ៊ុនមិនត្រូវកាត់ប្រាក់ខែលើកលែងតែមានច្បាប់កំណត់ ឬមានកិច្ចព្រមព្រៀងការងារ។ ប្រសិនបើកាត់ថ្លៃជួល ថ្លៃអាហារ ត្រូវចុះកិច្ចព្រមព្រៀងដាច់ដោយឡែក។",
+    "my": "ကုမ္ပဏီသည် ဥပဒေပြဌာန်းချက် သို့မဟုတ် အလုပ်သမား-စီမံခန့်ခွဲမှုသဘောတူညီချက်မှလွဲ၍ လစာမှနှုတ်ယူမည်မဟုတ်ပါ။ အိမ်ခန်းခ၊ အစားအစာကုန်ကျစရိတ်များ နှုတ်ယူပါက သီးခြားသဘောတူညီချက် ချုပ်ဆိုရမည်။"
+  },
+
+  "clause_3_title": {
+    "ja": "第3条（退職・転籍時の費用取扱い）",
+    "en": "Article 3 (Costs at the Time of Resignation or Transfer)",
+    "zh": "第3条（离职・转籍时的费用处理）",
+    "vi": "Điều 3 (Chi phí khi nghỉ việc hoặc chuyển công ty)",
+    "id": "Pasal 3 (Biaya pada Saat Pengunduran Diri atau Transfer)",
+    "tl": "Artikulo 3 (Mga Gastos sa Panahon ng Pagbibitiw o Paglipat)",
+    "km": "មាត្រា ៣ (ថ្លៃដើមនៅពេលចូលនិវត្តន៍ ឬផ្ទេរ)",
+    "my": "အပိုဒ် ၃ (နုတ်ထွက်ခြင်း သို့မဟုတ် လွှဲပြောင်းသောအချိန်ကုန်ကျမှု)"
+  },
+
+  "clause_3_body": {
+    "ja": "会社は、労働者の退職または転籍に際して、渡航費その他の費用を労働者に負担させてはならない（労基法第16条）。違約金・賠償予定額の取り決めは行わない。",
+    "en": "The company shall not require the worker to bear travel expenses or other costs upon resignation or transfer (Labor Standards Act Article 16). No penalty clauses or predetermined damage amounts shall be established.",
+    "zh": "公司不得要求劳动者在离职或转籍时承担交通费或其他费用（劳动基准法第16条）。不设定违约金或预定赔偿额。",
+    "vi": "Công ty không được yêu cầu người lao động chịu chi phí đi lại hoặc các chi phí khác khi nghỉ việc hoặc chuyển công ty (Điều 16 Luật Tiêu chuẩn Lao động).",
+    "id": "Perusahaan tidak boleh meminta pekerja menanggung biaya perjalanan atau biaya lain saat pengunduran diri atau transfer (Pasal 16 UU Standar Ketenagakerjaan).",
+    "tl": "Hindi dapat ipanatili ng kumpanya sa manggagawa ang bayad sa biyahe o iba pang gastos sa oras ng pagbibitiw o paglipat (Artikulo 16 ng Batas sa Pamantayan sa Paggawa).",
+    "km": "ក្រុមហ៊ុនមិនត្រូវទាមទារឱ្យកម្មករទទួលខុសត្រូវចំណាយថ្លៃធ្វើដំណើរ ឬចំណាយផ្សេងទៀតនៅពេលចូលនិវត្តន៍ ឬផ្ទេរ (មាត្រា ១៦ នៃច្បាប់ស្តង់ដារការងារ)។",
+    "my": "ကုမ္ပဏီသည် အလုပ်သမားနုတ်ထွက်ခြင်း သို့မဟုတ် လွှဲပြောင်းသောအချိန်တွင် ခရီးသွားကုန်ကျစရိတ် သို့မဟုတ် အခြားကုန်ကျမှုများကို အလုပ်သမားထံ ကောက်ခံမည်မဟုတ် (အလုပ်သမားစံနှုန်းဥပဒေ အပိုဒ် ၁၆)။"
+  },
+
+  "clause_4_title": {
+    "ja": "第4条（転籍条項）",
+    "en": "Article 4 (Transfer Clause)",
+    "zh": "第4条（转籍条款）",
+    "vi": "Điều 4 (Điều khoản chuyển công ty)",
+    "id": "Pasal 4 (Klausul Transfer)",
+    "tl": "Artikulo 4 (Sugnay ng Paglipat)",
+    "km": "មាត្រា ៤ (ប្រការផ្ទេរ)",
+    "my": "အပိုဒ် ၄ (လွှဲပြောင်းချက်)"
+  },
+
+  "clause_4_body": {
+    "ja": "育成就労制度に基づき、やむを得ない事情がある場合に限り、本人の同意のもと転籍を認める。転籍に伴う費用は会社が負担し、労働者に不利益な変更を行わない。",
+    "en": "Under the training employment system, transfer shall be permitted only in unavoidable circumstances and with the employee's consent. The company shall bear all costs associated with the transfer and shall not make changes disadvantageous to the worker.",
+    "zh": "根据育成就劳制度，仅在不可避免的情况下，经本人同意方可转籍。转籍相关费用由公司承担，不得对劳动者作出不利变更。",
+    "vi": "Theo chế độ lao động đào tạo, việc chuyển công ty chỉ được phép trong trường hợp bất khả kháng và có sự đồng ý của người lao động. Công ty chịu mọi chi phí liên quan.",
+    "id": "Berdasarkan sistem pelatihan kerja, transfer hanya diizinkan dalam keadaan yang tidak dapat dihindari dan dengan persetujuan karyawan. Perusahaan menanggung semua biaya terkait transfer.",
+    "tl": "Sa ilalim ng sistema ng pagsasanay sa trabaho, ang paglipat ay pinahihintulutan lamang sa mga hindi maiiwasang kalagayan at may pahintulot ng empleyado.",
+    "km": "ក្រោមប្រព័ន្ធបណ្តុះបណ្តាលការងារ ការផ្ទេរត្រូវបានអនុញ្ញាតតែក្នុងកាលៈទេសៈដែលមិនអាចជៀសវាងបាន និងមានការយល់ព្រមរបស់និយោជិត។",
+    "my": "သင်တန်းအလုပ်စနစ်အရ လွှဲပြောင်းခြင်းသည် ရှောင်မရနိုင်သောအခြေအနေများတွင်သာ ဝန်ထမ်း၏သဘောတူညီချက်ဖြင့် ခွင့်ပြုသည်။ လွှဲပြောင်းကုန်ကျစရိတ်များကို ကုမ္ပဏီက ကျခံမည်။"
+  },
+
+  "clause_5_title": {
+    "ja": "第5条（言語の優先順位）",
+    "en": "Article 5 (Language Priority)",
+    "zh": "第5条（语言优先顺序）",
+    "vi": "Điều 5 (Ưu tiên ngôn ngữ)",
+    "id": "Pasal 5 (Prioritas Bahasa)",
+    "tl": "Artikulo 5 (Priyoridad ng Wika)",
+    "km": "មាត្រា ៥ (អាទិភាពភាសា)",
+    "my": "အပိုဒ် ၅ (ဘာသာစကားဦးစားပေးမှု)"
+  },
+
+  "clause_5_body": {
+    "ja": "本通知書の日本語版を正文とし、外国語版は参考訳とする。日本語版と外国語版に相違がある場合は、日本語版が優先する。",
+    "en": "The Japanese version of this notice shall be the authoritative text, and the foreign language version shall serve as a reference translation. In case of discrepancy between the Japanese and foreign language versions, the Japanese version shall prevail.",
+    "zh": "本通知书以日文版为正文，外文版为参考译文。日文版与外文版有差异时，以日文版为准。",
+    "vi": "Phiên bản tiếng Nhật của thông báo này là văn bản chính thức. Trong trường hợp có sự khác biệt, phiên bản tiếng Nhật sẽ được ưu tiên.",
+    "id": "Versi bahasa Jepang dari pemberitahuan ini adalah teks otoritatif. Jika ada perbedaan, versi bahasa Jepang yang berlaku.",
+    "tl": "Ang bersyon sa Hapon ng abisong ito ang magiging awtorisadong teksto. Sa kaso ng pagkakaiba, ang bersyon sa Hapon ang mangingibabaw.",
+    "km": "ជំនាន់ជប៉ុននៃការជូនដំណឹងនេះជាអត្ថបទផ្លូវការ។ ក្នុងករណីមានភាពខុសគ្នា ជំនាន់ជប៉ុននឹងត្រូវបានអនុម័ត។",
+    "my": "ဤအကြောင်းကြားချက်၏ ဂျပန်ဘာသာဗားရှင်းသည် တရားဝင်စာသားဖြစ်သည်။ ကွဲလွဲမှုရှိပါက ဂျပန်ဘာသာဗားရှင်းက ဦးစားပေးသည်။"
+  },
+
+  "footer_legal_basis": {
+    "ja": "本通知書の交付は、労働基準法第15条に基づく労働条件の明示を兼ねるものであること。",
+    "en": "The issuance of this Notice shall serve as the specification of working conditions under Article 15 of the Labour Standards Act.",
+    "zh": "本通知书的交付目的为明示《劳动基准法》第15条所规定的劳动条件。",
+    "vi": "Việc phát hành thông báo này nhằm làm rõ các điều kiện lao động theo Điều 15 Luật Tiêu chuẩn lao động.",
+    "id": "Penerbitan Surat Pemberitahuan ini berfungsi sebagai spesifikasi kondisi kerja berdasarkan Pasal 15 UU Standar Ketenagakerjaan.",
+    "tl": "Ang paglunsad ng paunawang ito ay tumutukoy sa mga kundisyon sa pagtatrabaho na nakasaad sa Artikulo 15 ng Batas sa Pamantayan sa Paggawa.",
+    "km": "ការចេញផ្សាយចក្តីជូនដំណឹងនេះស្របតាមមាត្រា១៥នៃច្បាប់ស្តង់ដារការងារ។",
+    "my": "ဤသတိပေးစာထုတ်ပေးခြင်းသည် အလုပ်သမားစံနှုန်းဥပဒေ ပုဒ်မ ၁၅ အရ ဖြစ်သည်။"
+  },
+
+  "footer_retention": {
+    "ja": "労働条件通知書については、労使間の紛争の未然防止のため、保存しておくことをお勧めします。",
+    "en": "The notice on labour conditions should be retained for the purpose of preventing any possible disputes between employees and an employer.",
+    "zh": "建议您保存好本劳动条件通知书以防止劳资间的纷争。",
+    "vi": "Nên lưu giữ thông báo này để tránh mâu thuẫn giữa người sử dụng và người lao động.",
+    "id": "Disarankan untuk menyimpan Surat Pemberitahuan ini untuk mencegah sengketa.",
+    "tl": "Ang abiso sa mga kalahayan sa pagtatrabaho ay dapat panatiliin para sa pag-iwas sa mga posibleng hindi pagkakasundo.",
+    "km": "សូមរក្សាទុកចក្តីជូនដំណឹងការងារដើម្បីទប់ស្កាត់ជម្លោះ។",
+    "my": "အငြင်းပွားမှုများကို ကာကွယ်ရန် ဤအကြောင်းကြားစာကို သိမ်းဆည်းထားရန် အကြံပြုသည်။"
+  },
+
+  "language_ja": { "ja": "日本語", "en": "Japanese", "zh": "日语", "vi": "Tiếng Nhật", "id": "Jepang", "tl": "Hapon", "km": "ជប៉ុន", "my": "ဂျပန်ဘာသာ" },
+  "language_en": { "ja": "英語", "en": "English", "zh": "英语", "vi": "Tiếng Anh", "id": "Inggris", "tl": "Ingles", "km": "អង់គ្លេស", "my": "အင်္ဂလိပ်ဘာသာ" },
+  "language_zh": { "ja": "中国語", "en": "Chinese", "zh": "中文", "vi": "Tiếng Trung", "id": "Mandarin", "tl": "Tsino", "km": "ចិន", "my": "တရုတ်ဘာသာ" },
+  "language_vi": { "ja": "ベトナム語", "en": "Vietnamese", "zh": "越南语", "vi": "Tiếng Việt", "id": "Vietnam", "tl": "Biyetnamese", "km": "វៀតណាម", "my": "ဗီယက်နမ်ဘာသာ" },
+  "language_id": { "ja": "インドネシア語", "en": "Indonesian", "zh": "印度尼西亚语", "vi": "Tiếng Indonesia", "id": "Bahasa Indonesia", "tl": "Indonesyano", "km": "ឥណ្ឌូនេស៊ី", "my": "အင်ဒိုနီးရှားဘာသာ" },
+  "language_tl": { "ja": "タガログ語", "en": "Filipino (Tagalog)", "zh": "他加禄语", "vi": "Tiếng Filipino", "id": "Tagalog", "tl": "Filipino", "km": "តាហ្គាឡូ", "my": "တာဂါလော့ဘာသာ" },
+  "language_km": { "ja": "クメール語", "en": "Khmer", "zh": "高棉语", "vi": "Tiếng Khmer", "id": "Khmer", "tl": "Khmer", "km": "ខ្មែរ", "my": "ခမာဘာသာ" },
+  "language_my": { "ja": "ミャンマー語", "en": "Burmese", "zh": "缅甸语", "vi": "Tiếng Miến Điện", "id": "Burma", "tl": "Burmese", "km": "ភូមា", "my": "မြန်မာဘာသာ" },
+
+  "label_daily": {
+    "ja": "日給",
+    "en": "Daily Wage",
+    "zh": "日薪",
+    "vi": "Lương ngày",
+    "id": "Upah Harian",
+    "tl": "Araw-araw na Sahod",
+    "km": "ប្រាក់ខែប្រចាំថ្ងៃ",
+    "my": "နေ့တွက်လစာ"
+  },
+
+  "label_wage_deductions": {
+    "ja": "賃金控除に関する労使協定",
+    "en": "Labor-Management Agreement on Wage Deductions",
+    "zh": "关于工资扣除的劳使协议",
+    "vi": "Thỏa thuận lao động-quản lý về khấu trừ lương",
+    "id": "Perjanjian Manajemen-Buruh tentang Pemotongan Upah",
+    "tl": "Kasunduan sa Pagbabawas ng Sahod",
+    "km": "កិច្ចព្រមព្រៀងពីការកាត់ប្រាក់ខែ",
+    "my": "လစာနှုတ်ယူခြင်းဆိုင်ရာ သဘောတူညီချက်"
+  },
+
+  "label_work_rules": {
+    "ja": "就業規則の確認方法",
+    "en": "Work Rules Access",
+    "zh": "就业规则确认方法",
+    "vi": "Cách xác nhận quy tắc làm việc",
+    "id": "Akses Peraturan Kerja",
+    "tl": "Paraan ng Pag-access sa Regulasyon ng Trabaho",
+    "km": "វិធីពិនិត្យវិន័យការងារ",
+    "my": "အလုပ်စည်းမျဉ်း ကြည့်ရှုနိုင်သည့်နည်းလမ်း"
+  },
+
+  "label_social_insurance": {
+    "ja": "社会保険",
+    "en": "Social Insurance",
+    "zh": "社会保险",
+    "vi": "Bảo hiểm xã hội",
+    "id": "Jaminan Sosial",
+    "tl": "Social Insurance",
+    "km": "ធានារ៉ាប់រងសង្គម",
+    "my": "လူမှုဖူလုံရေးအာမခံ"
+  },
+
+  "label_other_leave": {
+    "ja": "その他の休暇",
+    "en": "Other Leave",
+    "zh": "其他休假",
+    "vi": "Nghỉ phép khác",
+    "id": "Cuti Lainnya",
+    "tl": "Iba pang Bakasyon",
+    "km": "ច្បាប់ឈប់ផ្សេងៗ",
+    "my": "အခြားခွင့်"
+  },
+
+  "label_renewal_limit": {
+    "ja": "更新回数の上限",
+    "en": "Renewal Limit",
+    "zh": "更新次数上限",
+    "vi": "Giới hạn số lần gia hạn",
+    "id": "Batas Perpanjangan",
+    "tl": "Limitasyon sa Pag-renew",
+    "km": "ដែនកំណត់នៃការចុះកិច្ចសន្យាថ្មី",
+    "my": "သက်တမ်းတိုးကန့်သတ်ချက်"
+  },
+
+  "value_renewal_limit_none": {
+    "ja": "上限なし",
+    "en": "No limit",
+    "zh": "无上限",
+    "vi": "Không giới hạn",
+    "id": "Tidak ada batas",
+    "tl": "Walang limitasyon",
+    "km": "គ្មានដែនកំណត់",
+    "my": "ကန့်သတ်ချက်မရှိ"
+  },
+
+  "label_deduction_rent": {
+    "ja": "家賃（社宅・寮）",
+    "en": "Rent (Company Housing / Dormitory)",
+    "zh": "房租（公司宿舍/宿舍）",
+    "vi": "Tiền thuê nhà (Nhà công ty / Ký túc xá)",
+    "id": "Sewa (Rumah Perusahaan / Asrama)",
+    "tl": "Upa (Bahay ng Kumpanya / Dormitoryo)",
+    "km": "ថ្លៃជួល (លំនៅក្រុមហ៊ុន / អាគារស្នាក់នៅ)",
+    "my": "အိမ်ခန်းခ (ကုမ္ပဏီအိမ်ရာ / အဆောင်)"
+  },
+
+  "label_deduction_food": {
+    "ja": "食費",
+    "en": "Meal Costs",
+    "zh": "伙食费",
+    "vi": "Tiền ăn",
+    "id": "Biaya Makan",
+    "tl": "Gastos sa Pagkain",
+    "km": "ថ្លៃអាហារ",
+    "my": "အစားအစာကုန်ကျစရိတ်"
+  },
+
+  "label_deduction_other": {
+    "ja": "その他",
+    "en": "Other",
+    "zh": "其他",
+    "vi": "Khác",
+    "id": "Lainnya",
+    "tl": "Iba pa",
+    "km": "ផ្សេងៗ",
+    "my": "အခြား"
+  },
+
+  "warning_indefinite_conversion": {
+    "ja": "通算契約期間が5年を超える場合、無期転換申込権が発生します（労働契約法第18条）。更新上限の設定または無期転換後の労働条件の明示が必要になる場合があります。",
+    "en": "If the total contract period exceeds 5 years, the right to apply for indefinite-term conversion arises (Labor Contract Act Article 18). Setting renewal limits or specifying post-conversion working conditions may be required.",
+    "zh": "如累计合同期间超过5年，将产生无固定期限转换申请权（劳动合同法第18条）。可能需要设定更新上限或明示转换后的劳动条件。",
+    "vi": "Nếu tổng thời hạn hợp đồng vượt quá 5 năm, quyền yêu cầu chuyển đổi vô thời hạn sẽ phát sinh (Điều 18 Luật Hợp đồng Lao động).",
+    "id": "Jika total masa kontrak melebihi 5 tahun, hak untuk mengajukan konversi kontrak tetap akan muncul (Pasal 18 UU Kontrak Kerja).",
+    "tl": "Kung ang kabuuang panahon ng kontrata ay lumampas sa 5 taon, ang karapatang mag-apply para sa walang-takdang panahon na conversion ay lilitaw (Artikulo 18).",
+    "km": "ប្រសិនបើរយៈពេលកិច្ចសន្យាសរុបលើសពី ៥ ឆ្នាំ នឹងមានសិទ្ធិដាក់ពាក្យសុំបម្លែងកិច្ចសន្យាអចិន្រ្តៃយ៍ (មាត្រា ១៨)។",
+    "my": "စုစုပေါင်းစာချုပ်ကာလ ၅နှစ်ကျော်ပါက အကန့်အသတ်မဲ့စာချုပ်သို့ ပြောင်းလဲခွင့်ရှိလာမည် (အပိုဒ်မ ၁၈)။"
+  },
+
+  "value_paid_leave_standard": {
+    "ja": "6ヶ月継続勤務で10日付与（労働基準法第39条）",
+    "en": "10 days granted after 6 months continuous service (Labor Standards Act Art.39)",
+    "zh": "连续工作6个月后给予10天（劳动基准法第39条）",
+    "vi": "10 ngày sau 6 tháng làm việc liên tục (Điều 39 Luật Tiêu chuẩn Lao động)",
+    "id": "10 hari diberikan setelah 6 bulan kerja berkelanjutan (Pasal 39 UU Standar Ketenagakerjaan)",
+    "tl": "10 araw pagkatapos ng 6 buwan tuloy-tuloy na serbisyo (Artikulo 39)",
+    "km": "១០ថ្ងៃ បន្ទាប់ពីបម្រើការជាបន្ត ៦ខែ (មាត្រា ៣៩)",
+    "my": "၆လဆက်တိုက်အလုပ်လုပ်ပြီးနောက် ၁၀ရက်ခွင့်ပေး (အပိုဒ်မ ၃၉)"
+  },
+  "clause_4_tokutei_body": {
+    "ja": "特定技能外国人は、同一の業務区分内において転職の自由を有する。会社は転職・転籍を理由として費用の請求または不利益な取扱いを行わない（労基法第16条）。",
+    "en": "A specified skilled worker has the freedom to change employers within the same job category. The company shall not charge costs or impose any disadvantageous treatment on the grounds of job change or transfer (Labor Standards Act Art.16).",
+    "zh": "特定技能外国人在同一业务区分内享有转职自由。公司不得以转职・转籍为由收取费用或进行不利对待（劳动基准法第16条）。",
+    "vi": "Người lao động kỹ năng đặc định có quyền tự do chuyển việc trong cùng ngành nghề. Công ty không được yêu cầu chi phí hoặc đối xử bất lợi vì lý do chuyển việc (Điều 16 Luật Tiêu chuẩn Lao động).",
+    "id": "Pekerja berketerampilan khusus memiliki kebebasan untuk berpindah pekerjaan dalam kategori pekerjaan yang sama. Perusahaan tidak boleh membebankan biaya atau perlakuan merugikan atas alasan perpindahan kerja (Pasal 16 UU Standar Ketenagakerjaan).",
+    "tl": "Ang isang specified skilled worker ay may kalayaang lumipat ng employer sa parehong kategorya ng trabaho. Hindi maaaring singilin ng kumpanya ang gastos o magbigay ng hindi paborableng pagtrato dahil sa paglipat (Artikulo 16).",
+    "km": "កម្មករជំនាញជាក់លាក់មានសេរីភាពក្នុងការផ្លាស់ប្ដូរនិយោជកក្នុងប្រភេទការងារដូចគ្នា។ ក្រុมហ៊ុនមិនត្រូវគិតថ្លៃ ឬប្រព្រឹត្តិមិនល្អដោយសារការផ្លាស់ប្ដូរការងារ (មាត្រា ១៦)។",
+    "my": "သတ်မှတ်ကျွမ်းကျင်လုပ်သားသည် တူညီသောအလုပ်အမျိုးအစားအတွင်း အလုပ်ပြောင်းခွင့်ရှိသည်။ ကုမ္ပဏီသည် အလုပ်ပြောင်းခြင်းကြောင့် ကုန်ကျစရိတ်တောင်းခံခြင်း သို့မဟုတ် မသာယာသောဆက်ဆံမှုပြုလုပ်ခြင်းမပြုရ (အပိုဒ်မ ၁၆)။"
+  },
+  "dismissal_section_title": {
+    "ja": "解雇の事由",
+    "en": "Grounds for Dismissal",
+    "zh": "解雇事由",
+    "vi": "Lý do sa thải",
+    "id": "Alasan Pemecatan",
+    "tl": "Dahilan ng Pagkatanggal",
+    "km": "មូលហេតុនៃការបណ្ដេញចេញ",
+    "my": "အလုပ်ထုတ်ခြင်းအကြောင်းရင်း"
+  },
+  "dismissal_visa_loss": {
+    "ja": "就労可能な在留資格を喪失したとき（在留期限切れ・更新不許可含む）",
+    "en": "When the worker loses a residence status permitting work (including expiration or denial of renewal)",
+    "zh": "丧失可就劳的在留资格时（含在留期限届满、更新不被许可）",
+    "vi": "Khi mất tư cách lưu trú cho phép làm việc (bao gồm hết hạn hoặc không được gia hạn)",
+    "id": "Ketika kehilangan status izin tinggal untuk bekerja (termasuk berakhirnya masa tinggal atau penolakan perpanjangan)",
+    "tl": "Kapag nawala ang status ng paninirahan na nagpapahintulot sa trabaho (kabilang ang pag-expire o pagtanggi ng renewal)",
+    "km": "នៅពេលបាត់បង់ឋានភាពស្នាក់នៅដែលអនុញ្ញាតឱ្យធ្វើការ (រួមទាំងការផុតកំណត់ ឬការបដិសេធការបន្ត)",
+    "my": "အလုပ်လုပ်ခွင့်ရှိသော နေထိုင်ခွင့်ဆုံးရှုံးသောအခါ (သက်တမ်းကုန်ဆုံးခြင်း သို့မဟုတ် သက်တမ်းတိုးမရခြင်းအပါအဝင်)"
+  },
+  "dismissal_false_record": {
+    "ja": "在留資格申請時に経歴・学歴の虚偽が判明したとき",
+    "en": "When falsification of career history or educational background is discovered in the residence status application",
+    "zh": "在留资格申请时发现经历・学历造假时",
+    "vi": "Khi phát hiện gian lận về lý lịch hoặc trình độ học vấn trong đơn xin tư cách lưu trú",
+    "id": "Ketika ditemukan pemalsuan riwayat karir atau pendidikan dalam permohonan status izin tinggal",
+    "tl": "Kapag natuklasan ang pamemeke ng kasaysayan ng karera o edukasyon sa aplikasyon ng status ng paninirahan",
+    "km": "នៅពេលរកឃើញការក្លែងបន្លំប្រវត្តិការងារ ឬប្រវត្តិការសិក្សាក្នុងពាក្យស្នើសុំឋានភាពស្នាក់នៅ",
+    "my": "နေထိုင်ခွင့်လျှောက်ထားရာတွင် အလုပ်သမိုင်း သို့မဟုတ် ပညာရေးအရည်အချင်းအတုအယောင်တွေ့ရှိသောအခါ"
+  },
+  "dismissal_deportation": {
+    "ja": "強制退去命令を受けたとき",
+    "en": "When a deportation order is issued",
+    "zh": "收到强制遣返命令时",
+    "vi": "Khi nhận lệnh trục xuất",
+    "id": "Ketika menerima perintah deportasi",
+    "tl": "Kapag natanggap ang utos ng deportasyon",
+    "km": "នៅពេលទទួលបានបញ្ជាបណ្ដេញចេញពីប្រទេស",
+    "my": "ပြည်နှင်ဒဏ်အမိန့်ချမှတ်ခံရသောအခါ"
+  },
+  "label_renewal_limit_reason": {
+    "ja": "更新上限の理由",
+    "en": "Reason for renewal limit",
+    "zh": "更新上限的理由",
+    "vi": "Lý do giới hạn gia hạn",
+    "id": "Alasan batas perpanjangan",
+    "tl": "Dahilan ng limitasyon sa pag-renew",
+    "km": "មូលហេតុនៃដែនកំណត់ការបន្ត",
+    "my": "သက်တမ်းတိုးကန့်သတ်ချက်အကြောင်းရင်း"
+  },
+  "label_work_hour_system": {
+    "ja": "労働時間制",
+    "en": "Work hour system",
+    "zh": "工作时间制度",
+    "vi": "Chế độ giờ làm việc",
+    "id": "Sistem jam kerja",
+    "tl": "Sistema ng oras ng trabaho",
+    "km": "ប្រព័ន្ធម៉ោងការងារ",
+    "my": "အလုပ်ချိန်စနစ်"
+  },
+  "label_shift_patterns": {
+    "ja": "シフトパターン",
+    "en": "Shift patterns",
+    "zh": "班次模式",
+    "vi": "Mô hình ca làm việc",
+    "id": "Pola shift",
+    "tl": "Pattern ng shift",
+    "km": "គំរូវេន",
+    "my": "အလှည့်ပုံစံ"
+  },
+  "label_start_date_calc": {
+    "ja": "起算日",
+    "en": "Calculation start date",
+    "zh": "起算日",
+    "vi": "Ngày bắt đầu tính",
+    "id": "Tanggal mulai perhitungan",
+    "tl": "Petsa ng pagsisimula ng pagkalkula",
+    "km": "កាលបរិច្ឆេទចាប់ផ្តើមគណនា",
+    "my": "တွက်ချက်မှုစတင်ရက်"
+  },
+  "label_dismissal_work_rules": {
+    "ja": "就業規則第{n}条に定める事由による",
+    "en": "As stipulated in Article {n} of the Work Rules",
+    "zh": "根据就业规则第{n}条规定的事由",
+    "vi": "Theo quy định tại Điều {n} của Nội quy lao động",
+    "id": "Sesuai dengan Pasal {n} Peraturan Kerja",
+    "tl": "Ayon sa Artikulo {n} ng Mga Panuntunan sa Trabaho",
+    "km": "យោងតាមមាត្រា {n} នៃបទបញ្ជាការងារ",
+    "my": "အလုပ်စည်းမျဉ်းအပိုဒ်မ {n} အရ သတ်မှတ်ထားသည့်အတိုင်း"
+  },
+  "label_dismissal_work_rules_general": {
+    "ja": "就業規則の定める事由による",
+    "en": "As stipulated in the Work Rules",
+    "zh": "根据就业规则规定的事由",
+    "vi": "Theo quy định của Nội quy lao động",
+    "id": "Sesuai dengan Peraturan Kerja",
+    "tl": "Ayon sa Mga Panuntunan sa Trabaho",
+    "km": "យោងតាមបទបញ្ជាការងារ",
+    "my": "အလုပ်စည်းမျဉ်းအရ သတ်မှတ်ထားသည့်အတိုင်း"
+  },
+  "label_recent_amount": {
+    "ja": "直近",
+    "en": "Recent",
+    "zh": "最近",
+    "vi": "Gần đây",
+    "id": "Terakhir",
+    "tl": "Kamakailan",
+    "km": "ថ្មីៗ",
+    "my": "မကြာသေးမီက"
+  },
+  "label_times": {
+    "ja": "回",
+    "en": "times",
+    "zh": "次",
+    "vi": "lần",
+    "id": "kali",
+    "tl": "beses",
+    "km": "ដង",
+    "my": "ကြိမ်"
+  },
+  "label_years": {
+    "ja": "年",
+    "en": "years",
+    "zh": "年",
+    "vi": "năm",
+    "id": "tahun",
+    "tl": "taon",
+    "km": "ឆ្នាំ",
+    "my": "နှစ်"
+  },
+
+  "label_consultation_desk": {
+    "ja": "相談窓口",
+    "en": "Consultation Desk",
+    "zh": "咨询窗口",
+    "vi": "Quầy tư vấn",
+    "id": "Meja Konsultasi",
+    "tl": "Tanggapan ng Konsultasyon",
+    "km": "បញ្ជរប្រឹក្សា",
+    "my": "တိုင်ပင်ဆွေးနွေးရေးကောင်တာ"
+  },
+  "label_consultation_department": {
+    "ja": "部署名",
+    "en": "Department",
+    "zh": "部门名称",
+    "vi": "Tên bộ phận",
+    "id": "Nama Departemen",
+    "tl": "Pangalan ng Departamento",
+    "km": "ឈ្មោះផ្នែក",
+    "my": "ဌာနအမည်"
+  },
+  "label_consultation_contact": {
+    "ja": "連絡先",
+    "en": "Contact",
+    "zh": "联系方式",
+    "vi": "Liên hệ",
+    "id": "Kontak",
+    "tl": "Kontak",
+    "km": "ទំនាក់ទំនង",
+    "my": "ဆက်သွယ်ရန်"
+  },
+
+  "label_entry_date": {
+    "ja": "入国予定日",
+    "en": "Planned Entry Date",
+    "zh": "预计入境日期",
+    "vi": "Ngày dự kiến nhập cảnh",
+    "id": "Tanggal Rencana Masuk",
+    "tl": "Planong Petsa ng Pagpasok",
+    "km": "កាលបរិច្ឆេទចូលប្រទេសគ្រោងទុក",
+    "my": "ဝင်ရောက်မည့်ရက်စွဲ"
+  },
+  "label_tokutei_sector": {
+    "ja": "分野",
+    "en": "Sector",
+    "zh": "领域",
+    "vi": "Lĩnh vực",
+    "id": "Sektor",
+    "tl": "Sektor",
+    "km": "វិស័យ",
+    "my": "ကဏ္ဍ"
+  },
+  "label_tokutei_job_category": {
+    "ja": "業務区分",
+    "en": "Job Category",
+    "zh": "业务类别",
+    "vi": "Phân loại công việc",
+    "id": "Kategori Pekerjaan",
+    "tl": "Kategorya ng Trabaho",
+    "km": "ប្រភេទការងារ",
+    "my": "အလုပ်အမျိုးအစား"
+  },
+  "sector_nursing_care": {
+    "ja": "介護",
+    "en": "Nursing Care",
+    "zh": "护理",
+    "vi": "Chăm sóc điều dưỡng",
+    "id": "Perawatan",
+    "tl": "Pag-aalaga",
+    "km": "ការថែទាំ",
+    "my": "သူနာပြုစောင့်ရှောက်မှု"
+  },
+  "sector_building_cleaning": {
+    "ja": "ビルクリーニング",
+    "en": "Building Cleaning",
+    "zh": "建筑清洁",
+    "vi": "Vệ sinh tòa nhà",
+    "id": "Pembersihan Gedung",
+    "tl": "Paglilinis ng Gusali",
+    "km": "សម្អាតអគារ",
+    "my": "အဆောက်အအုံသန့်ရှင်းရေး"
+  },
+  "sector_manufacturing": {
+    "ja": "素形材・産業機械・電気電子情報関連製造業",
+    "en": "Manufacturing (Materials, Industrial Machinery, Electronics)",
+    "zh": "素形材·产业机械·电气电子信息相关制造业",
+    "vi": "Sản xuất (Vật liệu, Máy móc, Điện tử)",
+    "id": "Manufaktur (Material, Mesin Industri, Elektronik)",
+    "tl": "Pagmamanupaktura (Materyales, Makinarya, Elektronika)",
+    "km": "ផលិតកម្ម (សម្ភារៈ ម៉ាស៊ីនឧស្សាហកម្ម អេឡិចត្រូនិក)",
+    "my": "ကုန်ထုတ်လုပ်မှု (ပစ္စည်း၊ စက်ယန္တရား၊ အီလက်ထရောနစ်)"
+  },
+  "sector_construction": {
+    "ja": "建設",
+    "en": "Construction",
+    "zh": "建设",
+    "vi": "Xây dựng",
+    "id": "Konstruksi",
+    "tl": "Konstruksiyon",
+    "km": "សំណង់",
+    "my": "ဆောက်လုပ်ရေး"
+  },
+  "sector_shipbuilding": {
+    "ja": "造船・舶用工業",
+    "en": "Shipbuilding / Marine Industry",
+    "zh": "造船·船舶工业",
+    "vi": "Đóng tàu / Công nghiệp hàng hải",
+    "id": "Pembuatan Kapal / Industri Kelautan",
+    "tl": "Paggawa ng Barko / Industriyang Pandagat",
+    "km": "ការសាងសង់នាវា / ឧស្សាហកម្មសមុទ្រ",
+    "my": "သင်္ဘောတည်ဆောက်ရေး / ရေကြောင်းစက်မှု"
+  },
+  "sector_auto_maintenance": {
+    "ja": "自動車整備",
+    "en": "Automobile Maintenance",
+    "zh": "汽车维修",
+    "vi": "Bảo dưỡng ô tô",
+    "id": "Perawatan Otomotif",
+    "tl": "Pagpapanatili ng Sasakyan",
+    "km": "ថែទាំរថយន្ត",
+    "my": "မော်တော်ယာဉ်ပြုပြင်ထိန်းသိမ်းရေး"
+  },
+  "sector_aviation": {
+    "ja": "航空",
+    "en": "Aviation",
+    "zh": "航空",
+    "vi": "Hàng không",
+    "id": "Penerbangan",
+    "tl": "Abiyasyon",
+    "km": "អាកាសចរណ៍",
+    "my": "လေကြောင်း"
+  },
+  "sector_accommodation": {
+    "ja": "宿泊",
+    "en": "Accommodation",
+    "zh": "住宿",
+    "vi": "Lưu trú",
+    "id": "Akomodasi",
+    "tl": "Akomodasyon",
+    "km": "ស្នាក់នៅ",
+    "my": "တည်းခိုမှု"
+  },
+  "sector_agriculture": {
+    "ja": "農業",
+    "en": "Agriculture",
+    "zh": "农业",
+    "vi": "Nông nghiệp",
+    "id": "Pertanian",
+    "tl": "Agrikultura",
+    "km": "កសិកម្ម",
+    "my": "စိုက်ပျိုးရေး"
+  },
+  "sector_fishery": {
+    "ja": "漁業",
+    "en": "Fishery",
+    "zh": "渔业",
+    "vi": "Thủy sản",
+    "id": "Perikanan",
+    "tl": "Pangisdaan",
+    "km": "នេសាទ",
+    "my": "ငါးဖမ်းလုပ်ငန်း"
+  },
+  "sector_food_beverage": {
+    "ja": "飲食料品製造業",
+    "en": "Food & Beverage Manufacturing",
+    "zh": "食品饮料制造业",
+    "vi": "Sản xuất thực phẩm & đồ uống",
+    "id": "Manufaktur Makanan & Minuman",
+    "tl": "Paggawa ng Pagkain at Inumin",
+    "km": "ផលិតកម្មអាហារ និងភេសជ្ជៈ",
+    "my": "အစားအသောက်ထုတ်လုပ်ရေး"
+  },
+  "sector_food_service": {
+    "ja": "外食業",
+    "en": "Food Service",
+    "zh": "外食业",
+    "vi": "Dịch vụ ăn uống",
+    "id": "Layanan Makanan",
+    "tl": "Serbisyo sa Pagkain",
+    "km": "សេវាកម្មអាហារ",
+    "my": "စားသောက်ဝန်ဆောင်မှု"
+  },
+  "label_job_category_placeholder": {
+    "ja": "例：溶接",
+    "en": "e.g. Welding",
+    "zh": "例：焊接",
+    "vi": "Ví dụ: Hàn",
+    "id": "Contoh: Pengelasan",
+    "tl": "Hal.: Welding",
+    "km": "ឧ.: ការផ្សារដែក",
+    "my": "ဥပမာ: ဂဟေ"
+  },
+
+  "label_prescribed_hours": {
+    "ja": "所定労働時間",
+    "en": "Prescribed Working Hours",
+    "zh": "规定工作时间",
+    "vi": "Giờ làm việc quy định",
+    "id": "Jam Kerja yang Ditetapkan",
+    "tl": "Itinakdang Oras ng Trabaho",
+    "km": "ម៉ោងការងារដែលកំណត់",
+    "my": "သတ်မှတ်အလုပ်ချိန်"
+  },
+  "label_prescribed_days": {
+    "ja": "所定労働日数",
+    "en": "Prescribed Working Days",
+    "zh": "规定工作天数",
+    "vi": "Số ngày làm việc quy định",
+    "id": "Hari Kerja yang Ditetapkan",
+    "tl": "Itinakdang Araw ng Trabaho",
+    "km": "ចំនួនថ្ងៃការងារដែលកំណត់",
+    "my": "သတ်မှတ်အလုပ်ရက်"
+  },
+  "label_hours_unit": {
+    "ja": "時間",
+    "en": "hours",
+    "zh": "小时",
+    "vi": "giờ",
+    "id": "jam",
+    "tl": "oras",
+    "km": "ម៉ោង",
+    "my": "နာရီ"
+  },
+  "label_days_unit_count": {
+    "ja": "日",
+    "en": "days",
+    "zh": "天",
+    "vi": "ngày",
+    "id": "hari",
+    "tl": "araw",
+    "km": "ថ្ងៃ",
+    "my": "ရက်"
+  },
+  "label_temporary_return_leave": {
+    "ja": "一時帰国休暇",
+    "en": "Temporary Return Leave",
+    "zh": "临时回国假",
+    "vi": "Nghỉ phép về nước tạm thời",
+    "id": "Cuti Pulang Sementara",
+    "tl": "Pansamantalang Bakasyon sa Pagbalik",
+    "km": "ច្បាប់ឈប់សម្រាកត្រឡប់ប្រទេសបណ្តោះអាសន្ន",
+    "my": "ယာယီပြန်လည်ခွင့်"
+  },
+  "label_temporary_return_leave_body": {
+    "ja": "一時帰国を希望する場合、必要な有給休暇日数又は無給の休暇を付与することがある。",
+    "en": "If a temporary return is desired, the necessary number of paid leave days or unpaid leave may be granted.",
+    "zh": "如希望临时回国，可能会给予所需的带薪休假天数或无薪休假。",
+    "vi": "Nếu mong muốn về nước tạm thời, có thể được cấp số ngày nghỉ phép có lương hoặc nghỉ không lương cần thiết.",
+    "id": "Jika pulang sementara diinginkan, cuti berbayar atau tidak berbayar yang diperlukan dapat diberikan.",
+    "tl": "Kung nais ang pansamantalang pagbalik, maaaring ibigay ang kinakailangang bilang ng may-bayad na bakasyon o walang-bayad na bakasyon.",
+    "km": "ប្រសិនបើចង់ត្រឡប់ប្រទេសបណ្តោះអាសន្ន អាចផ្តល់ច្បាប់ឈប់សម្រាកដោយមានប្រាក់ឈ្នួល ឬគ្មានប្រាក់ឈ្នួល។",
+    "my": "ယာယီပြန်လိုပါက လိုအပ်သော အခကြေးငွေရှိခွင့် သို့မဟုတ် အခကြေးငွေမဲ့ခွင့် ပေးနိုင်ပါသည်။"
+  },
+  "label_overtime_article": {
+    "ja": "時間外労働の根拠",
+    "en": "Legal Basis for Overtime",
+    "zh": "加班的法律依据",
+    "vi": "Căn cứ pháp lý cho làm thêm giờ",
+    "id": "Dasar Hukum untuk Lembur",
+    "tl": "Legal na Batayan para sa Overtime",
+    "km": "មូលដ្ឋានផ្លូវច្បាប់សម្រាប់ការធ្វើការងារថែម",
+    "my": "အချိန်ပိုအလုပ်အတွက် ဥပဒေအခြေခံ"
+  },
+  "label_36agreement": {
+    "ja": "36協定・就業規則",
+    "en": "Article 36 Agreement / Work Rules",
+    "zh": "第36条协定·就业规则",
+    "vi": "Thỏa thuận Điều 36 / Nội quy lao động",
+    "id": "Perjanjian Pasal 36 / Peraturan Kerja",
+    "tl": "Kasunduan sa Artikulo 36 / Mga Panuntunan sa Trabaho",
+    "km": "កិច្ចព្រមព្រៀងមាត្រា ៣៦ / វិធានការងារ",
+    "my": "ပုဒ်မ ၃၆ သဘောတူညီချက် / အလုပ်စည်းမျဉ်း"
+  },
+
+  "label_overtime_rate": {
+    "ja": "割増賃金率",
+    "en": "Premium Wage Rate",
+    "zh": "加班工资费率",
+    "vi": "Tỷ lệ lương thêm giờ",
+    "id": "Tarif Upah Lembur",
+    "tl": "Rate ng Premium na Sahod",
+    "km": "អត្រាប្រាក់ឈ្នួលបន្ថែម",
+    "my": "ပရီမီယံလုပ်ခနှုန်း"
+  },
+  "label_overtime_rate_normal": {
+    "ja": "時間外（60h以下）",
+    "en": "Overtime (≤60h)",
+    "zh": "加班（60小时以下）",
+    "vi": "Làm thêm (≤60h)",
+    "id": "Lembur (≤60j)",
+    "tl": "Overtime (≤60h)",
+    "km": "ការងារបន្ថែម (≤60h)",
+    "my": "အချိန်ပို (≤60h)"
+  },
+  "label_overtime_rate_over60": {
+    "ja": "時間外（60h超）",
+    "en": "Overtime (>60h)",
+    "zh": "加班（超过60小时）",
+    "vi": "Làm thêm (>60h)",
+    "id": "Lembur (>60j)",
+    "tl": "Overtime (>60h)",
+    "km": "ការងារបន្ថែម (>60h)",
+    "my": "အချိန်ပို (>60h)"
+  },
+  "label_overtime_rate_holiday": {
+    "ja": "休日",
+    "en": "Holiday",
+    "zh": "休息日",
+    "vi": "Ngày nghỉ",
+    "id": "Hari Libur",
+    "tl": "Holiday",
+    "km": "ថ្ងៃឈប់សម្រាក",
+    "my": "အားလပ်ရက်"
+  },
+  "label_overtime_rate_night": {
+    "ja": "深夜（22:00-5:00）",
+    "en": "Late Night (22:00-5:00)",
+    "zh": "深夜（22:00-5:00）",
+    "vi": "Đêm khuya (22:00-5:00)",
+    "id": "Larut Malam (22:00-5:00)",
+    "tl": "Hating-Gabi (22:00-5:00)",
+    "km": "យប់ជ្រៅ (22:00-5:00)",
+    "my": "ညနက် (22:00-5:00)"
+  },
+  "label_percent": {
+    "ja": "％",
+    "en": "%",
+    "zh": "％",
+    "vi": "%",
+    "id": "%",
+    "tl": "%",
+    "km": "％",
+    "my": "%"
+  },
+  "label_payment_method": {
+    "ja": "賃金支払方法",
+    "en": "Payment Method",
+    "zh": "工资支付方式",
+    "vi": "Phương thức thanh toán",
+    "id": "Metode Pembayaran",
+    "tl": "Paraan ng Pagbabayad",
+    "km": "វិធីបង់ប្រាក់",
+    "my": "ငွေပေးချေမှုနည်းလမ်း"
+  },
+  "label_bank_transfer": {
+    "ja": "銀行振込",
+    "en": "Bank Transfer",
+    "zh": "银行转账",
+    "vi": "Chuyển khoản ngân hàng",
+    "id": "Transfer Bank",
+    "tl": "Bank Transfer",
+    "km": "ផ្ទេរប្រាក់តាមធនាគារ",
+    "my": "ဘဏ်ငွေလွှဲ"
+  },
+  "label_cash": {
+    "ja": "現金払い",
+    "en": "Cash Payment",
+    "zh": "现金支付",
+    "vi": "Thanh toán tiền mặt",
+    "id": "Pembayaran Tunai",
+    "tl": "Cash na Bayad",
+    "km": "ការបង់ប្រាក់សាច់ប្រាក់",
+    "my": "ငွေသားပေးချေမှု"
+  },
+  "label_fixed_overtime": {
+    "ja": "固定残業代",
+    "en": "Fixed Overtime Pay",
+    "zh": "固定加班费",
+    "vi": "Phụ cấp làm thêm giờ cố định",
+    "id": "Upah Lembur Tetap",
+    "tl": "Fixed na Overtime Pay",
+    "km": "ប្រាក់ឈ្នួលបន្ថែមថេរ",
+    "my": "ပုံသေအချိန်ပိုလုပ်ခ"
+  },
+  "label_fixed_overtime_name": {
+    "ja": "名称",
+    "en": "Name",
+    "zh": "名称",
+    "vi": "Tên gọi",
+    "id": "Nama",
+    "tl": "Pangalan",
+    "km": "ឈ្មោះ",
+    "my": "အမည်"
+  },
+  "label_fixed_overtime_amount": {
+    "ja": "金額",
+    "en": "Amount",
+    "zh": "金额",
+    "vi": "Số tiền",
+    "id": "Jumlah",
+    "tl": "Halaga",
+    "km": "ចំនួនទឹកប្រាក់",
+    "my": "ပမာဏ"
+  },
+  "label_fixed_overtime_hours": {
+    "ja": "対象時間数",
+    "en": "Covered Hours",
+    "zh": "对应时间数",
+    "vi": "Số giờ tương ứng",
+    "id": "Jam yang Dicakup",
+    "tl": "Sakop na Oras",
+    "km": "ម៉ោងដែលគ្របដណ្តប់",
+    "my": "သက်ဆိုင်သည့်နာရီ"
+  },
+  "label_deduction_tax": {
+    "ja": "所得税（概算）",
+    "en": "Income Tax (Estimate)",
+    "zh": "所得税（概算）",
+    "vi": "Thuế thu nhập (ước tính)",
+    "id": "Pajak Penghasilan (Perkiraan)",
+    "tl": "Buwis sa Kita (Tantiya)",
+    "km": "ពន្ធលើប្រាក់ចំណូល (ប៉ាន់ស្មាន)",
+    "my": "ဝင်ငွေခွန် (ခန့်မှန်းခြေ)"
+  },
+  "label_deduction_social": {
+    "ja": "社会保険料（概算）",
+    "en": "Social Insurance (Estimate)",
+    "zh": "社会保险费（概算）",
+    "vi": "Bảo hiểm xã hội (ước tính)",
+    "id": "Asuransi Sosial (Perkiraan)",
+    "tl": "Social Insurance (Tantiya)",
+    "km": "ធានារ៉ាប់រងសង្គម (ប៉ាន់ស្មាន)",
+    "my": "လူမှုအာမခံ (ခန့်မှန်းခြေ)"
+  },
+  "label_deduction_employment_ins": {
+    "ja": "雇用保険料（概算）",
+    "en": "Employment Insurance (Estimate)",
+    "zh": "雇佣保险费（概算）",
+    "vi": "Bảo hiểm việc làm (ước tính)",
+    "id": "Asuransi Ketenagakerjaan (Perkiraan)",
+    "tl": "Employment Insurance (Tantiya)",
+    "km": "ធានារ៉ាប់រងការងារ (ប៉ាន់ស្មាន)",
+    "my": "အလုပ်အကိုင်အာမခံ (ခန့်မှန်းခြေ)"
+  },
+  "label_take_home_pay": {
+    "ja": "手取り概算",
+    "en": "Estimated Take-Home Pay",
+    "zh": "预计实得工资",
+    "vi": "Lương thực nhận ước tính",
+    "id": "Perkiraan Gaji Bersih",
+    "tl": "Tinantiya na Take-Home Pay",
+    "km": "ប្រាក់ឈ្នួលសុទ្ធប៉ាន់ស្មាន",
+    "my": "ခန့်မှန်းခြေ အသားတင်လုပ်ခ"
+  },
+  "label_work_stoppage": {
+    "ja": "休業手当",
+    "en": "Work Stoppage Allowance",
+    "zh": "停工津贴",
+    "vi": "Phụ cấp ngừng việc",
+    "id": "Tunjangan Penghentian Kerja",
+    "tl": "Allowance sa Paghinto ng Trabaho",
+    "km": "ប្រាក់ឧបត្ថម្ភបិទការងារ",
+    "my": "အလုပ်ရပ်ဆိုင်းစရိတ်"
+  },
+  "label_work_stoppage_rate": {
+    "ja": "平均賃金の",
+    "en": "of average wage",
+    "zh": "平均工资的",
+    "vi": "của mức lương trung bình",
+    "id": "dari upah rata-rata",
+    "tl": "ng average na sahod",
+    "km": "នៃប្រាក់ឈ្នួលមធ្យម",
+    "my": "ပျမ်းမျှလုပ်ခ၏"
+  },
+  "label_dismissal_article_range": {
+    "ja": "解雇事由の根拠条文",
+    "en": "Articles Governing Dismissal",
+    "zh": "解雇事由的依据条文",
+    "vi": "Điều khoản quy định về sa thải",
+    "id": "Pasal yang Mengatur Pemecatan",
+    "tl": "Mga Artikulo na Namamahala sa Pagtanggal",
+    "km": "មាត្រាគ្រប់គ្រងការបណ្ដេញចេញ",
+    "my": "ထုတ်ပယ်ခြင်းဆိုင်ရာ ပုဒ်မများ"
+  },
+  "label_health_check": {
+    "ja": "健康診断",
+    "en": "Health Checkup",
+    "zh": "健康检查",
+    "vi": "Kiểm tra sức khỏe",
+    "id": "Pemeriksaan Kesehatan",
+    "tl": "Medikal na Pagsusuri",
+    "km": "ការពិនិត្យសុខភាព",
+    "my": "ကျန်းမာရေးစစ်ဆေးမှု"
+  },
+  "label_health_check_hire": {
+    "ja": "雇入れ時健診",
+    "en": "Checkup at Hiring",
+    "zh": "入职体检",
+    "vi": "Khám sức khỏe khi tuyển dụng",
+    "id": "Pemeriksaan Saat Perekrutan",
+    "tl": "Medikal sa Pag-hire",
+    "km": "ពិនិត្យសុខភាពពេលចូលធ្វើការ",
+    "my": "ခန့်အပ်ချိန် ကျန်းမာရေးစစ်ဆေးမှု"
+  },
+  "label_health_check_periodic": {
+    "ja": "定期健診",
+    "en": "Periodic Checkup",
+    "zh": "定期体检",
+    "vi": "Khám sức khỏe định kỳ",
+    "id": "Pemeriksaan Berkala",
+    "tl": "Pana-panahong Medikal",
+    "km": "ពិនិត្យសុខភាពជាប្រចាំ",
+    "my": "ပုံမှန်ကျန်းမာရေးစစ်ဆေးမှု"
+  },
+  "label_return_travel_expense": {
+    "ja": "帰国旅費",
+    "en": "Return Travel Expenses",
+    "zh": "回国旅费",
+    "vi": "Chi phí đi lại về nước",
+    "id": "Biaya Perjalanan Pulang",
+    "tl": "Gastos sa Pagbalik na Biyahe",
+    "km": "ថ្លៃធ្វើដំណើរត្រឡប់ប្រទេស",
+    "my": "ပြန်လည်ခရီးစရိတ်"
+  },
+  "label_return_travel_expense_body": {
+    "ja": "帰国旅費が自己負担できない場合、使用者が負担する。",
+    "en": "If the worker cannot afford the return travel expenses, the employer shall bear the cost.",
+    "zh": "如无法自行承担回国旅费，由雇主承担。",
+    "vi": "Nếu người lao động không thể tự chi trả chi phí đi lại về nước, người sử dụng lao động sẽ chịu chi phí.",
+    "id": "Jika pekerja tidak mampu menanggung biaya perjalanan pulang, pemberi kerja akan menanggungnya.",
+    "tl": "Kung hindi kayang bayaran ng manggagawa ang gastos sa pagbalik na biyahe, ang employer ang magbabayad.",
+    "km": "ប្រសិនបើកម្មករមិនអាចចំណាយថ្លៃធ្វើដំណើរត្រឡប់ប្រទេសបាន និយោជកត្រូវទទួលបន្ទុក។",
+    "my": "အလုပ်သမားသည် ပြန်လည်ခရီးစရိတ်ကို မတတ်နိုင်ပါက အလုပ်ရှင်က ကုန်ကျစရိတ်ကို ကျခံရမည်။"
+  },
+  "label_month_unit": {
+    "ja": "月",
+    "en": "month",
+    "zh": "月",
+    "vi": "tháng",
+    "id": "bulan",
+    "tl": "buwan",
+    "km": "ខែ",
+    "my": "လ"
+  },
+
+  "sector_textile": {
+    "ja": "繊維",
+    "en": "Textile",
+    "zh": "纺织",
+    "vi": "Dệt may",
+    "id": "Tekstil",
+    "tl": "Tekstil",
+    "km": "វាយនភណ្ឌ",
+    "my": "အထည်အလိပ်"
+  },
+  "sector_industrial_packaging": {
+    "ja": "工業包装",
+    "en": "Industrial Packaging",
+    "zh": "工业包装",
+    "vi": "Đóng gói công nghiệp",
+    "id": "Pengemasan Industri",
+    "tl": "Industrial Packaging",
+    "km": "វេចខ្ចប់ឧស្សាហកម្ម",
+    "my": "စက်မှုထုပ်ပိုးခြင်း"
+  },
+  "sector_printing": {
+    "ja": "印刷",
+    "en": "Printing",
+    "zh": "印刷",
+    "vi": "In ấn",
+    "id": "Percetakan",
+    "tl": "Pag-print",
+    "km": "បោះពុម្ព",
+    "my": "ပုံနှိပ်ခြင်း"
+  },
+  "sector_auto_transport": {
+    "ja": "自動車運送業",
+    "en": "Motor Vehicle Transport",
+    "zh": "汽车运输业",
+    "vi": "Vận tải ô tô",
+    "id": "Transportasi Kendaraan Bermotor",
+    "tl": "Transportasyon ng Sasakyan",
+    "km": "ដឹកជញ្ជូនរថយន្ត",
+    "my": "မော်တော်ယာဉ်သယ်ယူပို့ဆောင်ရေး"
+  },
+  "sector_forestry": {
+    "ja": "林業",
+    "en": "Forestry",
+    "zh": "林业",
+    "vi": "Lâm nghiệp",
+    "id": "Kehutanan",
+    "tl": "Kagubatan",
+    "km": "វារីវន",
+    "my": "သစ်တောလုပ်ငန်း"
+  },
+  "sector_railway": {
+    "ja": "鉄道",
+    "en": "Railway",
+    "zh": "铁路",
+    "vi": "Đường sắt",
+    "id": "Perkeretaapian",
+    "tl": "Riles",
+    "km": "ផ្លូវដែក",
+    "my": "ရထားလမ်း"
+  },
+  "sector_timber": {
+    "ja": "木材産業",
+    "en": "Timber Industry",
+    "zh": "木材产业",
+    "vi": "Công nghiệp gỗ",
+    "id": "Industri Kayu",
+    "tl": "Industriya ng Kahoy",
+    "km": "ឧស្សាហកម្មឈើ",
+    "my": "သစ်သားစက်မှု"
+  },
+
+  "value_work_hour_fixed": {
+    "ja": "通常勤務（固定時間制）",
+    "en": "Regular work (fixed hours)",
+    "zh": "正常工作（固定工时制）",
+    "vi": "Làm việc bình thường (giờ cố định)",
+    "id": "Kerja biasa (jam tetap)",
+    "tl": "Regular na trabaho (fixed hours)",
+    "km": "ការងារធម្មតា (ម៉ោងថេរ)",
+    "my": "ပုံမှန်အလုပ် (သတ်မှတ်အချိန်)"
+  },
+  "value_work_hour_shift": {
+    "ja": "シフト制",
+    "en": "Shift system",
+    "zh": "轮班制",
+    "vi": "Hệ thống ca",
+    "id": "Sistem shift",
+    "tl": "Shift system",
+    "km": "ប្រព័ន្ធវេន",
+    "my": "အလှည့်ကျစနစ်"
+  },
+  "value_work_hour_flex": {
+    "ja": "フレックスタイム制",
+    "en": "Flextime system",
+    "zh": "弹性工时制",
+    "vi": "Hệ thống giờ linh hoạt",
+    "id": "Sistem waktu fleksibel",
+    "tl": "Flextime system",
+    "km": "ប្រព័ន្ធម៉ោងបត់បែន",
+    "my": "ပျော့ပျောင်းသောအချိန်စနစ်"
+  },
+  "value_work_hour_variant1": {
+    "ja": "1ヶ月単位の変形労働時間制",
+    "en": "Variable working hours (1-month unit)",
+    "zh": "1个月为单位的变形劳动时间制",
+    "vi": "Hệ thống giờ làm biến đổi (đơn vị 1 tháng)",
+    "id": "Jam kerja variabel (unit 1 bulan)",
+    "tl": "Variable working hours (1-month unit)",
+    "km": "ម៉ោងការងារផ្លាស់ប្តូរ (ឯកតា ១ ខែ)",
+    "my": "ပြောင်းလဲနိုင်သောအလုပ်ချိန် (၁လ ယူနစ်)"
+  },
+  "value_work_hour_variant1y": {
+    "ja": "1年単位の変形労働時間制",
+    "en": "Variable working hours (1-year unit)",
+    "zh": "1年为单位的变形劳动时间制",
+    "vi": "Hệ thống giờ làm biến đổi (đơn vị 1 năm)",
+    "id": "Jam kerja variabel (unit 1 tahun)",
+    "tl": "Variable working hours (1-year unit)",
+    "km": "ម៉ោងការងារផ្លាស់ប្តូរ (ឯកតា ១ ឆ្នាំ)",
+    "my": "ပြောင်းလဲနိုင်သောအလုပ်ချိန် (၁နှစ် ယူနစ်)"
+  },
+
+  "value_raise_april": {
+    "ja": "毎年4月",
+    "en": "Every April",
+    "zh": "每年4月",
+    "vi": "Hàng năm vào tháng 4",
+    "id": "Setiap bulan April",
+    "tl": "Tuwing Abril",
+    "km": "ជារៀងរាល់ខែមេសា",
+    "my": "နှစ်စဉ်ဧပြီ"
+  },
+  "value_raise_january": {
+    "ja": "毎年1月",
+    "en": "Every January",
+    "zh": "每年1月",
+    "vi": "Hàng năm vào tháng 1",
+    "id": "Setiap bulan Januari",
+    "tl": "Tuwing Enero",
+    "km": "ជារៀងរាល់ខែមករា",
+    "my": "နှစ်စဉ်ဇန်နဝါရီ"
+  },
+  "value_raise_rules": {
+    "ja": "就業規則の定めによる",
+    "en": "As stipulated in work rules",
+    "zh": "按就业规则规定",
+    "vi": "Theo quy định của nội quy lao động",
+    "id": "Sesuai peraturan kerja",
+    "tl": "Ayon sa patakaran sa trabaho",
+    "km": "តាមបទបញ្ញត្តិការងារ",
+    "my": "အလုပ်စည်းမျဉ်းများအတိုင်း"
+  },
+  "value_raise_other": {
+    "ja": "その他（自由入力）",
+    "en": "Other (free text)",
+    "zh": "其他（自由输入）",
+    "vi": "Khác (nhập tự do)",
+    "id": "Lainnya (input bebas)",
+    "tl": "Iba pa (free text)",
+    "km": "ផ្សេងទៀត (បញ្ចូលដោយសេរី)",
+    "my": "အခြား (လွတ်လပ်စွာရိုက်ထည့်)"
+  },
+
+  "value_bonus_twice": {
+    "ja": "年2回（6月・12月）",
+    "en": "Twice a year (June & December)",
+    "zh": "一年两次（6月和12月）",
+    "vi": "2 lần/năm (tháng 6 & tháng 12)",
+    "id": "2 kali setahun (Juni & Desember)",
+    "tl": "Dalawang beses sa isang taon (Hunyo at Disyembre)",
+    "km": "ពីរដងក្នុងមួយឆ្នាំ (មិថុនា និងធ្នូ)",
+    "my": "တစ်နှစ်လျှင် ၂ ကြိမ် (ဇွန် နှင့် ဒီဇင်ဘာ)"
+  },
+  "value_bonus_once": {
+    "ja": "年1回",
+    "en": "Once a year",
+    "zh": "一年一次",
+    "vi": "1 lần/năm",
+    "id": "1 kali setahun",
+    "tl": "Isang beses sa isang taon",
+    "km": "មួយដងក្នុងមួយឆ្នាំ",
+    "my": "တစ်နှစ်လျှင် ၁ ကြိမ်"
+  },
+  "value_bonus_rules": {
+    "ja": "就業規則の定めによる",
+    "en": "As stipulated in work rules",
+    "zh": "按就业规则规定",
+    "vi": "Theo quy định của nội quy lao động",
+    "id": "Sesuai peraturan kerja",
+    "tl": "Ayon sa patakaran sa trabaho",
+    "km": "តាមបទបញ្ញត្តិការងារ",
+    "my": "အလုပ်စည်းမျဉ်းများအတိုင်း"
+  },
+
+  "value_range_none": {
+    "ja": "変更なし",
+    "en": "No change",
+    "zh": "无变更",
+    "vi": "Không thay đổi",
+    "id": "Tidak ada perubahan",
+    "tl": "Walang pagbabago",
+    "km": "គ្មានការផ្លាស់ប្តូរ",
+    "my": "ပြောင်းလဲမှုမရှိ"
+  },
+  "value_workplace_range_all": {
+    "ja": "会社の定める事業所全般",
+    "en": "All offices designated by the company",
+    "zh": "公司指定的所有营业场所",
+    "vi": "Tất cả văn phòng do công ty chỉ định",
+    "id": "Seluruh kantor yang ditetapkan perusahaan",
+    "tl": "Lahat ng opisina na itinalaga ng kumpanya",
+    "km": "ការិយាល័យទាំងអស់ដែលកំណត់ដោយក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီသတ်မှတ်ထားသော ရုံးခွဲအားလုံး"
+  },
+  "value_job_range_all": {
+    "ja": "会社の定める業務全般",
+    "en": "All duties designated by the company",
+    "zh": "公司指定的所有业务",
+    "vi": "Tất cả công việc do công ty chỉ định",
+    "id": "Seluruh tugas yang ditetapkan perusahaan",
+    "tl": "Lahat ng tungkulin na itinalaga ng kumpanya",
+    "km": "កិច្ចការទាំងអស់ដែលកំណត់ដោយក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီသတ်မှတ်ထားသော လုပ်ငန်းတာဝန်အားလုံး"
+  },
+  "value_range_custom": {
+    "ja": "その他（自由入力）",
+    "en": "Other (free text)",
+    "zh": "其他（自由输入）",
+    "vi": "Khác (nhập tự do)",
+    "id": "Lainnya (input bebas)",
+    "tl": "Iba pa (free text)",
+    "km": "ផ្សេងទៀត (បញ្ចូលដោយសេរី)",
+    "my": "အခြား (လွတ်လပ်စွာရိုက်ထည့်)"
+  },
+
+  "criteria_workload_tx": {
+    "ja": "契約期間満了時の業務量",
+    "en": "Workload at time of contract expiration",
+    "zh": "合同期满时的工作量",
+    "vi": "Khối lượng công việc khi hết hạn hợp đồng",
+    "id": "Beban kerja pada saat kontrak berakhir",
+    "tl": "Dami ng trabaho sa pagtapos ng kontrata",
+    "km": "បរិមាណការងារនៅពេលកិច្ចសន្យាផុតកំណត់",
+    "my": "စာချုပ်သက်တမ်းကုန်ဆုံးချိန်တွင် အလုပ်ပမာဏ"
+  },
+  "criteria_performance_tx": {
+    "ja": "勤務成績・態度",
+    "en": "Work performance and attitude",
+    "zh": "工作成绩和态度",
+    "vi": "Thành tích và thái độ làm việc",
+    "id": "Kinerja dan sikap kerja",
+    "tl": "Pagganap at pag-uugali sa trabaho",
+    "km": "សមិទ្ធផល និងឥរិយាបថការងារ",
+    "my": "အလုပ်စွမ်းဆောင်ရည်နှင့် သဘောထား"
+  },
+  "criteria_ability_tx": {
+    "ja": "能力",
+    "en": "Ability",
+    "zh": "能力",
+    "vi": "Năng lực",
+    "id": "Kemampuan",
+    "tl": "Kakayahan",
+    "km": "សមត្ថភាព",
+    "my": "စွမ်းရည်"
+  },
+  "criteria_business_condition_tx": {
+    "ja": "会社の経営状況",
+    "en": "Company's business conditions",
+    "zh": "公司的经营状况",
+    "vi": "Tình hình kinh doanh của công ty",
+    "id": "Kondisi usaha perusahaan",
+    "tl": "Kalagayan ng negosyo ng kumpanya",
+    "km": "ស្ថានភាពអាជីវកម្មរបស់ក្រុមហ៊ុន",
+    "my": "ကုမ္ပဏီ၏ စီးပွားရေးအခြေအနေ"
+  },
+  "criteria_progress_tx": {
+    "ja": "従事している業務の進捗状況",
+    "en": "Progress of assigned work",
+    "zh": "所从事业务的进展情况",
+    "vi": "Tiến độ công việc đang đảm nhiệm",
+    "id": "Kemajuan pekerjaan yang dilakukan",
+    "tl": "Progreso ng trabahong ginagawa",
+    "km": "វឌ្ឍនភាពនៃកិច្ចការដែលកំពុងធ្វើ",
+    "my": "လုပ်ဆောင်နေသော အလုပ်၏ တိုးတက်မှု"
+  },
+
+  "value_payment_bank_transfer": {
+    "ja": "銀行振込",
+    "en": "Bank transfer",
+    "zh": "银行转账",
+    "vi": "Chuyển khoản ngân hàng",
+    "id": "Transfer bank",
+    "tl": "Bank transfer",
+    "km": "ផ្ទេរប្រាក់តាមធនាគារ",
+    "my": "ဘဏ်ငွေလွှဲ"
+  },
+  "value_payment_cash": {
+    "ja": "現金払い",
+    "en": "Cash payment",
+    "zh": "现金支付",
+    "vi": "Thanh toán tiền mặt",
+    "id": "Pembayaran tunai",
+    "tl": "Cash payment",
+    "km": "បង់ជាសាច់ប្រាក់",
+    "my": "ငွေသားဖြင့်ပေးချေ"
+  },
+
+  "value_wage_monthly": {
+    "ja": "月給",
+    "en": "Monthly salary",
+    "zh": "月薪",
+    "vi": "Lương tháng",
+    "id": "Gaji bulanan",
+    "tl": "Buwanang sahod",
+    "km": "ប្រាក់ខែ",
+    "my": "လစာ"
+  },
+  "value_wage_daily": {
+    "ja": "日給",
+    "en": "Daily wage",
+    "zh": "日薪",
+    "vi": "Lương ngày",
+    "id": "Upah harian",
+    "tl": "Arawang sahod",
+    "km": "ប្រាក់ថ្ងៃ",
+    "my": "နေ့စာ"
+  },
+  "value_wage_hourly": {
+    "ja": "時給",
+    "en": "Hourly wage",
+    "zh": "时薪",
+    "vi": "Lương giờ",
+    "id": "Upah per jam",
+    "tl": "Oras-oras na sahod",
+    "km": "ប្រាក់ម៉ោង",
+    "my": "နာရီစာ"
+  },
+
+  "label_sector": {
+    "ja": "分野",
+    "en": "Sector",
+    "zh": "领域",
+    "vi": "Lĩnh vực",
+    "id": "Sektor",
+    "tl": "Sektor",
+    "km": "វិស័យ",
+    "my": "ကဏ္ဍ"
+  },
+  "label_job_category": {
+    "ja": "業務区分",
+    "en": "Job Category",
+    "zh": "业务类别",
+    "vi": "Loại công việc",
+    "id": "Kategori pekerjaan",
+    "tl": "Kategorya ng trabaho",
+    "km": "ប្រភេទការងារ",
+    "my": "အလုပ်အမျိုးအစား"
+  },
+
+  "signature_section_title": {
+    "ja": "署名欄",
+    "en": "Signatures",
+    "zh": "签名栏",
+    "vi": "Chữ ký",
+    "id": "Tanda Tangan",
+    "tl": "Pirma",
+    "km": "ហត្ថលេខា",
+    "my": "လက်မှတ်"
+  },
+  "signature_agreement_text": {
+    "ja": "上記の労働条件を確認し、内容に同意の上、署名します。",
+    "en": "I have read, understood, and agree to the above working conditions.",
+    "zh": "本人已阅读、理解并同意上述劳动条件。",
+    "vi": "Tôi đã đọc, hiểu và đồng ý với các điều kiện làm việc nêu trên.",
+    "id": "Saya telah membaca, memahami, dan menyetujui kondisi kerja di atas.",
+    "tl": "Nabasa, naunawaan, at sumasang-ayon ako sa mga kondisyon sa trabaho sa itaas.",
+    "km": "ខ្ញុំបានអាន យល់ព្រម និងឯកភាពនឹងលក្ខខណ្ឌការងារខាងលើ។",
+    "my": "အထက်ဖော်ပြပါ အလုပ်အကိုင်အခြေအနေများကို ဖတ်ရှု နားလည်ပြီး သဘောတူပါသည်။"
+  },
+  "signature_employer": {
+    "ja": "使用者（雇用主）",
+    "en": "Employer",
+    "zh": "使用者（雇主）",
+    "vi": "Người sử dụng lao động",
+    "id": "Pemberi Kerja",
+    "tl": "Employer",
+    "km": "និយោជក",
+    "my": "အလုပ်ရှင်"
+  },
+  "signature_worker": {
+    "ja": "労働者",
+    "en": "Worker",
+    "zh": "劳动者",
+    "vi": "Người lao động",
+    "id": "Pekerja",
+    "tl": "Manggagawa",
+    "km": "កម្មករ",
+    "my": "အလုပ်သမား"
+  },
+  "signature_date": {
+    "ja": "署名日",
+    "en": "Date of Signature",
+    "zh": "签署日期",
+    "vi": "Ngày ký",
+    "id": "Tanggal Tanda Tangan",
+    "tl": "Petsa ng Pirma",
+    "km": "កាលបរិច្ឆេទចុះហត្ថលេខា",
+    "my": "လက်မှတ်ရေးထိုးသည့်ရက်"
+  },
+  "signature_name": {
+    "ja": "氏名",
+    "en": "Name",
+    "zh": "姓名",
+    "vi": "Họ và tên",
+    "id": "Nama",
+    "tl": "Pangalan",
+    "km": "ឈ្មោះ",
+    "my": "အမည်"
+  },
+  "signature_seal": {
+    "ja": "印",
+    "en": "Seal/Stamp",
+    "zh": "印章",
+    "vi": "Dấu",
+    "id": "Cap",
+    "tl": "Selyo",
+    "km": "ត្រា",
+    "my": "တံဆိပ်"
+  },
+  "signature_preset_note": {
+    "ja": "※ 氏名欄には上記の名前が事前に印字されています。署名は上の線の上にご記入ください。",
+    "en": "* Names are pre-printed above. Please sign on the line.",
+    "zh": "※ 姓名栏已预先打印上述姓名。请在上方线上签名。",
+    "vi": "※ Tên đã được in sẵn. Vui lòng ký trên đường kẻ.",
+    "id": "※ Nama telah dicetak sebelumnya. Silakan tanda tangan di atas garis.",
+    "tl": "※ Ang mga pangalan ay naka-print na. Mangyaring pumirma sa linya.",
+    "km": "※ ឈ្មោះបានបោះពុម្ពរួចរាល់។ សូមចុះហត្ថលេខាលើបន្ទាត់។",
+    "my": "※ အမည်များကို ကြိုတင်ရိုက်နှိပ်ထားပါသည်။ မျဉ်းပေါ်တွင် လက်မှတ်ထိုးပါ။"
+  }
+}

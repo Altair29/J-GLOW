@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="320" fill="#f8fafc" rx="12"/>
+  <text x="400" y="38" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">受入れ後3ヶ月のOJTステップ</text>
+  <rect x="40" y="60" width="210" height="220" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="40" y="60" width="210" height="48" rx="10" fill="url(#navyGrad)"/>
+  <rect x="40" y="88" width="210" height="20" fill="url(#navyGrad)"/>
+  <text x="145" y="80" text-anchor="middle" font-size="11" fill="#c9a84c" font-weight="bold">STEP 1</text>
+  <text x="145" y="98" text-anchor="middle" font-size="13" fill="white" font-weight="bold">1ヶ月目：基礎固め</text>
+  <text x="60" y="133" font-size="11" fill="#374151">
+    <tspan x="60" dy="0">✓ 見せる型OJTで業務手順を伝える</tspan>
+    <tspan x="60" dy="22">✓ やさしい日本語マニュアル配布</tspan>
+    <tspan x="60" dy="22">✓ 週1回1on1面談（困りごと確認）</tspan>
+    <tspan x="60" dy="22">✓ 生活ルール・安全説明</tspan>
+    <tspan x="60" dy="22">✓ 日本語学習の時間確保</tspan>
+  </text>
+  <rect x="70" y="255" width="110" height="18" rx="9" fill="#fef3c7"/>
+  <text x="125" y="267" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">目標：現場に慣れる</text>
+  <polygon points="262,165 278,155 278,175" fill="#c9a84c"/>
+  <line x1="250" y1="165" x2="278" y2="165" stroke="#c9a84c" stroke-width="2.5"/>
+  <rect x="290" y="60" width="210" height="220" rx="10" fill="white" stroke="#c9a84c" stroke-width="2"/>
+  <rect x="290" y="60" width="210" height="48" rx="10" fill="#c9a84c"/>
+  <rect x="290" y="88" width="210" height="20" fill="#c9a84c"/>
+  <text x="395" y="80" text-anchor="middle" font-size="11" fill="white" font-weight="bold">STEP 2</text>
+  <text x="395" y="98" text-anchor="middle" font-size="13" fill="white" font-weight="bold">2ヶ月目：定着確認</text>
+  <text x="310" y="133" font-size="11" fill="#374151">
+    <tspan x="310" dy="0">✓ 業務習熟度チェック</tspan>
+    <tspan x="310" dy="22">✓ 難易度を段階的に引き上げ</tspan>
+    <tspan x="310" dy="22">✓ 日本語進捗確認（N5→N4へ）</tspan>
+    <tspan x="310" dy="22">✓ 職場の人間関係の確認</tspan>
+    <tspan x="310" dy="22">✓ 生活基盤の安定確認</tspan>
+  </text>
+  <rect x="320" y="255" width="130" height="18" rx="9" fill="#fef3c7"/>
+  <text x="385" y="267" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">目標：自立して業務遂行</text>
+  <polygon points="512,165 528,155 528,175" fill="#c9a84c"/>
+  <line x1="500" y1="165" x2="528" y2="165" stroke="#c9a84c" stroke-width="2.5"/>
+  <rect x="540" y="60" width="220" height="220" rx="10" fill="white" stroke="#1a2f5e" stroke-width="2"/>
+  <rect x="540" y="60" width="220" height="48" rx="10" fill="url(#navyGrad)"/>
+  <rect x="540" y="88" width="220" height="20" fill="url(#navyGrad)"/>
+  <text x="650" y="80" text-anchor="middle" font-size="11" fill="#c9a84c" font-weight="bold">STEP 3</text>
+  <text x="650" y="98" text-anchor="middle" font-size="13" fill="white" font-weight="bold">3ヶ月目：次へのステップ</text>
+  <text x="558" y="133" font-size="11" fill="#374151">
+    <tspan x="558" dy="0">✓ 特定技能移行の試験スケジュール共有</tspan>
+    <tspan x="558" dy="22">✓ キャリアパス説明（1号→2号→永住）</tspan>
+    <tspan x="558" dy="22">✓ 育成就労計画の目標確認（2027年〜）</tspan>
+    <tspan x="558" dy="22">✓ 日本語N4取得への学習計画策定</tspan>
+    <tspan x="558" dy="22">✓ 技能試験の準備開始</tspan>
+  </text>
+  <rect x="570" y="255" width="150" height="18" rx="9" fill="#dbeafe"/>
+  <text x="645" y="267" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="bold">目標：特定技能移行の設計完了</text>
+  <text x="400" y="308" text-anchor="middle" font-size="10" fill="#6b7280">2027年4月〜 育成就労制度では入国後からの計画的OJTが法的義務に</text>
+</svg>

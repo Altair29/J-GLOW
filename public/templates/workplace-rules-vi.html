@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nội Quy Quan Trọng Tại Nơi Làm Việc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans', sans-serif; background: #f5f6fa; color: #1a2f5e; padding: 20px; }
+    .page { width: 210mm; min-height: 297mm; margin: 0 auto; background: white; padding: 24px 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+    .header { background: linear-gradient(135deg, #1a2f5e, #2d5a9e); color: white; padding: 16px 20px; border-radius: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-sub { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+    .header-logo { font-size: 13px; font-weight: 700; color: #c9a84c; text-align: right; }
+    .section { margin-bottom: 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    .section-header { background: #1a2f5e; color: white; padding: 8px 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .section-icon { font-size: 16px; }
+    .section-body { padding: 10px 14px; background: white; }
+    .rule-list { list-style: none; }
+    .rule-list li { padding: 6px 0; border-bottom: 1px solid #f0f4f8; font-size: 12.5px; line-height: 1.6; display: flex; gap: 8px; }
+    .rule-list li:last-child { border-bottom: none; }
+    .rule-num { background: #c9a84c; color: white; font-weight: 700; font-size: 11px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .emergency .section-header { background: #c0392b; }
+    .emergency-item { padding: 6px 0; border-bottom: 1px solid #f0f4f8; font-size: 12.5px; line-height: 1.5; display: flex; gap: 10px; }
+    .emergency-item:last-child { border-bottom: none; }
+    .arrow { color: #c0392b; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .phrases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .phrase-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; }
+    .phrase-main { font-size: 14px; font-weight: 700; color: #1a2f5e; }
+    .phrase-ja { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .company-info { background: #fafbfc; border: 1.5px dashed #c9a84c; border-radius: 8px; padding: 12px 16px; margin-top: 14px; }
+    .company-info-title { font-size: 12px; font-weight: 700; color: #c9a84c; margin-bottom: 10px; }
+    .info-row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
+    .info-label { font-size: 11px; color: #64748b; width: 100px; flex-shrink: 0; }
+    .info-line { flex: 1; border-bottom: 1px solid #94a3b8; height: 20px; }
+    .footer { margin-top: 12px; text-align: center; font-size: 10px; color: #94a3b8; }
+    @media print { body { background: white; padding: 0; } .page { box-shadow: none; width: 100%; } .no-print { display: none !important; } }
+    .print-btn { position: fixed; top: 20px; right: 20px; background: #1a2f5e; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 100; }
+    .print-btn:hover { background: #2d5a9e; }
+  </style>
+</head>
+<body>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ 印刷 / Print</button>
+  <div class="page">
+    <div class="header">
+      <div>
+        <div class="header-title">Nội Quy Quan Trọng Tại Nơi Làm Việc</div>
+        <div class="header-sub">現場の大切なルール</div>
+      </div>
+      <div class="header-logo">J-GLOW</div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-icon">🦺</span>Quy tắc an toàn（安全ルール）</div>
+      <div class="section-body">
+        <ul class="rule-list">
+          <li><span class="rule-num">1</span><span>Trước khi sử dụng máy móc, hãy kiểm tra cẩn thận</span></li>
+          <li><span class="rule-num">2</span><span>Không được vào khu vực màu đỏ</span></li>
+          <li><span class="rule-num">3</span><span>Nếu bị thương, hãy báo ngay cho người phụ trách</span></li>
+          <li><span class="rule-num">4</span><span>Luôn đeo đồ bảo hộ lao động（mũ bảo hiểm・găng tay・giày an toàn）</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="section emergency">
+      <div class="section-header"><span class="section-icon">🚨</span>Khi khẩn cấp（緊急のとき）</div>
+      <div class="section-body">
+        <div class="emergency-item"><span class="arrow">→</span><span>Bị thương → Báo ngay cho người phụ trách</span></div>
+        <div class="emergency-item"><span class="arrow">→</span><span>Máy móc bị dừng → Không tự sửa chữa. Báo cho người phụ trách</span></div>
+        <div class="emergency-item"><span class="arrow">→</span><span>Khi có hỏa hoạn → Hô to "Cháy!" và ra ngoài ngay</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-icon">📋</span>Quy định hàng ngày（毎日のルール）</div>
+      <div class="section-body">
+        <ul class="rule-list">
+          <li><span class="rule-num">1</span><span>Đến nơi làm việc trước 15 phút so với giờ bắt đầu</span></li>
+          <li><span class="rule-num">2</span><span>Nếu nghỉ, hãy gọi điện trước ngày hôm trước hoặc trước 8 giờ sáng ngày nghỉ</span></li>
+          <li><span class="rule-num">3</span><span>Khi có khó khăn, hãy báo ngay cho người phụ trách</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-icon">💬</span>Những câu thường dùng（よく使う言葉）</div>
+      <div class="section-body">
+        <div class="phrases-grid">
+          <div class="phrase-card"><div class="phrase-main">Tôi đã xong việc rồi</div><div class="phrase-ja">終わりました</div></div>
+          <div class="phrase-card"><div class="phrase-main">Xin hãy kiểm tra</div><div class="phrase-ja">確認してください</div></div>
+          <div class="phrase-card"><div class="phrase-main">Tôi đang gặp khó khăn</div><div class="phrase-ja">困っています</div></div>
+          <div class="phrase-card"><div class="phrase-main">Tôi không hiểu</div><div class="phrase-ja">わかりません</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="company-info">
+      <div class="company-info-title">✏️ Thông tin công ty（会社記入欄）</div>
+      <div class="info-row"><span class="info-label">Tên công ty（会社名）</span><div class="info-line"></div></div>
+      <div class="info-row"><span class="info-label">Người phụ trách（担当者）</span><div class="info-line"></div></div>
+      <div class="info-row"><span class="info-label">Số điện thoại（電話番号）</span><div class="info-line"></div></div>
+      <div class="info-row"><span class="info-label">Liên hệ khẩn cấp（緊急連絡先）</span><div class="info-line"></div></div>
+    </div>
+    <div class="footer">J-GLOW | j-glow.com | Tài liệu này được cung cấp bởi công ty của bạn</div>
+  </div>
+</body>
+</html>

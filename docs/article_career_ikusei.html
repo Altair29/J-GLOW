@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>育成就労から特定技能2号・永住へ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2f5e;
+    --gold: #c9a84c;
+    --gold-light: #f5e9c8;
+    --teal: #0d9488;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --bg: #f8f9fc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+
+  .article-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 40%, var(--teal) 100%);
+    color: white; padding: 60px 40px 50px; position: relative; overflow: hidden;
+  }
+  .article-header::before {
+    content: '→';
+    position: absolute; right: 60px; top: 20px;
+    font-size: 200px; font-weight: 700;
+    color: rgba(255,255,255,0.04); line-height: 1;
+  }
+  .category-tag {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 16px;
+  }
+  .article-header h1 {
+    font-family: 'Noto Serif JP', serif; font-size: 26px; font-weight: 700;
+    line-height: 1.4; max-width: 680px; margin-bottom: 16px; position: relative; z-index: 1;
+  }
+  .article-meta { font-size: 13px; color: rgba(255,255,255,0.7); position: relative; z-index: 1; }
+
+  .content-wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .lead {
+    font-size: 16px; line-height: 1.9; border-left: 4px solid var(--gold);
+    padding: 20px 24px; background: var(--gold-light); border-radius: 0 8px 8px 0; margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700;
+    color: var(--navy); margin: 52px 0 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold);
+  }
+  h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin: 32px 0 14px; padding-left: 12px; border-left: 3px solid var(--gold); }
+  p { margin-bottom: 18px; font-size: 15.5px; }
+
+  /* ===== メインキャリアフロー SVG ===== */
+  .career-flow-wrap {
+    background: white; border-radius: 16px; padding: 40px 32px;
+    margin: 36px 0; box-shadow: 0 6px 32px rgba(26,47,94,0.12);
+    overflow-x: auto;
+  }
+  .career-flow-title {
+    font-size: 13px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.08em; margin-bottom: 32px; text-align: center;
+  }
+  .career-flow-svg { display: block; margin: 0 auto; }
+
+  /* SVGスタイル */
+  .stage-rect { rx: 10; ry: 10; }
+  .arrow-path { fill: none; stroke-linecap: round; }
+  .stage-label { font-family: 'Noto Sans JP', sans-serif; }
+
+  /* フローノードのアニメーション */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .flow-node {
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease forwards;
+  }
+  .flow-node:nth-child(1) { animation-delay: 0.1s; }
+  .flow-node:nth-child(2) { animation-delay: 0.3s; }
+  .flow-node:nth-child(3) { animation-delay: 0.5s; }
+  .flow-node:nth-child(4) { animation-delay: 0.7s; }
+  .flow-node:nth-child(5) { animation-delay: 0.9s; }
+
+  @keyframes drawLine {
+    from { stroke-dashoffset: 200; }
+    to { stroke-dashoffset: 0; }
+  }
+  .animated-arrow {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+  }
+  .animated-arrow.play { animation: drawLine 0.4s ease forwards; }
+
+  /* ===== 在留期間タイムライン ===== */
+  .timeline-bar {
+    background: white; border-radius: 14px; padding: 36px 32px;
+    margin: 36px 0; box-shadow: 0 4px 24px rgba(26,47,94,0.1);
+    overflow-x: auto;
+  }
+  .timeline-bar-title {
+    font-size: 13px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em; margin-bottom: 28px;
+  }
+
+  /* ===== 業種別要件テーブル ===== */
+  .table-wrap {
+    overflow-x: auto; margin: 28px 0 40px;
+    border-radius: 10px; box-shadow: 0 2px 12px rgba(26,47,94,0.08);
+  }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+  thead { background: var(--navy); color: white; }
+  thead th { padding: 14px 16px; text-align: left; font-weight: 600; font-size: 13px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 14px 16px; vertical-align: top; font-size: 13.5px; line-height: 1.6; }
+  td:first-child { font-weight: 600; color: var(--navy); white-space: nowrap; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+  .badge-high { background: #dcfce7; color: #16a34a; }
+  .badge-mid { background: #fef3c7; color: #d97706; }
+  .badge-low { background: #fee2e2; color: var(--danger); }
+
+  /* ===== 支援アクション3ステップ ===== */
+  .action-cards {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 28px 0;
+  }
+  .action-card {
+    background: white; border-radius: 12px; padding: 24px 20px;
+    box-shadow: 0 3px 16px rgba(26,47,94,0.08);
+    border-top: 3px solid var(--gold);
+    display: flex; flex-direction: column; gap: 12px;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .action-card.visible { opacity: 1; transform: translateY(0); }
+  .action-card:nth-child(2) { transition-delay: 0.15s; }
+  .action-card:nth-child(3) { transition-delay: 0.3s; }
+  .action-number {
+    font-size: 32px; font-weight: 700; color: var(--gold);
+    line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .action-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .action-desc { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+
+  /* ===== 1,047人の可視化 ===== */
+  .person-counter {
+    background: var(--navy); border-radius: 14px; padding: 36px;
+    margin: 32px 0; color: white; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .person-counter::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border: 2px solid rgba(201,168,76,0.15); border-radius: 50%;
+  }
+  .counter-main {
+    font-size: 80px; font-weight: 700; color: var(--gold);
+    line-height: 1; margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+    position: relative; z-index: 1;
+  }
+  .counter-unit { font-size: 28px; }
+  .counter-label { font-size: 15px; color: rgba(255,255,255,0.8); margin-bottom: 16px; position: relative; z-index: 1; }
+  .counter-context { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.7; position: relative; z-index: 1; }
+
+  /* ===== 日本語学習ロードマップ ===== */
+  .jp-roadmap {
+    background: white; border-radius: 12px; padding: 28px 32px;
+    margin: 28px 0; box-shadow: 0 2px 14px rgba(26,47,94,0.08);
+  }
+  .jp-roadmap-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+  .jp-levels {
+    display: flex; gap: 0; align-items: flex-end;
+    border-bottom: 2px solid var(--border); padding-bottom: 16px;
+    margin-bottom: 16px; overflow-x: auto;
+  }
+  .jp-level {
+    flex: 1; min-width: 80px; text-align: center; position: relative; padding-bottom: 20px;
+  }
+  .jp-level-bar {
+    margin: 0 auto; border-radius: 4px 4px 0 0;
+    transition: height 1s ease; height: 0;
+  }
+  .jp-level.animated .jp-level-bar { height: var(--h); }
+  .jp-level-name {
+    font-size: 14px; font-weight: 700; margin-top: 8px; color: var(--navy);
+  }
+  .jp-level-desc { font-size: 11px; color: var(--text-sub); margin-top: 4px; line-height: 1.4; }
+  .jp-level-tag {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    display: inline-block; margin-top: 6px;
+  }
+
+  /* チェックリスト */
+  .checklist {
+    background: white; border-radius: 10px; padding: 24px 28px;
+    margin: 24px 0; box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+  }
+  .checklist-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+  .checklist ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; }
+  .checklist li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .highlight-box {
+    background: var(--gold-light); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+  .highlight-box strong { color: var(--navy); }
+
+  .summary-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 50%, var(--teal) 100%);
+    color: white; border-radius: 12px; padding: 36px 40px; margin-top: 52px;
+  }
+  .summary-box h2 { color: var(--gold); border-bottom-color: rgba(201,168,76,0.3); font-size: 18px; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid; padding-bottom: 12px; }
+  .summary-box p { font-size: 14.5px; color: rgba(255,255,255,0.88); line-height: 1.8; }
+  .summary-box ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .summary-box li { font-size: 14px; color: rgba(255,255,255,0.85); display: flex; align-items: flex-start; gap: 10px; }
+  .summary-box li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  .note { font-size: 12px; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 48px; padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="article-header">
+  <div class="category-tag">STAGE 3 ｜ 在留資格別キャリア支援</div>
+  <h1>育成就労から特定技能1号・2号、そして永住へ<br>——企業が伴走するキャリア支援の全体像と実務</h1>
+  <div class="article-meta">2026年2月更新 ｜ 推定読了時間：12分</div>
+</div>
+
+<div class="content-wrap">
+
+  <p class="lead">
+    育成就労制度は「3年で終わる制度」ではありません。特定技能1号・2号を経て永住申請まで繋がるキャリアルートが2027年4月から制度化されます。企業がこのルートを入社時から示し、各ステージで具体的なサポートを行うことが、最も効果的な長期定着戦略です。
+  </p>
+
+  <h2>01 ｜ 全体像——育成就労から永住までの道筋</h2>
+
+  <p>
+    育成就労（2027年4月施行）は、旧技能実習制度と根本的に異なります。制度の目的が「労働力確保」から「特定技能への移行を前提とした人材育成」に変わりました。つまり<strong>企業は最初から「10年後もこの人に働いてもらう」というゴールから逆算して採用・育成する</strong>設計になっています。
+  </p>
+
+  <!-- メインキャリアフローSVG -->
+  <div class="career-flow-wrap">
+    <div class="career-flow-title">育成就労〜永住 キャリアルートマップ</div>
+    <div style="display:flex;gap:0;overflow-x:auto;align-items:stretch;">
+      <!-- STAGE 1: 育成就労 -->
+      <div style="flex:1;min-width:160px;background:#1a2f5e;border-radius:12px;padding:20px 16px;color:white;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;">STAGE 1</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;">育成就労</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:8px;font-size:12px;color:rgba(255,255,255,0.8);">在留期間：最長3年</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">技能習得・日本語学習<br>評価試験・JLPT N4<br>監理支援機関と連携</div>
+      </div>
+      <!-- 矢印 -->
+      <div style="display:flex;align-items:center;padding:0 6px;flex-shrink:0;">
+        <span style="font-size:22px;color:#c9a84c;font-weight:700;">→</span>
+      </div>
+      <!-- STAGE 2: 特定技能1号 -->
+      <div style="flex:1;min-width:160px;background:#0d9488;border-radius:12px;padding:20px 16px;color:white;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;">STAGE 2</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;">特定技能1号</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:8px;font-size:12px;color:rgba(255,255,255,0.8);">在留期間：通算5年（最長6年）</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">同等待遇義務が適用<br>転籍自由（同一分野）<br>リーダー職経験を積む</div>
+      </div>
+      <!-- 矢印 -->
+      <div style="display:flex;align-items:center;padding:0 6px;flex-shrink:0;">
+        <span style="font-size:22px;color:#c9a84c;font-weight:700;">→</span>
+      </div>
+      <!-- STAGE 3: 特定技能2号 -->
+      <div style="flex:1;min-width:160px;background:#1a5276;border-radius:12px;padding:20px 16px;color:white;display:flex;flex-direction:column;gap:8px;border-top:3px solid #c9a84c;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;">STAGE 3</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;">特定技能2号</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:8px;font-size:12px;color:#c9a84c;font-weight:700;">在留期間：上限なし</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">家族帯同が可能<br>管理職・班長として勤務<br>全11分野で取得可能</div>
+      </div>
+      <!-- 矢印 -->
+      <div style="display:flex;align-items:center;padding:0 6px;flex-shrink:0;">
+        <span style="font-size:22px;color:#c9a84c;font-weight:700;">→</span>
+      </div>
+      <!-- STAGE 4: 永住 -->
+      <div style="flex:1;min-width:160px;background:#1a2f5e;border:2px solid #c9a84c;border-radius:12px;padding:20px 16px;color:white;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:16px;color:#c9a84c;text-align:center;">⭐</div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;text-align:center;">永住者</div>
+        <div style="border-top:1px solid rgba(201,168,76,0.3);padding-top:8px;font-size:12px;color:#c9a84c;font-weight:700;">就労制限なし</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">業種・職種の制限なし<br>在留期間：無制限<br>日本での定住確立</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1047人の現実 -->
+  <div class="person-counter">
+    <div class="counter-main" id="counter-num">0<span class="counter-unit">人</span></div>
+    <div class="counter-label">2025年1月時点の特定技能2号取得者数（全分野合計）</div>
+    <div class="counter-context">
+      制度開始から7年が経過しているにもかかわらず、この少なさが現実です。<br>
+      逆に言えば、「今から2号移行環境を整える企業は圧倒的な差別化ができる」ということでもあります。<br>
+      外食業：134人　建設業：239人　製造業（素形材等）：214人　その他分野
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>なぜ取得者がこれほど少ないのか：</strong>2号移行には技能試験合格に加え、「複数の作業員を指導・監督しながら作業工程を管理する者」としての実務経験が必要です。この経験を積める環境、つまり<strong>班長・リーダー・副店長などの役職を与えている企業がまだ少ない</strong>のが主因です。
+  </div>
+
+  <h2>02 ｜ 業種別・特定技能2号の要件一覧</h2>
+
+  <p>
+    2号の要件は分野によって異なります。「合格率」も分野によって大きく差があり、外食業が最も通りやすいことが特徴的です。
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>分野</th>
+          <th>実務経験の要件</th>
+          <th>試験・資格</th>
+          <th>日本語要件</th>
+          <th>合格率目安</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>外食業<div class="badge badge-high">取りやすい</div></td>
+          <td>副店長・サブマネージャー等として2年以上の実務経験</td>
+          <td>外食業特定技能2号技能測定試験</td>
+          <td>JLPT N3以上</td>
+          <td>約60%</td>
+        </tr>
+        <tr>
+          <td>製造業<div class="badge badge-mid">中程度</div></td>
+          <td>国内製造業現場での3年以上の実務経験（班長レベル）</td>
+          <td>製造分野特定技能2号評価試験（3区分）</td>
+          <td>試験は日本語のみ（ルビなし）</td>
+          <td>約40〜50%</td>
+        </tr>
+        <tr>
+          <td>建設<div class="badge badge-mid">中程度</div></td>
+          <td>班長・職長等として複数の作業員を指導・監督する実務経験</td>
+          <td>建設分野特定技能2号評価試験 or 技能検定1級</td>
+          <td>特に規定なし（試験は日本語）</td>
+          <td>約30〜40%</td>
+        </tr>
+        <tr>
+          <td>農業・漁業<div class="badge badge-low">難易度高め</div></td>
+          <td>農場・漁業現場での班長経験3年以上</td>
+          <td>農業・漁業特定技能2号技能試験</td>
+          <td>特に規定なし</td>
+          <td>約30%</td>
+        </tr>
+        <tr>
+          <td>介護<div class="badge" style="background:#f3f4f6;color:#374151;">対象外</div></td>
+          <td colspan="4" style="color:#94a3b8;">介護は特定技能2号の対象外。介護福祉士・実務者研修等の別ルートを案内</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>03 ｜ 企業が今すぐ取り組む3つのアクション</h2>
+
+  <div class="action-cards" id="action-cards">
+    <div class="action-card">
+      <div class="action-number">01</div>
+      <div class="action-title">逆算キャリアプランを入社時に渡す</div>
+      <div class="action-desc">育成就労で入社した日から「5年後に特定技能2号を取得するためのスケジュール」を書面で渡します。何年目に何をすればよいかを可視化することで、本人のモチベーションが持続します。キャリアアッププランの交付は特定技能の支援計画でも推奨されています。</div>
+    </div>
+    <div class="action-card">
+      <div class="action-number">02</div>
+      <div class="action-title">リーダー職を与えて実務経験を作る</div>
+      <div class="action-desc">班長・チームリーダー・副店長——これらの役職を与えることが2号移行の必須条件です。小規模の現場でのリーダーでも要件を満たせます。役職手当（月5,000〜15,000円）を設けることで動機付けにもなります。</div>
+    </div>
+    <div class="action-card">
+      <div class="action-number">03</div>
+      <div class="action-title">日本語学習を費用面でサポートする</div>
+      <div class="action-desc">2号試験は日本語のみで出題されルビもありません。N3〜N2レベルが実質的に必要です。アプリ費用補助・JLPT受験料の会社負担・合格時の一時金（例：N4合格5,000円・N3合格10,000円）を組み合わせた支援が有効です。</div>
+    </div>
+  </div>
+
+  <h2>04 ｜ 特定技能1号の在留期間：2025年10月改正のポイント</h2>
+
+  <p>
+    2025年10月施行の改正により、特定技能1号の在留管理が変更されました。企業として把握すべき主なポイントは以下です。
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>変更点</th>
+          <th>改正前</th>
+          <th>改正後（2025年10月〜）</th>
+          <th>企業への影響</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>在留期間の指定</td>
+          <td>申請ごとに1年・6ヶ月・4ヶ月</td>
+          <td>1度の申請で最長3年まで指定可能</td>
+          <td>更新頻度が減り管理コストが低下</td>
+        </tr>
+        <tr>
+          <td>通算在留上限の除外</td>
+          <td>5年通算（例外なし）</td>
+          <td>育児・療養期間を除外できる（最大6年まで延長可）</td>
+          <td>育児中の外国人材を慌てて2号移行させなくて済む</td>
+        </tr>
+        <tr>
+          <td>特定技能2号の在留期間</td>
+          <td>3年・1年・6ヶ月</td>
+          <td>2年が追加（3年・2年・1年・6ヶ月）</td>
+          <td>2年での更新が可能になり利便性向上</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>05 ｜ 日本語学習ロードマップ——2号合格に必要なレベルを知る</h2>
+
+  <div class="jp-roadmap">
+    <div class="jp-roadmap-title">📚 JLPTレベル別：特定技能2号との関係</div>
+    <div class="jp-levels" id="jp-levels">
+      <div class="jp-level" style="--h:40px;">
+        <div class="jp-level-bar" style="background:#e2e8f0; width:48px;"></div>
+        <div class="jp-level-name">N5</div>
+        <div class="jp-level-desc">日常的な基礎</div>
+        <div class="jp-level-tag" style="background:#f1f5f9; color:#94a3b8;">参考</div>
+      </div>
+      <div class="jp-level" style="--h:72px;">
+        <div class="jp-level-bar" style="background:#94a3b8; width:48px;"></div>
+        <div class="jp-level-name">N4</div>
+        <div class="jp-level-desc">基本的な理解</div>
+        <div class="jp-level-tag" style="background:#fef3c7; color:#d97706;">育成就労推奨</div>
+      </div>
+      <div class="jp-level" style="--h:108px;">
+        <div class="jp-level-bar" style="background:#c9a84c; width:48px;"></div>
+        <div class="jp-level-name">N3</div>
+        <div class="jp-level-desc">日常会話対応</div>
+        <div class="jp-level-tag" style="background:#fef3c7; color:#d97706;">外食2号試験に必要</div>
+      </div>
+      <div class="jp-level" style="--h:156px;">
+        <div class="jp-level-bar" style="background:#0d9488; width:48px;"></div>
+        <div class="jp-level-name">N2</div>
+        <div class="jp-level-desc">幅広い場面で対応</div>
+        <div class="jp-level-tag" style="background:#dcfce7; color:#16a34a;">製造・建設2号に実質必要</div>
+      </div>
+      <div class="jp-level" style="--h:200px;">
+        <div class="jp-level-bar" style="background:#1a2f5e; width:48px;"></div>
+        <div class="jp-level-name">N1</div>
+        <div class="jp-level-desc">高度な日本語</div>
+        <div class="jp-level-tag" style="background:#dbeafe; color:#1d4ed8;">技人国で高評価</div>
+      </div>
+    </div>
+    <p style="font-size:12px; color:#94a3b8;">※合格率はJALT等の試験機関調査に基づく目安。試験内容・実施時期により変動があります。</p>
+  </div>
+
+  <h2>06 ｜ 永住申請——企業が伴走できること</h2>
+
+  <p>
+    育成就労で来日し、特定技能2号まで取得した外国人材が永住申請できるのは、多くのケースで8〜10年後です。この段階まで来ると、本人にとって「日本での生活」が人生の中心になっています。企業として永住申請をサポートすることは「この会社が自分の人生を応援してくれている」という最大のシグナルになります。
+  </p>
+
+  <div class="checklist">
+    <div class="checklist-title">📋 永住申請サポートとして企業ができること</div>
+    <ul>
+      <li>在職証明書・在籍年数確認書類の発行（申請に必要な書類を迅速に発行する体制）</li>
+      <li>源泉徴収票・所得証明書類の整備（独立した生計要件の証明に使用）</li>
+      <li>申請手続きのための有給休暇（1〜2日）の付与</li>
+      <li>行政書士・社会保険労務士への相談窓口の紹介（費用補助があれば理想）</li>
+      <li>社会保険・税金の納付記録を常に整備しておく（申請審査で確認される）</li>
+      <li>永住取得後も同じポジション・給与水準を継続して維持する（解雇・差別的扱いの禁止）</li>
+    </ul>
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary-box">
+    <h2>この記事のポイント</h2>
+    <p>育成就労→特定技能1号→2号→永住は、7〜10年かけて実現するキャリアルートです。入社時からこのルートを示し、各ステージで具体的なサポートをする企業が、2号取得者1,047人という現状を打破できます。</p>
+    <ul>
+      <li>2号取得者がわずか1,047人——今から環境を整えれば圧倒的な差別化になる</li>
+      <li>「リーダー職を与える」ことが2号への必須条件であり、同時に最も効果的な定着施策</li>
+      <li>2025年10月改正で育児・療養期間が通算上限から除外——柔軟な長期雇用が可能に</li>
+      <li>永住申請のサポートが「この会社で一生働きたい」という最強の動機付けになる</li>
+    </ul>
+  </div>
+
+  <p class="note">本記事は2026年2月時点の情報をもとに作成しています。分野別の最新試験情報は各分野協議会サイト、在留資格の詳細は出入国在留管理庁をご確認ください。</p>
+
+</div>
+
+<script>
+// カウントアップアニメーション（1,047）
+const counterEl = document.getElementById('counter-num');
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      let start = 0;
+      const end = 1047;
+      const duration = 1800;
+      const step = Math.ceil(end / (duration / 16));
+      const timer = setInterval(() => {
+        start = Math.min(start + step, end);
+        counterEl.innerHTML = start.toLocaleString() + '<span class="counter-unit">人</span>';
+        if (start >= end) clearInterval(timer);
+      }, 16);
+      counterObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.4 });
+if (counterEl) counterObs.observe(counterEl.closest('.person-counter'));
+
+// アクションカードのフェードイン
+const cardObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.action-card').forEach(card => {
+        card.classList.add('visible');
+      });
+      cardObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+const actionCards = document.getElementById('action-cards');
+if (actionCards) cardObs.observe(actionCards);
+
+// 日本語レベルバーのアニメーション
+const jpObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.jp-level').forEach((el, i) => {
+        setTimeout(() => {
+          el.classList.add('animated');
+        }, i * 120);
+      });
+      jpObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const jpLevels = document.getElementById('jp-levels');
+if (jpLevels) jpObs.observe(jpLevels);
+</script>
+
+</body>
+</html>

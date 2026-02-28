@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コンプライアンス違反の防止と対応</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2f5e;
+    --gold: #c9a84c;
+    --gold-light: #f5e9c8;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --bg: #f8f9fc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --warn: #d97706;
+    --green: #16a34a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+
+  .article-header {
+    background: linear-gradient(135deg, #3b0f0f 0%, #7a1a1a 40%, var(--navy) 100%);
+    color: white; padding: 60px 40px 50px; position: relative; overflow: hidden;
+  }
+  .article-header::before {
+    content: '⚠'; position: absolute; right: 60px; top: 30px;
+    font-size: 140px; opacity: 0.06; line-height: 1;
+  }
+  .category-tag {
+    display: inline-block; background: var(--danger); color: white;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 16px;
+  }
+  .article-header h1 {
+    font-family: 'Noto Serif JP', serif; font-size: 26px; font-weight: 700;
+    line-height: 1.4; max-width: 680px; margin-bottom: 16px; position: relative; z-index: 1;
+  }
+  .article-meta { font-size: 13px; color: rgba(255,255,255,0.7); position: relative; z-index: 1; }
+
+  .content-wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .lead {
+    font-size: 16px; line-height: 1.9; border-left: 4px solid var(--danger);
+    padding: 20px 24px; background: #fef2f2; border-radius: 0 8px 8px 0; margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700;
+    color: var(--navy); margin: 52px 0 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold);
+  }
+  h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin: 32px 0 14px; padding-left: 12px; border-left: 3px solid var(--gold); }
+  p { margin-bottom: 18px; font-size: 15.5px; }
+
+  /* 違反件数カウンター */
+  .violation-counter {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin: 32px 0;
+  }
+  .vc-card {
+    background: white; border-radius: 12px; padding: 24px 20px;
+    box-shadow: 0 3px 16px rgba(26,47,94,0.08);
+    text-align: center; border-top: 3px solid var(--border);
+    transition: border-color 0.4s ease;
+  }
+  .vc-card.visible { border-top-color: var(--danger); }
+  .vc-card:nth-child(2).visible { border-top-color: var(--warn); }
+  .vc-card:nth-child(3).visible { border-top-color: var(--navy); }
+  .vc-number {
+    font-size: 40px; font-weight: 700; line-height: 1; margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+    color: var(--border); transition: color 0.4s ease;
+  }
+  .vc-card.visible .vc-number { color: var(--danger); }
+  .vc-card:nth-child(2).visible .vc-number { color: var(--warn); }
+  .vc-card:nth-child(3).visible .vc-number { color: var(--navy); }
+  .vc-unit { font-size: 16px; }
+  .vc-label { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .vc-desc { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+  /* リスクレベル */
+  .risk-levels {
+    background: white; border-radius: 14px; padding: 36px 32px;
+    margin: 32px 0; box-shadow: 0 4px 24px rgba(26,47,94,0.1);
+  }
+  .risk-levels-title {
+    font-size: 14px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em; margin-bottom: 24px;
+  }
+  .rl-item {
+    display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px;
+    padding: 16px 20px; border-radius: 10px;
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .rl-item.visible { opacity: 1; transform: translateX(0); }
+  .rl-item:nth-child(2) { transition-delay: 0.15s; }
+  .rl-item:nth-child(3) { transition-delay: 0.3s; }
+  .rl-item.critical { background: #fef2f2; border-left: 4px solid var(--danger); }
+  .rl-item.high { background: #fff7ed; border-left: 4px solid var(--warn); }
+  .rl-item.medium { background: #fefce8; border-left: 4px solid #eab308; }
+  .rl-level {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+  }
+  .rl-item.critical .rl-level { background: var(--danger); color: white; }
+  .rl-item.high .rl-level { background: var(--warn); color: white; }
+  .rl-item.medium .rl-level { background: #eab308; color: white; }
+  .rl-content { flex: 1; }
+  .rl-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .rl-desc { font-size: 12.5px; color: var(--text-sub); line-height: 1.6; }
+  .rl-penalty { font-size: 12px; font-weight: 700; margin-top: 6px; }
+  .rl-item.critical .rl-penalty { color: var(--danger); }
+  .rl-item.high .rl-penalty { color: var(--warn); }
+  .rl-item.medium .rl-penalty { color: #ca8a04; }
+
+  /* テーブル */
+  .table-wrap {
+    overflow-x: auto; margin: 28px 0 40px;
+    border-radius: 10px; box-shadow: 0 2px 12px rgba(26,47,94,0.08);
+  }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+  thead { background: var(--navy); color: white; }
+  thead th { padding: 14px 16px; text-align: left; font-weight: 600; font-size: 13px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 14px 16px; vertical-align: top; font-size: 13.5px; line-height: 1.6; }
+  td:first-child { font-weight: 600; color: var(--navy); }
+
+  .checklist {
+    background: white; border-radius: 10px; padding: 24px 28px;
+    margin: 24px 0; box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+  }
+  .checklist-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+  .checklist ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; }
+  .checklist li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .highlight-box {
+    background: var(--gold-light); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+  .highlight-box strong { color: var(--navy); }
+
+  .warn-box {
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #3b0f0f 0%, #7a1a1a 40%, var(--navy) 100%);
+    color: white; border-radius: 12px; padding: 36px 40px; margin-top: 52px;
+  }
+  .summary-box h2 { color: var(--gold); border-bottom-color: rgba(201,168,76,0.3); font-size: 18px; margin-top: 0; margin-bottom: 20px; }
+  .summary-box p { font-size: 14.5px; color: rgba(255,255,255,0.88); line-height: 1.8; }
+  .summary-box ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .summary-box li { font-size: 14px; color: rgba(255,255,255,0.85); display: flex; align-items: flex-start; gap: 10px; }
+  .summary-box li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  .note { font-size: 12px; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 48px; padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="article-header">
+  <div class="category-tag">STAGE 2 ｜ リスク管理</div>
+  <h1>外国人雇用のコンプライアンス違反<br>——知らなかったでは済まない罰則と防止策</h1>
+  <div class="article-meta">2026年2月更新 ｜ 推定読了時間：10分</div>
+</div>
+
+<div class="content-wrap">
+
+  <p class="lead">
+    「知らなかった」は免責事由になりません。外国人雇用に関する法令違反は、企業名の公表・受入れ停止・刑事罰にまで至るケースがあります。違反の類型と罰則を正確に理解し、予防体制を構築することが経営リスクの最小化につながります。
+  </p>
+
+  <h2>01 ｜ 数字で見る違反の現実</h2>
+
+  <div class="violation-counter" id="vc-counter">
+    <div class="vc-card">
+      <div class="vc-number" id="vc-num1">0<span class="vc-unit">件</span></div>
+      <div class="vc-label">不法就労事案</div>
+      <div class="vc-desc">2023年に摘発された<br>不法就労助長事案数</div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-number" id="vc-num2">0<span class="vc-unit">件</span></div>
+      <div class="vc-label">技能実習法違反</div>
+      <div class="vc-desc">2023年に行政処分を受けた<br>監理団体・実習実施者数</div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-number" id="vc-num3">0<span class="vc-unit">社</span></div>
+      <div class="vc-label">受入れ停止処分</div>
+      <div class="vc-desc">2023年に特定技能の<br>受入れ停止処分を受けた企業数</div>
+    </div>
+  </div>
+
+  <p style="font-size:12px;color:#94a3b8;text-align:center;margin-top:-16px;">
+    出典：出入国在留管理庁・法務省「出入国管理統計」（2023年）、厚生労働省「外国人技能実習制度の運用に関する報告」
+  </p>
+
+  <h2>02 ｜ 違反リスクのレベル分類</h2>
+
+  <div class="risk-levels">
+    <div class="risk-levels-title">⚠ 違反類型別リスクレベル</div>
+    <div id="rl-items">
+      <div class="rl-item critical">
+        <div class="rl-level">CRITICAL</div>
+        <div class="rl-content">
+          <div class="rl-title">不法就労助長罪</div>
+          <div class="rl-desc">在留資格で許可されていない業務に従事させた場合。在留期限が切れた外国人を雇用し続けた場合。「知らなかった」は抗弁にならない（過失も処罰対象）。</div>
+          <div class="rl-penalty">⚡ 3年以下の懲役 or 300万円以下の罰金（併科あり）</div>
+        </div>
+      </div>
+      <div class="rl-item critical">
+        <div class="rl-level">CRITICAL</div>
+        <div class="rl-content">
+          <div class="rl-title">労働基準法違反（賃金不払い・強制労働）</div>
+          <div class="rl-desc">最低賃金未満の支払い、残業代の未払い、パスポートの取り上げ、強制的な貯金管理。外国人に対する違反は通報されやすく、入管にも情報共有される。</div>
+          <div class="rl-penalty">⚡ 6ヶ月以上10年以下の懲役 or 300万円以下の罰金（強制労働の場合）</div>
+        </div>
+      </div>
+      <div class="rl-item high">
+        <div class="rl-level">HIGH</div>
+        <div class="rl-content">
+          <div class="rl-title">届出義務違反</div>
+          <div class="rl-desc">ハローワークへの外国人雇用状況届出の未提出。特定技能の四半期報告の未提出。雇用条件変更の届出漏れ。</div>
+          <div class="rl-penalty">⚡ 30万円以下の罰金 + 受入れ停止処分のリスク</div>
+        </div>
+      </div>
+      <div class="rl-item medium">
+        <div class="rl-level">MEDIUM</div>
+        <div class="rl-content">
+          <div class="rl-title">社会保険の未加入</div>
+          <div class="rl-desc">健康保険・厚生年金への加入義務があるにもかかわらず未加入。在留資格更新の審査に影響し、不許可の原因になる。</div>
+          <div class="rl-penalty">⚡ 在留資格更新の不許可 + 社会保険料の遡及徴収（最大2年分）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>03 ｜ 違反類型別・罰則と対応策の一覧</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>違反類型</th>
+          <th>罰則</th>
+          <th>防止策</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>不法就労助長</td>
+          <td>3年以下の懲役・300万円以下の罰金</td>
+          <td>在留カードの定期確認（3ヶ月ごと）。在留期限の管理台帳を整備</td>
+        </tr>
+        <tr>
+          <td>活動範囲外の就労</td>
+          <td>受入れ停止処分・在留更新の不許可</td>
+          <td>配置転換前に在留資格の活動範囲を確認。不明な場合は入管に照会</td>
+        </tr>
+        <tr>
+          <td>賃金未払い・不足</td>
+          <td>30万円以下の罰金。悪質な場合は6ヶ月以下の懲役</td>
+          <td>同一労働同一賃金の確認。最低賃金の毎年10月改定に対応</td>
+        </tr>
+        <tr>
+          <td>強制貯金・パスポート取り上げ</td>
+          <td>6ヶ月以上10年以下の懲役。企業名公表</td>
+          <td>パスポートは本人管理を徹底。貯金管理は本人の自由意思を確認</td>
+        </tr>
+        <tr>
+          <td>届出の未提出</td>
+          <td>30万円以下の罰金</td>
+          <td>届出カレンダーの作成。四半期ごとのチェック体制</td>
+        </tr>
+        <tr>
+          <td>差別的取扱い</td>
+          <td>行政指導・損害賠償請求</td>
+          <td>研修・福利厚生・昇給基準の平等な適用を確認</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>04 ｜ 違反が発覚したときの対応フロー</h2>
+
+  <p>
+    万が一、社内で法令違反が発覚した場合は、以下の順序で迅速に対応してください。「隠蔽」は絶対に避けるべきです。自主的な是正と報告は、処分の軽減につながります。
+  </p>
+
+  <div class="checklist">
+    <div class="checklist-title">📋 違反発覚時の対応手順</div>
+    <ul>
+      <li>違反の事実と範囲を正確に把握する（いつから、誰に対して、何が起きていたか）</li>
+      <li>違反状態を直ちに是正する（未払い賃金の支払い、活動範囲外業務の中止 等）</li>
+      <li>弁護士・行政書士・社会保険労務士に相談（専門家の助言を受けてから対外対応）</li>
+      <li>必要な届出・報告を管轄機関に行う（入管・ハローワーク・労働基準監督署）</li>
+      <li>再発防止策を策定し、社内で共有・実施する</li>
+      <li>対象の外国人スタッフへの謝罪と説明を行う（母国語での説明が望ましい）</li>
+    </ul>
+  </div>
+
+  <div class="warn-box">
+    <strong style="color:var(--danger);">⚠ 隠蔽のリスク：</strong><br>
+    違反を隠蔽し、後から発覚した場合は処分が大幅に重くなります。特定技能の受入れ停止処分（最大5年間）、企業名の公表、刑事罰の併科が適用される可能性があります。自主的な是正・報告は処分の軽減要素として考慮されます。
+  </div>
+
+  <h2>05 ｜ 予防のための社内体制づくり</h2>
+
+  <div class="highlight-box">
+    <strong>予防の基本3原則：</strong><br>
+    ① <strong>可視化</strong>——在留管理台帳・届出カレンダー・給与比較表を整備し、全体像を常に把握<br>
+    ② <strong>定期チェック</strong>——四半期ごとの社内監査で違反の芽を早期発見<br>
+    ③ <strong>相談窓口</strong>——外国人スタッフが安心して相談できる窓口を設置（母国語対応が理想）
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary-box">
+    <h2>この記事のポイント</h2>
+    <p>外国人雇用のコンプライアンスは「知っていれば防げる」ものがほとんどです。違反の代償は大きく、企業の存続に関わるリスクです。予防体制の構築に今すぐ着手してください。</p>
+    <ul>
+      <li>不法就労助長罪は「知らなかった」が通用しない——在留カードの定期確認が必須</li>
+      <li>賃金未払い・社会保険未加入は在留更新の不許可に直結——更新審査の前に是正</li>
+      <li>違反が発覚したら「隠蔽」ではなく「自主的な是正・報告」——処分軽減の唯一の道</li>
+      <li>予防体制は「可視化・定期チェック・相談窓口」の3本柱で構築する</li>
+    </ul>
+  </div>
+
+  <p class="note">本記事は2026年2月時点の情報をもとに作成しています。法令違反の対応については弁護士・行政書士にご相談ください。</p>
+
+</div>
+
+<script>
+// 違反件数カウントアップ
+function countUp(el, target, duration) {
+  let start = 0;
+  const step = Math.ceil(target / (duration / 16));
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.innerHTML = start.toLocaleString() + '<span class="vc-unit">' + (el.dataset.unit || '件') + '</span>';
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+const vcObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.vc-card').forEach(card => card.classList.add('visible'));
+      setTimeout(() => countUp(document.getElementById('vc-num1'), 456, 1500), 200);
+      setTimeout(() => countUp(document.getElementById('vc-num2'), 287, 1500), 400);
+      const el3 = document.getElementById('vc-num3');
+      el3.dataset.unit = '社';
+      setTimeout(() => countUp(el3, 34, 1200), 600);
+      vcObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const vcCounter = document.getElementById('vc-counter');
+if (vcCounter) vcObs.observe(vcCounter);
+
+// リスクレベルアニメーション
+const rlObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.rl-item').forEach((item, i) => {
+        setTimeout(() => { item.classList.add('visible'); }, i * 200);
+      });
+      rlObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+const rlItems = document.getElementById('rl-items');
+if (rlItems) rlObs.observe(rlItems);
+</script>
+
+</body>
+</html>

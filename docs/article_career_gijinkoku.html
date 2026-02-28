@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技術・人文知識・国際業務への転換</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2f5e;
+    --gold: #c9a84c;
+    --gold-light: #f5e9c8;
+    --teal: #0d9488;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --bg: #f8f9fc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+
+  .article-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 50%, #4a6fa5 100%);
+    color: white; padding: 60px 40px 50px; position: relative; overflow: hidden;
+  }
+  .article-header::before {
+    content: '⇄'; position: absolute; right: 60px; top: 20px;
+    font-size: 180px; font-weight: 700; color: rgba(255,255,255,0.04); line-height: 1;
+  }
+  .category-tag {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 16px;
+  }
+  .article-header h1 {
+    font-family: 'Noto Serif JP', serif; font-size: 26px; font-weight: 700;
+    line-height: 1.4; max-width: 680px; margin-bottom: 16px; position: relative; z-index: 1;
+  }
+  .article-meta { font-size: 13px; color: rgba(255,255,255,0.7); position: relative; z-index: 1; }
+
+  .content-wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .lead {
+    font-size: 16px; line-height: 1.9; border-left: 4px solid var(--gold);
+    padding: 20px 24px; background: var(--gold-light); border-radius: 0 8px 8px 0; margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700;
+    color: var(--navy); margin: 52px 0 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold);
+  }
+  h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin: 32px 0 14px; padding-left: 12px; border-left: 3px solid var(--gold); }
+  p { margin-bottom: 18px; font-size: 15.5px; }
+
+  /* 転換フロー図 */
+  .switch-flow {
+    background: white; border-radius: 14px; padding: 36px 24px;
+    margin: 32px 0; box-shadow: 0 4px 24px rgba(26,47,94,0.1);
+    overflow-x: auto;
+  }
+  .switch-flow-title {
+    font-size: 14px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em; margin-bottom: 28px; text-align: center;
+  }
+  .sf-cards {
+    display: flex; gap: 0; align-items: stretch; min-width: 700px;
+  }
+  .sf-card {
+    flex: 1; border-radius: 12px; padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0; transform: translateX(-10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .sf-card.visible { opacity: 1; transform: translateX(0); }
+  .sf-card:nth-child(3) { transition-delay: 0.15s; }
+  .sf-card:nth-child(5) { transition-delay: 0.3s; }
+  .sf-arrow {
+    display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .sf-arrow.visible { opacity: 1; }
+  .sf-arrow:nth-child(2) { transition-delay: 0.1s; }
+  .sf-arrow:nth-child(4) { transition-delay: 0.25s; }
+  .sf-stage { font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; }
+  .sf-name { font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 700; color: white; }
+  .sf-sep { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
+  .sf-detail { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+  .sf-highlight { font-size: 12px; color: var(--gold); font-weight: 700; }
+
+  /* テーブル */
+  .table-wrap {
+    overflow-x: auto; margin: 28px 0 40px;
+    border-radius: 10px; box-shadow: 0 2px 12px rgba(26,47,94,0.08);
+  }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+  thead { background: var(--navy); color: white; }
+  thead th { padding: 14px 16px; text-align: left; font-weight: 600; font-size: 13px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 14px 16px; vertical-align: top; font-size: 13.5px; line-height: 1.6; }
+  td:first-child { font-weight: 600; color: var(--navy); }
+
+  .checklist {
+    background: white; border-radius: 10px; padding: 24px 28px;
+    margin: 24px 0; box-shadow: 0 2px 12px rgba(26,47,94,0.07);
+  }
+  .checklist-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+  .checklist ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; }
+  .checklist li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .highlight-box {
+    background: var(--gold-light); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+  .highlight-box strong { color: var(--navy); }
+
+  .warn-box {
+    background: #fff7ed; border: 1px solid #fed7aa;
+    border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+    font-size: 14.5px; line-height: 1.7;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 50%, #4a6fa5 100%);
+    color: white; border-radius: 12px; padding: 36px 40px; margin-top: 52px;
+  }
+  .summary-box h2 { color: var(--gold); border-bottom-color: rgba(201,168,76,0.3); font-size: 18px; margin-top: 0; margin-bottom: 20px; }
+  .summary-box p { font-size: 14.5px; color: rgba(255,255,255,0.88); line-height: 1.8; }
+  .summary-box ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .summary-box li { font-size: 14px; color: rgba(255,255,255,0.85); display: flex; align-items: flex-start; gap: 10px; }
+  .summary-box li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  .note { font-size: 12px; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 48px; padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="article-header">
+  <div class="category-tag">STAGE 3 ｜ キャリア転換</div>
+  <h1>「技術・人文知識・国際業務」への転換<br>——特定技能からオフィスワークへのルートと企業メリット</h1>
+  <div class="article-meta">2026年2月更新 ｜ 推定読了時間：10分</div>
+</div>
+
+<div class="content-wrap">
+
+  <p class="lead">
+    特定技能で入社した外国人スタッフが「管理業務」「通訳」「技術職」に移行する場合、在留資格を「技術・人文知識・国際業務」（技人国）に変更する選択肢があります。就労制限が大幅に緩和され、企業にとっては「より幅広い業務を任せられる人材」を確保できるメリットがあります。
+  </p>
+
+  <h2>01 ｜ 特定技能と技人国の決定的な違い</h2>
+
+  <p>
+    技人国は「学歴または実務経験に基づく専門性」が要件であり、特定技能とは根本的に異なるカテゴリです。両者の違いを正確に理解することが、転換を検討する第一歩です。
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>比較項目</th>
+          <th>特定技能1号</th>
+          <th>技術・人文知識・国際業務</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>在留期間</td>
+          <td>通算5年（最長6年）</td>
+          <td>上限なし（更新制：5年・3年・1年）</td>
+        </tr>
+        <tr>
+          <td>家族帯同</td>
+          <td>不可</td>
+          <td>可能（配偶者・子）</td>
+        </tr>
+        <tr>
+          <td>業務内容</td>
+          <td>指定された分野の現場業務</td>
+          <td>専門的・技術的業務（デスクワーク含む）</td>
+        </tr>
+        <tr>
+          <td>転職</td>
+          <td>同一分野内のみ</td>
+          <td>業務内容が合致すれば業種不問</td>
+        </tr>
+        <tr>
+          <td>学歴要件</td>
+          <td>不要（試験合格でOK）</td>
+          <td>大卒以上 or 10年以上の実務経験</td>
+        </tr>
+        <tr>
+          <td>永住申請</td>
+          <td>1号期間は算入されにくい</td>
+          <td>在留期間として算入される</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>02 ｜ 転換の全体フロー</h2>
+
+  <div class="switch-flow">
+    <div class="switch-flow-title">🔄 特定技能 → 技人国 転換フロー</div>
+    <div class="sf-cards" id="sf-cards">
+      <div class="sf-card" style="background:#0d9488;color:white;">
+        <div class="sf-stage">現在</div>
+        <div class="sf-name">特定技能1号</div>
+        <div class="sf-sep sf-detail">現場業務に従事<br>分野：製造/外食/介護 等<br>在留期間上限あり</div>
+      </div>
+      <div class="sf-arrow"><span style="font-size:22px;color:#c9a84c;font-weight:700;">→</span></div>
+      <div class="sf-card" style="background:#d97706;color:white;">
+        <div class="sf-stage">要件確認</div>
+        <div class="sf-name">学歴 or 実務経験</div>
+        <div class="sf-sep sf-detail">大卒（本国含む）<br>or 10年以上の実務経験<br>+ 業務との関連性</div>
+        <div class="sf-highlight">← 最大のハードル</div>
+      </div>
+      <div class="sf-arrow"><span style="font-size:22px;color:#c9a84c;font-weight:700;">→</span></div>
+      <div class="sf-card" style="background:var(--navy);color:white;border:2px solid var(--gold);">
+        <div class="sf-stage">転換後</div>
+        <div class="sf-name">技人国</div>
+        <div class="sf-sep sf-detail">管理・通訳・技術業務<br>在留期間上限なし<br>家族帯同OK</div>
+        <div class="sf-highlight">業務の幅が大幅拡大</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>03 ｜ 転換が成立する3つの条件</h2>
+
+  <h3>① 学歴要件を満たすこと</h3>
+  <p>
+    技人国の最も基本的な要件は「大学卒業以上（短大・専門学校含む場合あり）」です。本国の大学卒業も有効です。ただし、学歴がない場合は<strong>10年以上の実務経験</strong>で代替できます。特定技能や技能実習の期間も実務経験に算入されます。
+  </p>
+
+  <h3>② 業務内容と学歴・経験の関連性</h3>
+  <p>
+    「大学で何を学んだか」と「日本で従事する業務」に関連性が必要です。例えば、ベトナムの大学で経営学を専攻した人が日本で「外国人スタッフの管理・通訳業務」に従事するケースは関連性が認められやすいパターンです。
+  </p>
+
+  <h3>③ 企業側の受入れ体制</h3>
+  <p>
+    企業が「専門的な業務」を提供できる実態が求められます。申請時に提出する雇用理由書で「なぜこの業務に外国人材が必要か」「どのような専門性を活かすか」を説明する必要があります。
+  </p>
+
+  <div class="warn-box">
+    <strong style="color:#d97706;">⚠ 不許可になりやすいパターン：</strong><br>
+    「通訳・翻訳」名目で申請したが、実際は現場作業が業務の大半を占めているケース。入管は業務内容の実態を重視します。「管理3割・通訳2割・現場5割」のような配分では不許可になる可能性が高いです。専門業務が50%以上であることが目安です。
+  </div>
+
+  <h2>04 ｜ 企業にとってのメリット</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>メリット</th>
+          <th>詳細</th>
+          <th>具体例</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>業務の幅が拡がる</td>
+          <td>現場作業に限らず、管理・営業・企画など幅広い業務を任せられる</td>
+          <td>外国人スタッフの採用面接通訳、新人教育、取引先対応</td>
+        </tr>
+        <tr>
+          <td>在留期間の上限がない</td>
+          <td>更新が通る限り何年でも雇用継続可能。5年上限のプレッシャーがなくなる</td>
+          <td>中長期の人材配置計画が立てやすい</td>
+        </tr>
+        <tr>
+          <td>家族帯同で定着率UP</td>
+          <td>配偶者・子を日本に呼べるため、生活基盤が安定し離職リスクが低下</td>
+          <td>家族が日本にいる社員の定着率は2〜3倍</td>
+        </tr>
+        <tr>
+          <td>永住申請への道が開ける</td>
+          <td>技人国の在留期間は永住申請の「10年在留要件」に算入される</td>
+          <td>長期的に安定した人材確保が可能</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>05 ｜ 転換手続きの流れとスケジュール</h2>
+
+  <div class="checklist">
+    <div class="checklist-title">📋 転換手続きの実務チェックリスト</div>
+    <ul>
+      <li>本人の学歴証明書（卒業証書・成績証明書）を取得——本国の大学に英語or日本語で発行依頼</li>
+      <li>業務内容と学歴の関連性を「雇用理由書」にまとめる——行政書士に依頼推奨</li>
+      <li>新しいポジションの給与を「日本人と同等以上」に設定——雇用契約書を作成</li>
+      <li>在留資格変更許可申請書を出入国在留管理局に提出——審査期間は1〜3ヶ月</li>
+      <li>許可後、新しい在留カードを受領——変更前の在留期間中に手続きを完了させる</li>
+      <li>変更後14日以内にハローワークへ届出（外国人雇用状況届出）</li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>実務のポイント：</strong>特定技能1号の在留期限が切れる6ヶ月以上前に転換の検討を開始してください。学歴証明書の取得に1〜2ヶ月、申請準備に1ヶ月、審査に1〜3ヶ月かかります。ギリギリのスケジュールでは間に合わないリスクがあります。
+  </div>
+
+  <!-- まとめ -->
+  <div class="summary-box">
+    <h2>この記事のポイント</h2>
+    <p>特定技能から技人国への転換は、外国人スタッフのキャリアアップと企業の人材活用の両面で大きなメリットがあります。学歴要件と業務の関連性が鍵です。</p>
+    <ul>
+      <li>技人国は在留期間の上限なし・家族帯同OK——長期定着の決定打</li>
+      <li>学歴（大卒以上）or 10年以上の実務経験が必須——事前確認を怠らない</li>
+      <li>「専門業務50%以上」の実態が必要——名目だけの通訳・管理では不許可</li>
+      <li>手続きは在留期限の6ヶ月前に開始——学歴証明書の取得に時間がかかる</li>
+    </ul>
+  </div>
+
+  <p class="note">本記事は2026年2月時点の情報をもとに作成しています。在留資格変更の詳細は出入国在留管理庁または行政書士にご相談ください。</p>
+
+</div>
+
+<script>
+// 転換フローのアニメーション
+const sfObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.sf-card, .sf-arrow').forEach((el, i) => {
+        setTimeout(() => { el.classList.add('visible'); }, i * 150);
+      });
+      sfObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+const sfCards = document.getElementById('sf-cards');
+if (sfCards) sfObs.observe(sfCards);
+</script>
+
+</body>
+</html>

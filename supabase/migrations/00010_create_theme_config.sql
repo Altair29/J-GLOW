@@ -6,7 +6,7 @@ CREATE TABLE public.theme_config (
   id          SERIAL PRIMARY KEY,
   section     TEXT NOT NULL CHECK (section IN ('global', 'business', 'worker')),
   css_var     TEXT NOT NULL,          -- CSS変数名 例: '--color-primary'
-  value       TEXT NOT NULL,          -- 値 例: '#1e3a5f'
+  value       TEXT NOT NULL,          -- 値 例: '#1a2f5e'
   label       TEXT NOT NULL,          -- 管理画面表示名
   category    TEXT DEFAULT 'color'
               CHECK (category IN ('color', 'font', 'spacing', 'other')),
@@ -39,25 +39,25 @@ INSERT INTO public.theme_config (section, css_var, value, label, category, sort_
 
 -- 企業テーマ
 INSERT INTO public.theme_config (section, css_var, value, label, category, sort_order) VALUES
-  ('business', '--biz-primary', '#1e3a5f', 'プライマリ（ネイビー）', 'color', 1),
-  ('business', '--biz-primary-hover', '#162d4a', 'プライマリホバー', 'color', 2),
-  ('business', '--biz-secondary', '#2563eb', 'セカンダリ（ブルー）', 'color', 3),
-  ('business', '--biz-accent', '#3b82f6', 'アクセント', 'color', 4),
+  ('business', '--biz-primary', '#1a2f5e', 'プライマリ（ネイビー）', 'color', 1),
+  ('business', '--biz-primary-hover', '#14254b', 'プライマリホバー', 'color', 2),
+  ('business', '--biz-secondary', '#c9a84c', 'セカンダリ（ブルー）', 'color', 3),
+  ('business', '--biz-accent', '#c9a84c', 'アクセント', 'color', 4),
   ('business', '--biz-bg', '#f8fafc', 'セクション背景', 'color', 5),
-  ('business', '--biz-hero-bg', '#1e3a5f', 'ヒーロー背景', 'color', 6),
+  ('business', '--biz-hero-bg', '#1a2f5e', 'ヒーロー背景', 'color', 6),
   ('business', '--biz-hero-text', '#ffffff', 'ヒーロー文字色', 'color', 7),
-  ('business', '--biz-card1-bg', '#eff6ff', 'カード1背景', 'color', 8),
-  ('business', '--biz-card1-text', '#1d4ed8', 'カード1文字', 'color', 9),
-  ('business', '--biz-card1-border', '#bfdbfe', 'カード1ボーダー', 'color', 10),
-  ('business', '--biz-card2-bg', '#eef2ff', 'カード2背景', 'color', 11),
-  ('business', '--biz-card2-text', '#4338ca', 'カード2文字', 'color', 12),
-  ('business', '--biz-card2-border', '#c7d2fe', 'カード2ボーダー', 'color', 13),
-  ('business', '--biz-card3-bg', '#faf5ff', 'カード3背景', 'color', 14),
-  ('business', '--biz-card3-text', '#7e22ce', 'カード3文字', 'color', 15),
-  ('business', '--biz-card3-border', '#e9d5ff', 'カード3ボーダー', 'color', 16),
-  ('business', '--biz-card4-bg', '#ecfeff', 'カード4背景', 'color', 17),
-  ('business', '--biz-card4-text', '#0e7490', 'カード4文字', 'color', 18),
-  ('business', '--biz-card4-border', '#a5f3fc', 'カード4ボーダー', 'color', 19);
+  ('business', '--biz-card1-bg', '#eef1f7', 'カード1背景', 'color', 8),
+  ('business', '--biz-card1-text', '#1a2f5e', 'カード1文字', 'color', 9),
+  ('business', '--biz-card1-border', '#c5cfe0', 'カード1ボーダー', 'color', 10),
+  ('business', '--biz-card2-bg', '#fdf8ee', 'カード2背景', 'color', 11),
+  ('business', '--biz-card2-text', '#8a7530', 'カード2文字', 'color', 12),
+  ('business', '--biz-card2-border', '#e8d9a0', 'カード2ボーダー', 'color', 13),
+  ('business', '--biz-card3-bg', '#edf0f6', 'カード3背景', 'color', 14),
+  ('business', '--biz-card3-text', '#2d4a7a', 'カード3文字', 'color', 15),
+  ('business', '--biz-card3-border', '#c8d2e4', 'カード3ボーダー', 'color', 16),
+  ('business', '--biz-card4-bg', '#fdf9f0', 'カード4背景', 'color', 17),
+  ('business', '--biz-card4-text', '#7a6520', 'カード4文字', 'color', 18),
+  ('business', '--biz-card4-border', '#e5daa8', 'カード4ボーダー', 'color', 19);
 
 -- 労働者テーマ
 INSERT INTO public.theme_config (section, css_var, value, label, category, sort_order) VALUES

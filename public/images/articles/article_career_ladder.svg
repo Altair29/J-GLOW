@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <linearGradient id="ng5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a2f5e"/>
+      <stop offset="100%" style="stop-color:#2a4a8e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="#f8fafc" rx="12"/>
+  <text x="400" y="34" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a2f5e">在留資格ステージ別 キャリア・処遇ロードマップ</text>
+  <rect x="30" y="50" width="100" height="36" rx="6" fill="#e5e7eb"/>
+  <text x="80" y="72" text-anchor="middle" font-size="10" fill="#6b7280" font-weight="bold">項目</text>
+  <rect x="140" y="50" width="148" height="36" rx="6" fill="#dbeafe"/>
+  <text x="214" y="72" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="bold">入社〜1年</text>
+  <rect x="298" y="50" width="148" height="36" rx="6" fill="#dbeafe"/>
+  <text x="372" y="72" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="bold">1〜3年</text>
+  <rect x="456" y="50" width="148" height="36" rx="6" fill="#dbeafe"/>
+  <text x="530" y="72" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="bold">3〜5年</text>
+  <rect x="614" y="50" width="160" height="36" rx="6" fill="#c9a84c"/>
+  <text x="694" y="66" text-anchor="middle" font-size="10" fill="white" font-weight="bold">5年目以降</text>
+  <text x="694" y="80" text-anchor="middle" font-size="11" fill="white" font-weight="bold">★ 特定技能2号</text>
+  <rect x="30" y="96" width="100" height="40" fill="#1a2f5e"/>
+  <text x="80" y="120" text-anchor="middle" font-size="10" fill="white" font-weight="bold">在留資格</text>
+  <rect x="140" y="96" width="296" height="40" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="288" y="120" text-anchor="middle" font-size="11" fill="#1e40af">育成就労（旧：技能実習）</text>
+  <rect x="456" y="96" width="148" height="40" fill="#dbeafe" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="530" y="113" text-anchor="middle" font-size="11" fill="#1e40af">特定技能1号</text>
+  <text x="530" y="129" text-anchor="middle" font-size="10" fill="#3b82f6">（最長5年・更新可）</text>
+  <rect x="614" y="96" width="160" height="40" fill="#d1fae5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="694" y="113" text-anchor="middle" font-size="11" fill="#065f46" font-weight="bold">特定技能2号</text>
+  <text x="694" y="129" text-anchor="middle" font-size="10" fill="#059669">期限なし・家族帯同可</text>
+  <rect x="30" y="136" width="100" height="40" fill="#1a2f5e"/>
+  <text x="80" y="160" text-anchor="middle" font-size="10" fill="white" font-weight="bold">役職目安</text>
+  <rect x="140" y="136" width="148" height="40" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="214" y="160" text-anchor="middle" font-size="11" fill="#374151">スタッフ</text>
+  <rect x="298" y="136" width="148" height="40" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="372" y="160" text-anchor="middle" font-size="11" fill="#374151">リーダー候補</text>
+  <rect x="456" y="136" width="148" height="40" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="530" y="160" text-anchor="middle" font-size="11" fill="#374151">チームリーダー</text>
+  <rect x="614" y="136" width="160" height="40" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="694" y="153" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">班長・副主任</text>
+  <text x="694" y="169" text-anchor="middle" font-size="10" fill="#b45309">管理職待遇</text>
+  <rect x="30" y="176" width="100" height="56" fill="#1a2f5e"/>
+  <text x="80" y="196" text-anchor="middle" font-size="10" fill="white" font-weight="bold">処遇</text>
+  <text x="80" y="212" text-anchor="middle" font-size="10" fill="white" font-weight="bold">ポイント</text>
+  <rect x="140" y="176" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="214" y="197" text-anchor="middle" font-size="10" fill="#374151">基本給＋生活支援</text>
+  <rect x="298" y="176" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="372" y="197" text-anchor="middle" font-size="10" fill="#374151">基本給引上げ・資格手当</text>
+  <rect x="456" y="176" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="530" y="197" text-anchor="middle" font-size="10" fill="#374151">リーダー手当・賞与対象化</text>
+  <rect x="614" y="176" width="160" height="56" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="694" y="195" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">日本人同等の管理職処遇</text>
+  <text x="694" y="211" text-anchor="middle" font-size="9" fill="#b45309">（法的義務）</text>
+  <rect x="30" y="232" width="100" height="56" fill="#1a2f5e"/>
+  <text x="80" y="252" text-anchor="middle" font-size="10" fill="white" font-weight="bold">評価軸</text>
+  <rect x="140" y="232" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="214" y="253" text-anchor="middle" font-size="10" fill="#374151">業務習熟度・安全・勤怠</text>
+  <rect x="298" y="232" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="372" y="253" text-anchor="middle" font-size="10" fill="#374151">技能試験・日本語能力向上</text>
+  <rect x="456" y="232" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="530" y="253" text-anchor="middle" font-size="10" fill="#374151">後輩指導実績・品質貢献</text>
+  <rect x="614" y="232" width="160" height="56" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="694" y="253" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">成果・スキルベース評価</text>
+  <rect x="30" y="288" width="100" height="56" fill="#1a2f5e"/>
+  <text x="80" y="308" text-anchor="middle" font-size="10" fill="white" font-weight="bold">企業</text>
+  <text x="80" y="324" text-anchor="middle" font-size="10" fill="white" font-weight="bold">サポート</text>
+  <rect x="140" y="288" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="214" y="307" text-anchor="middle" font-size="10" fill="#374151">OJT・生活支援</text>
+  <text x="214" y="323" text-anchor="middle" font-size="10" fill="#374151">日本語学習機会</text>
+  <rect x="298" y="288" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="372" y="307" text-anchor="middle" font-size="10" fill="#374151">試験対策支援</text>
+  <text x="372" y="323" text-anchor="middle" font-size="10" fill="#374151">受験費用負担検討</text>
+  <rect x="456" y="288" width="148" height="56" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="530" y="307" text-anchor="middle" font-size="10" fill="#374151">在留資格変更申請サポート</text>
+  <rect x="614" y="288" width="160" height="56" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="694" y="305" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">永住申請・家族帯同サポート</text>
+  <text x="694" y="321" text-anchor="middle" font-size="9" fill="#b45309">最強の定着施策</text>
+  <rect x="140" y="360" width="634" height="6" rx="3" fill="#e5e7eb"/>
+  <rect x="140" y="360" width="320" height="6" rx="3" fill="#1a2f5e"/>
+  <rect x="460" y="360" width="152" height="6" rx="3" fill="#3b82f6"/>
+  <rect x="612" y="360" width="162" height="6" rx="3" fill="#c9a84c"/>
+  <text x="214" y="378" text-anchor="middle" font-size="9" fill="#1a2f5e">育成就労</text>
+  <text x="530" y="378" text-anchor="middle" font-size="9" fill="#1e40af">特定技能1号</text>
+  <text x="694" y="378" text-anchor="middle" font-size="9" fill="#c9a84c" font-weight="bold">特定技能2号 ★</text>
+  <text x="30" y="404" font-size="10" fill="#6b7280">💡 2号取得後も「処遇が変わらない」と感じた優秀な人材ほど早期離職する。在留資格変更タイミングで処遇を明示的に改定することが定着の鍵</text>
+</svg>
