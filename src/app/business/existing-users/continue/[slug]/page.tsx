@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ArticleContent from '@/components/business/ArticleContent';
+import FullHtmlArticle from '@/components/business/FullHtmlArticle';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -168,14 +169,9 @@ export default async function ContinueArticlePage({ params }: Props) {
   const body = post.body ?? '';
   const isFullHtml = body.trimStart().startsWith('<style>');
 
-  // フルHTML記事（自前のヘッダー・スタイルを持つ）
+  // フルHTML記事（自前のヘッダー・スタイル・スクリプトを持つ）
   if (isFullHtml) {
-    return (
-      <div
-        style={{ minHeight: '100vh' }}
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
-    );
+    return <FullHtmlArticle html={body} />;
   }
 
   const publishedDate = post.published_at ?? post.created_at;

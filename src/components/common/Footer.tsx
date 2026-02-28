@@ -15,7 +15,7 @@ const footerBizLinks = [
   { label: '外国人スタッフをもっと活かすために', href: '/business/existing-users', external: false },
   { label: '育成就労ロードマップ', href: '/business/roadmap', external: false },
   { label: '外国人雇用コストシミュレーター', href: '/business/cost-simulator', external: false },
-  { label: '外国人雇用の無料適正診断', href: '/business/diagnosis', external: false },
+  { label: '外国人雇用の無料適正診断', href: '/business/existing-users/ladder#diagnostic', external: false },
 ];
 
 export function Footer({

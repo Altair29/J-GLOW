@@ -618,3 +618,62 @@ export type Notification = {
   send_email: boolean;
   created_at: string;
 };
+
+// ========================================
+// 採用計画コストシミュレーター
+// ========================================
+
+export type CostItemCategory = 'initial' | 'monthly' | 'risk';
+export type SimulatorVisaType = 'ikusei' | 'tokutei_kaigai' | 'tokutei_kokunai' | 'all';
+
+export type SimulatorCostItem = {
+  id: string;
+  category: CostItemCategory;
+  visa_type: SimulatorVisaType;
+  item_key: string;
+  label: string;
+  amount_min: number;
+  amount_max: number;
+  variable_factor: string | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+export type SimulatorOrgPreset = {
+  id: string;
+  user_id: string;
+  preset_name: string;
+  org_name: string | null;
+  org_contact: string | null;
+  management_fee: number | null;
+  enrollment_fee: number | null;
+  logo_url: string | null;
+  brand_color: string;
+  custom_items: SimulatorCustomItem[];
+  removed_item_keys: string[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type SimulatorCustomItem = {
+  item_key: string;
+  label: string;
+  amount_min: number;
+  amount_max: number;
+  category: CostItemCategory;
+  visa_type: SimulatorVisaType;
+  is_active: boolean;
+  sort_order: number;
+};
+
+export type SimulatorSession = {
+  id: string;
+  user_id: string | null;
+  preset_id: string | null;
+  input_params: Record<string, unknown>;
+  result_snapshot: Record<string, unknown>;
+  share_token: string | null;
+  expires_at: string | null;
+  created_at: string;
+};

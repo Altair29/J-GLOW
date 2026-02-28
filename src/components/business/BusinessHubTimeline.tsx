@@ -117,7 +117,7 @@ export function BusinessHubTimeline() {
         {/* 詳しく見るリンク */}
         <div className="text-center mt-10">
           <Link
-            href="/business/diagnosis"
+            href="/business/existing-users/ladder#diagnostic"
             className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all"
             style={{ color: '#1a2f5e' }}
           >

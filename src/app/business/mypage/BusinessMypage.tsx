@@ -23,7 +23,7 @@ type Props = {
 };
 
 const SCORE_CATEGORY_LABELS: Record<string, { label: string; href: string }> = {
-  diagnosis: { label: '適正診断', href: '/business/diagnosis' },
+  diagnosis: { label: '適正診断', href: '/business/existing-users/ladder#diagnostic' },
   simulation: { label: 'シミュレーション', href: '/business/simulation' },
   jp_test: { label: '日本語テスト', href: '#' },
 };
@@ -214,7 +214,7 @@ export function BusinessMypage({ businessProfile: bp, plan, scores, bookmarks, n
               <p className="text-gray-500 mb-4">まだ結果がありません</p>
               <div className="flex justify-center gap-3">
                 <Link
-                  href="/business/diagnosis"
+                  href="/business/existing-users/ladder#diagnostic"
                   className="px-4 py-2 text-sm font-medium rounded-lg text-white"
                   style={{ backgroundColor: '#1a2f5e' }}
                 >

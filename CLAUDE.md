@@ -1351,3 +1351,298 @@ type RuleItem = {
 
 #### 削除済み
 - `_import/` フォルダ — 統合完了後に削除
+
+---
+
+### ロードマップ ランディングページ リニューアル `/business/roadmap`
+
+#### 概要
+`/business/roadmap` を client-only ダッシュボードから、Supabase記事一覧付きランディングページに変換。既存ダッシュボード（カウントダウン・タイムライン・実務スケジュール・チェックリスト）はページ下部に残す。
+
+#### ファイル構成
+- `src/app/business/roadmap/page.tsx` — サーバーコンポーネント（`"use client"` 削除、metadata + Supabaseクエリ）
+- `src/app/business/roadmap/RoadmapLanding.tsx` — クライアントコンポーネント（7セクション構成）
+
+#### アーキテクチャ
+- **page.tsx**: `blog_categories`（ikuseshuro / industry-guide）のID取得 → `blog_posts`（published、is_pinned DESC / created_at ASC）→ `blog_post_tags` + `blog_tags` でペルソナタグ取得 → `RoadmapLanding` に props で渡す
+- **RoadmapLanding.tsx**: `useState<PersonaFilter>` でペルソナフィルタ管理、既存ダッシュボードコンポーネントをそのまま配置
+
+#### セクション構成（7セクション）
+1. **トップナビバー**: sticky、記事一覧(#articles) / 運用要領 / 制度概要 / お問い合わせの4リンク
+2. **ヒーロー**: ネイビーグラデーション + CountdownSection 埋め込み
+3. **ピン留め記事**: `is_pinned=true` の記事を大きめカード（sm:grid-cols-2）、ゴールド「SPECIAL」バッジ、0件時非表示
+4. **ペルソナフィルタータブ**: すべて / 監理団体 / 既存受入れ企業 / 採用検討中の企業（active=navy）
+5. **まずはここから**: フィルタ適用後の記事を最大9件、3カラムグリッド
+6. **あわせて読みたい**: 残り記事を最大6件、0件時非表示
+7. **準備スケジュール**: TimelineSection + PracticalTimelineSection + ChecklistSection（ペルソナ連動）
+
+#### ペルソナマッピング（3段階フォールバック）
+1. `SLUG_PERSONA_MAP`: slug → PersonaFilter[] の直接マッピング（article-001〜015）
+2. `TAG_PERSONA_MAP`: blog_tags の「監理団体」「既存受入れ企業」「採用検討中」タグ → PersonaFilter
+3. デフォルト: `['kanri', 'existing', 'new']`（全タブに表示）
+
+#### ダッシュボード用ペルソナ切替（独立トグル）
+- 記事フィルタとは独立した `dashPersona` state（`'管理団体' | '受入企業'`）
+- デフォルト: `'管理団体'`
+- 準備スケジュールセクション上部に2択トグルボタン
+  - 選択中: ネイビー(`#1a2f5e`)背景 / 白テキスト
+  - 未選択: 白背景 / ネイビーボーダー / ネイビーテキスト
+- 管理団体選択時: TimelineSection + PracticalTimelineSection + ChecklistSection 表示
+- 受入企業選択時: PracticalTimelineSection のみ表示
+
+#### ペルソナバッジの色
+- 監理団体: bg `#1a2f5e` / 白文字
+- 既存受入れ企業: bg `#2d5a9e` / 白文字
+- 採用検討中の企業: bg `#4a7ec7` / 白文字
+
+#### special-001 カードの強調表示
+- ゴールド太ボーダー（3px `#c9a84c`）
+- 薄いゴールド背景（`#fdf8ee`）
+- 「★ 最重要」バッジ（右上、ゴールド背景）
+- 「SPECIAL」バッジ（大きめ、text-xs → px-3 py-1）
+- タイトル: `text-xl sm:text-2xl`（他カードより大きく）
+- 「記事を読む →」ボタン（ゴールド背景・ネイビーテキスト）
+- `sm:col-span-2` でグリッド全幅
+
+#### special-002 の配置変更
+- ピン留めセクションから除外（`slug !== 'ikuseshuro-special-002'` フィルタ）
+- 「まずはここから読んでください」セクションの3番目（index 2）に固定挿入
+- DBの `is_pinned` は変更なし（フロントエンドの配列操作のみ）
+
+#### 背景色パターン
+ヒーロー(navy) → ピン留め(`#f8fafc`) → フィルタ+メイン記事(`#ffffff`) → あわせて読みたい(`#f8fafc`) → ダッシュボード(`#ffffff`)
+
+---
+
+### /business/articles 全面リニューアル — 分野別外国人採用ガイド
+
+#### 概要
+育成就労制度の記事一覧ページを「分野別 外国人採用ガイド」に特化。`blog_posts` から `category='industry-guide'` の19分野のみを取得し、カードグリッドで表示。
+
+#### 変更ファイル
+- `src/app/business/articles/page.tsx` — 全面書き換え
+
+#### ページ構成
+1. **ヒーロー**: ネイビーグラデーション、タイトル「分野別 外国人採用ガイド」
+2. **カードグリッド**: 19分野、3列/2列/1列レスポンシブ
+3. **CTA**: ネイビーグラデーション背景、「分野が決まったら、採用コストを試算しましょう」→ `/business/cost-simulator`
+
+#### Supabase クエリ
+- `blog_categories` から `slug='industry-guide'` のIDを取得（`.single()`）
+- `blog_posts` から `status='published'` かつ該当カテゴリ、`ORDER BY title ASC`
+
+#### カードデザイン
+
+**通常カード（育成就労対象17分野）**:
+- 「育成就労」ネイビー(`#1a2f5e`)バッジ + 「特定技能」スカイブルーバッジ
+- アイコン（text-3xl）+ 分野名（text-lg）
+- 説明文（text-xs gray）+ ゴールドボタン「詳しく見る →」
+- hover: `shadow-lg`
+
+**特定技能のみカード（koku, jidosha-unso）**:
+- 「特定技能のみ」グレーバッジ
+- カード `opacity: 0.85`
+- 右上に「育成就労対象外」グレーラベル
+
+#### 分野アイコン対応（`INDUSTRY_ICONS`）
+kaigo=🏥 kogyo=🏭 nogyo=🌾 inshoku=🍱 kensetsu=🏗️ biru=🧹 zosen=⚓ jidosha-seib=🔧 koku=✈️ shukuhaku=🏨 gyogyo=🎣 gaishoku=🍽️ jidosha-unso=🚛 tetsudo=🚃 ringyo=🌲 mokuzai=🪵 linen=👕 butsuryu=📦 shigen=♻️
+
+#### 削除したコンテンツ
+- 育成就労制度の記事セクション（ikuseshuro カテゴリ）→ `/business/roadmap` に移管済み
+- 特別記事セクション → `/business/roadmap` のピン留めセクションに移管済み
+- フィルタータブ → 不要（全19分野を常時表示）
+
+---
+
+## 2026-02-28（追記3）
+
+### 採用計画コストシミュレーター（DB駆動・新版） `/business/cost-simulator`
+
+#### 概要
+旧コストシミュレーター（CostSimulator.tsx、ハードコード84KB）を全面刷新。コスト項目をDBマスタ化し、3ペルソナ対応の4ステップウィザード＋結果画面＋PDF提案書出力。
+
+#### アクセス条件（ゲスト公開 + ログイン機能分離）
+- **ゲスト公開**（`AUTH_REQUIRED_PATHS` に含まない）— 未ログインでも全4ステップ＋結果画面＋PDF出力が使える
+- **ログインユーザー限定機能**: プリセット保存/読み込み、コスト項目カスタマイズ、URL共有（DB保存）
+- **ゲスト向けCTA**: STEP4 に「変数をカスタマイズしたい方は無料会員登録へ」、結果画面に「結果の保存・カスタマイズをしたい方へ」バナー表示
+- `isLoggedIn` prop で全コンポーネントがゲスト/ログイン状態を判定
+- `userId` は `string | null`（ゲスト時 null）
+- `page.tsx` で `redirect('/login')` は使用しない（ゲスト公開のため）
+
+#### 3つのペルソナ
+- **Persona A**（監理団体・登録支援機関）: 提案書モード、プリセット保存、カスタマイズ（要ログイン）
+- **Persona B**（外国人雇用経験あり企業）: コスト確認・在留資格比較
+- **Persona C**（外国人雇用未経験企業）: コスト感・緊迫感の体感（ゲストでも利用可）
+
+#### DBテーブル（マイグレーション `00034_cost_simulator.sql`）
+- **simulator_cost_items**: コスト項目マスタ（category, visa_type, item_key, label, amount_min/max, variable_factor, is_active, sort_order）
+- **simulator_org_presets**: Persona A プリセット保存（user_id, preset_name, org_name, org_contact, management_fee, enrollment_fee, logo_url, brand_color, custom_items JSONB, removed_item_keys）
+- **simulator_sessions**: 試算結果セッション（input_params JSONB, result_snapshot JSONB, share_token TEXT UNIQUE, expires_at）
+- RLS: cost_items=全員SELECT+admin管理、presets=本人全操作、sessions=本人管理+share_token公開SELECT
+- シードデータ: 初期費用19項目 + 月次費用8項目 + リスクコスト2項目
+
+#### 型定義 `src/types/database.ts`
+- `CostItemCategory`: `'initial' | 'monthly' | 'risk'`
+- `SimulatorVisaType`: `'ikusei' | 'tokutei_kaigai' | 'tokutei_kokunai' | 'all'`
+- `SimulatorCostItem`, `SimulatorOrgPreset`, `SimulatorCustomItem`, `SimulatorSession`
+
+#### ファイル構成 `src/app/business/cost-simulator/`
+
+| ファイル | 役割 |
+|---|---|
+| `page.tsx` | サーバーコンポーネント（cost_items・presets（ログイン時のみ）・shared session取得、`isLoggedIn`/`userId` を props で渡す） |
+| `components/CostSimulatorShell.tsx` | クライアント全体ラッパー（全ステート管理・コスト計算ロジック、`userId: string | null`・`isLoggedIn: boolean`） |
+| `components/StepNavigation.tsx` | STEP 1〜4 ナビゲーションバー |
+| `components/Step1Company.tsx` | STEP 1: 企業情報（企業名・業種・外国人雇用状況・常勤職員数） |
+| `components/Step2Plan.tsx` | STEP 2: 採用計画（在留資格・対象者区分・人数・時期・送出国・職種） |
+| `components/Step3Environment.tsx` | STEP 3: 自社環境（住居・研修・支援） |
+| `components/Step4Organization.tsx` | STEP 4: 団体情報（団体名・担当者・監理費・ブランドカラー） |
+| `components/ResultView.tsx` | 結果表示画面（ヒーロー数字・テーブル・タイムライン・アクションボタン） |
+| `components/CostTable.tsx` | コスト内訳テーブル（単一/比較表示） |
+| `components/ScheduleTimeline.tsx` | 逆算スケジュール（育成就労/特定技能海外/国内の3パターン） |
+| `components/CustomizePanel.tsx` | Persona A カスタマイズパネル（金額上書き・項目追加/削除・ラベル変更） |
+| `components/PresetManager.tsx` | プリセット保存・読み込み・削除 |
+| `components/PdfDocument.tsx` | PDF提案書（@react-pdf/renderer、4ページ構成） |
+
+#### STEP構成（16入力項目）
+
+| STEP | 項目数 | 内容 |
+|---|---|---|
+| 1 | 4 | 企業名（任意）・業種（19分野）・外国人雇用状況（3択）・常勤職員数（スライダー） |
+| 2 | 6 | 在留資格（3択）・対象者区分（3択・条件付き）・人数（1-30スライダー）・開始時期（月選択）・送出国（5択）・職種（任意） |
+| 3 | 3 | 住居（3択）・研修（3択）・支援（2択） |
+| 4 | 5+ | 団体名・担当者名・監理費・入会金・送出機関手数料上書き・ブランドカラー |
+
+#### コスト計算ロジック（クライアントサイド）
+- `calculateCosts()`: マスタ項目 → プリセットカスタマイズ適用 → 在留資格別フィルタ → 条件分岐で金額解決
+- 送出国別デフォルト手数料: ベトナム15-20万、インドネシア10-15万、フィリピン12-18万、ミャンマー15-22万
+- 住居: full=max / partial=中間 / none=0
+- 研修: outsource=max / inhouse=0 / pre_only=入国前のみ
+- 支援: outsource=計上 / inhouse=0
+- 社会保険: 200,000円 × 15%
+- 3年間総コスト = (初期 + 月次×36) × 人数 + リスク
+- リスクコスト = 欠員コスト + 採用やり直し（初期費用×50%×離職率10%）
+- 受入上限 = 常勤職員数 ÷ 20（超過時に警告バナー）
+
+#### 逆算スケジュール（3パターン）
+- 育成就労: T-8〜9ヶ月起点、7ステップ
+- 特定技能（海外）: T-5〜6ヶ月起点、6ステップ
+- 特定技能（国内）: T-3ヶ月起点、4ステップ
+- 現在月ステップ: 赤ハイライト + ⚠️
+- 経過ステップ: グレーアウト + 取り消し線
+- 間に合わない場合: オレンジ警告 + 最短開始月表示
+
+#### PDF提案書（4ページ）
+- P1: 表紙（団体名/J-GLOW・ブランドカラー・企業名・担当者・作成日）
+- P2: 採用計画サマリー（ヒーロー数字・入力条件テーブル）
+- P3: 逆算スケジュール（タイムライン形式）
+- P4: コスト詳細内訳（初期/月次テーブル）
+- フォント: NotoSansJP-Regular/Bold
+- ファイル名: `採用コスト試算_{企業名}_{日付}.pdf`
+
+#### URL共有機能
+- **ログインユーザー**: nanoid 8文字のshare_token生成 → `simulator_sessions` にDB保存 → `/business/cost-simulator?token=XXXXXXXX` でアクセス時に入力値自動復元
+- **ゲスト**: 現在のURL（`window.location.href`）をクリップボードにコピーのみ（DB保存なし）
+- どちらも「✓ コピーしました」を3秒間表示
+
+#### Persona A カスタマイズ（ログインユーザー限定）
+- STEP 4 下部の折りたたみセクション（`isLoggedIn && activePreset` の場合のみ表示）
+- 金額の上書き・項目の表示/非表示・ラベル変更・項目追加
+- プリセットとして `simulator_org_presets` に保存
+- `custom_items` JSONB にカスタマイズ差分、`removed_item_keys` に削除キー
+- ゲスト: 「変数をカスタマイズしたい方は無料会員登録へ」CTAを表示
+
+#### 管理画面 `/admin/simulator`
+- `src/app/admin/simulator/page.tsx` — サーバーコンポーネント
+- `src/components/admin/SimulatorCostAdmin.tsx` — コスト項目CRUD（カテゴリ別テーブル・インライン編集・追加・削除・アクティブ切替）
+
+#### CTAコンポーネント
+- `src/components/business/CostSimulatorCTA.tsx` — 他ページからの誘導リンク（ネイビーグラデーション背景・ゴールドボタン）
+
+#### ナビゲーション統合
+- `BusinessHeader.tsx`: `featureHrefs` に `/business/cost-simulator` 追加
+- `00034_cost_simulator.sql`: `navigation_items` に business_header + admin_sidebar 追加
+
+#### ミドルウェア
+- `/business/cost-simulator` はゲスト公開（`AUTH_REQUIRED_PATHS` に含まれない）
+- 認証状態は `page.tsx` で `supabase.auth.getUser()` → `isLoggedIn` prop としてクライアントに渡す
+
+#### 依存パッケージ
+- `nanoid` — URL共有トークン生成（新規追加）
+- `@react-pdf/renderer`・`file-saver` — 既存（PDF出力）
+
+#### 旧コストシミュレーター
+- `src/components/business/cost-simulator/CostSimulator.tsx` — 旧版（84KB、ハードコード）、参照なし
+- `src/components/business/cost-simulator/CumulativeChart.tsx` — 旧版チャート、参照なし
+
+---
+
+## 2026-02-28（追記3）
+
+### コストシミュレーター ゲストアクセス対応
+
+#### 概要
+`/business/cost-simulator` をログイン不要（ゲスト公開）に変更。ゲストは全5ステップの試算・PDF出力が可能。ログインユーザーのみプリセット保存・カスタマイズ・URL共有が使える。
+
+#### 変更ファイル
+
+| ファイル | 変更内容 |
+|---|---|
+| `src/lib/supabase/middleware.ts` | AUTH_REQUIRED_PATHS から `/business/cost-simulator` を削除、ロールチェックブロック削除 |
+| `src/app/business/cost-simulator/page.tsx` | 未ログイン時のリダイレクト削除、条件付きプリセット取得、`isLoggedIn` props追加 |
+| `src/app/business/cost-simulator/components/CostSimulatorShell.tsx` | `userId` を `string \| null` に変更、`isLoggedIn` prop追加、ゲスト時の共有・保存ガード |
+| `src/app/business/cost-simulator/components/Step4Organization.tsx` | `isLoggedIn` prop追加、ゲスト時はPresetManager・CustomizePanel非表示、CTA表示 |
+| `src/app/business/cost-simulator/components/ResultView.tsx` | `isLoggedIn` prop追加、ゲスト時はプリセット保存ボタン非表示、登録CTAバナー表示 |
+
+#### ゲスト vs ログインユーザーの機能差
+
+| 機能 | ゲスト | ログインユーザー |
+|---|---|---|
+| STEP 1〜3 入力 | ○ | ○ |
+| STEP 4 団体情報入力 | ○ | ○ |
+| コスト試算結果表示 | ○ | ○ |
+| PDF出力 | ○ | ○ |
+| URLコピー | ○（現在のURL） | ○（共有トークン付きURL） |
+| プリセット保存 | ✕ | ○ |
+| プリセット読み込み | ✕ | ○ |
+| コスト項目カスタマイズ | ✕ | ○ |
+
+#### ゲスト向けCTA
+- **STEP 4**: 「変数をカスタマイズしたい方は無料会員登録へ」（slate背景カード）
+- **結果画面**: 「結果の保存・カスタマイズをしたい方へ」（ネイビーグラデーション + ゴールドボタン）
+- リンク先: `/register/business`
+
+### Admin ログイン修正
+- `taka.k.yama@gmail.com` のパスワードを `AdminJglow2026!` に更新（Auth Admin API経由）
+- `profiles` テーブルの `is_active` を `true` に設定
+
+---
+
+### 育成就労制度 記事コンテンツ更新（DB直接編集）
+
+#### 概要
+運用要領の正式公開内容に基づき、`blog_posts` テーブルの2記事の本文（`body`）を更新。スクリプト `scripts/update_articles.mjs` で実行。バックアップは `/tmp/backup_articles.json` に保存。
+
+#### 更新対象
+
+| slug | id | タイトル |
+|---|---|---|
+| `ikuseshuro-article-005` | 52 | 転籍制限期間（1〜2年）の分野別一覧表 |
+| `ikuseshuro-special-001` | 63 | 育成就労制度 運用要領 全文公開｜実務担当者が今すぐ確認すべき重要ポイント |
+
+#### article-005 変更内容
+- **分野別一覧表を17分野に更新**: 旧テーブル（紙器・段ボール箱製造等を含む）→ 新テーブル（廃棄物処理（資源循環）追加、9分野1年・8分野2年）
+- **介護の転籍制限期間を2年に変更**（企業判断で1年短縮可能の備考付き）
+- **リード文修正**: 「大半の分野では1年」→「分野によって異なり、9分野が1年・8分野が2年」
+
+#### special-001 変更内容
+- **ポイント③ 派遣先数の表現修正**: 「最大3者まで」→「1者または複数（上限は分野別運用方針で詳細が定められる予定）」
+- **用語統一**: 「監理団体」→「**監理支援機関（旧・監理団体）**」
+- **ポイント⑦ 新規挿入**: 「日本語能力の目標達成を支援する義務」（100時間以上の講習機会提供・費用負担・自学環境整備）
+- **旧ポイント⑦→⑧に繰り下げ**: 「監理支援機関の許可に『中立性の確保』要件」
+- **振込注記追加**: 認定手数料の支払方式が収入印紙→銀行振込に変更
+
+#### 実行スクリプト
+- `scripts/fetch_articles.mjs` — バックアップ取得用
+- `scripts/update_articles.mjs` — 更新実行用（全チェック通過時のみDB更新）
+- 実行方法: `node --env-file=.env.local scripts/update_articles.mjs`

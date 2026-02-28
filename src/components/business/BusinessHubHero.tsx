@@ -38,7 +38,7 @@ export function BusinessHubHero() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/business/diagnosis"
+            href="/business/existing-users/ladder#diagnostic"
             className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-[#1a2f5e] text-base shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
             style={{ backgroundColor: '#c9a84c' }}
           >

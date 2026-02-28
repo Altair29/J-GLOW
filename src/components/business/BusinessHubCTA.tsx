@@ -34,15 +34,15 @@ export function BusinessHubCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/business/contact"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-[#1a2f5e] text-base shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
-              style={{ backgroundColor: '#c9a84c' }}
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-white text-base border-2 border-white/30 hover:border-white/60 hover:-translate-y-0.5 transition-all duration-200"
             >
               相談する
               <ArrowRight size={16} />
             </Link>
             <Link
-              href="/business/diagnosis"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-white text-base border-2 border-white/30 hover:border-white/60 hover:-translate-y-0.5 transition-all duration-200"
+              href="/business/existing-users/ladder#diagnostic"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-[#1a2f5e] text-base shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+              style={{ backgroundColor: '#c9a84c' }}
             >
               まず自社診断から始める
               <ArrowRight size={16} />

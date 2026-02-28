@@ -17,7 +17,7 @@ type Props = {
    ナビゲーション構造定義
    DB の navItems を href でグルーピング
    ======================================== */
-const featureHrefs = ['/business/simulation', '/business/diagnosis', '/business/ikusei', '/business/existing-users', '/business/tools/labor-notice'];
+const featureHrefs = ['/business/simulation', '/business/existing-users/ladder#diagnostic', '/business/ikusei', '/business/existing-users', '/business/tools/labor-notice', '/business/cost-simulator'];
 const resourceHrefs = ['/business/subsidies', '/business/partners'];
 
 function groupNavItems(items: NavigationItem[]) {
