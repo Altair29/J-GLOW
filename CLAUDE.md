@@ -98,7 +98,9 @@ src/
 │  ├─ admin/                         # 管理画面コンポーネント
 │  ├─ shared/                        # 汎用UI（Button, Input, Modal, Badge等）
 │  ├─ ActivityLogProvider.tsx        # ページ閲覧ログ（layout.tsxで使用）
-│  └─ common/Footer.tsx              # 共通フッター（PP + お問い合わせリンク）
+│  └─ common/
+│     ├─ Footer.tsx                  # 共通フッター（PP + お問い合わせリンク）
+│     └─ FadeUp.tsx                  # スクロール連動アニメーション（FadeUp + FadeUpGroup）
 ├─ lib/
 │  ├─ supabase/{client,server,middleware}.ts
 │  ├─ utils/routing.ts               # getHomePath()
@@ -146,6 +148,7 @@ scripts/                             # DB投入スクリプト
 - **セクション背景交互**: `#f8fafc` ↔ `#ffffff`
 - **セクション区切り**: `border-top: 1px solid #e2e8f0`
 - **外部リンク**: `target="_blank" rel="noopener noreferrer"`
+- **スクロールアニメーション**: `FadeUp` / `FadeUpGroup`（`@/components/common/FadeUp`、framer-motion useInView）
 
 ---
 
@@ -156,7 +159,7 @@ scripts/                             # DB投入スクリプト
 | パス | 説明 |
 |---|---|
 | `/` | トップ — 企業向け/働く方向けの2分岐ポータル（DB駆動） |
-| `/business` | 企業向けランディング（ヒーロー→数字→理由→流れ→3本柱→ツール→記事） |
+| `/business` | 企業向けランディング（ヒーロー→3本柱→ツール→制度記事→監理団体/士業セクション、FadeUpアニメーション適用） |
 | `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
 | `/business/diagnosis` | 外国人雇用 適正診断 |
 | `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・3ユーザー種別・PDF提案書） |
@@ -164,7 +167,7 @@ scripts/                             # DB投入スクリプト
 | `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
 | `/business/hiring-guide/trends` | 採用動向サブページ |
 | `/business/hiring-guide/honest-guide` | 正直ガイドサブページ |
-| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン） |
+| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン、`?type=kanri` で監理団体初期選択対応） |
 | `/business/articles` | 分野別外国人採用ガイド（19分野） |
 | `/business/articles/[slug]` | 記事詳細（Markdown/HTML自動判別） |
 | `/business/existing-users` | 外国人スタッフ活用ハブ |
@@ -339,6 +342,22 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 | パートナー | `/admin/partners` | ✅ |
 | 問い合わせ | `/admin/contact` | ✅ |
 | 通知 | `/admin/notifications` | ✅ |
+
+---
+
+## 企業向けランディング (`/business`) セクション構成
+
+1. **ヒーロー** — CTA: コストシミュレーター / 採用ガイド
+2. **状況別3本柱カード** — 採用ガイド / スタッフ活用ハブ / 育成就労ロードマップ
+3. **現場で使えるツール** — `ToolsSection` コンポーネント（6ツール）
+4. **制度の今を知る** — 統計記事3本（労働力不足 / 採用動向 / 正直ガイド）
+5. **監理団体・登録支援機関・士業の方へ**（FOR PROFESSIONALS）
+   - ツールカード3枚:
+     - 💰 採用コストシミュレーター → `/business/cost-simulator`
+     - 📋 現場指示書ビルダー → `/business/existing-users/connect/templates`
+     - ✅ 育成就労・特定技能 移行チェッカー → `/business/roadmap?from=professionals&type=kanri`
+   - CTA: パートナー登録について → `/business/partners`
+- 全セクションに `FadeUp` / `FadeUpGroup` アニメーション適用
 
 ---
 
