@@ -19,6 +19,14 @@ function RequiredBadge() {
   );
 }
 
+function OptionalBadge() {
+  return (
+    <span className="ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
+      任意
+    </span>
+  );
+}
+
 function ErrorMsg({ show, text }: { show: boolean; text: string }) {
   if (!show) return null;
   return <p className="text-xs text-red-500 mt-1">{text}</p>;
@@ -492,6 +500,27 @@ export default function Step3WorkHours({ data, onChange, showErrors = false, err
             </div>
           )}
         </div>
+
+        {/* Annual holiday days */}
+        <div className="mt-5">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            年間合計休日日数
+            <OptionalBadge />
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={data.annual_holiday_days}
+              onChange={(e) => set('annual_holiday_days', e.target.value)}
+              min="0"
+              max="365"
+              className="w-20 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              placeholder="105"
+            />
+            <span className="text-sm text-gray-600">日</span>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">※ 所定休日の年間合計日数を入力してください</p>
+        </div>
       </section>
 
       {/* Leave */}
@@ -515,12 +544,65 @@ export default function Step3WorkHours({ data, onChange, showErrors = false, err
               <span className="text-sm text-gray-600">日</span>
             </div>
           </div>
+
+          {/* Pre-6-month leave */}
+          <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                継続勤務6か月未満の年次有給休暇
+              </span>
+              <div className="flex gap-3">
+                <label className="flex items-center gap-1.5 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="pre_6month_leave_enabled"
+                    checked={data.pre_6month_leave_enabled === true}
+                    onChange={() => set('pre_6month_leave_enabled', true)}
+                    className="accent-[#1a2f5e]"
+                  />
+                  あり
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="pre_6month_leave_enabled"
+                    checked={data.pre_6month_leave_enabled === false}
+                    onChange={() => set('pre_6month_leave_enabled', false)}
+                    className="accent-[#1a2f5e]"
+                  />
+                  なし
+                </label>
+              </div>
+            </div>
+            {data.pre_6month_leave_enabled && (
+              <div className="flex items-center gap-2 flex-wrap pt-1">
+                <input
+                  type="number"
+                  value={data.pre_6month_leave_months}
+                  onChange={(e) => set('pre_6month_leave_months', e.target.value)}
+                  min="1"
+                  max="5"
+                  placeholder="3"
+                  className="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-center focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                />
+                <span className="text-sm text-gray-700">か月経過で</span>
+                <input
+                  type="number"
+                  value={data.pre_6month_leave_days}
+                  onChange={(e) => set('pre_6month_leave_days', e.target.value)}
+                  min="1"
+                  placeholder="5"
+                  className="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-center focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                />
+                <span className="text-sm text-gray-700">日</span>
+              </div>
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               その他の休暇
-              <span className="ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
-                任意
-              </span>
+              <OptionalBadge />
             </label>
             <textarea
               value={data.other_leave}

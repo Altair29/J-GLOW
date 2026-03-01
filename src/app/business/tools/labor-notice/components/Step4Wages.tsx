@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Trash2, FileText } from 'lucide-react';
+import { Plus, Trash2, FileText, Info } from 'lucide-react';
 import type { Step4Data, PaymentMethod } from '../types';
 import { DEDUCTION_TYPE_OPTIONS, RAISE_TIMING_OPTIONS, BONUS_FREQUENCY_OPTIONS, DISMISSAL_SPECIAL_OPTIONS, PAYMENT_METHOD_OPTIONS, formatJPY } from '../types';
 
@@ -200,14 +200,15 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
           </button>
         </div>
 
-        {/* Overtime premium rates */}
+        {/* Overtime premium rates — 3x2 grid (6 fields) */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             割増賃金率
           </label>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-3">
+            {/* Row 1 */}
             <div>
-              <label className="block text-xs text-gray-500 mb-1">時間外（60h以下）</label>
+              <label className="block text-xs text-gray-500 mb-1">法定超月60h以内</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -220,7 +221,7 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
               </div>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">時間外（60h超）</label>
+              <label className="block text-xs text-gray-500 mb-1">法定超月60h超</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -233,7 +234,21 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
               </div>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">休日</label>
+              <label className="block text-xs text-gray-500 mb-1">所定超</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={data.overtime_rate_prescribed}
+                  onChange={(e) => set('overtime_rate_prescribed', e.target.value)}
+                  min="0"
+                  className="w-20 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                />
+                <span className="text-sm text-gray-600">％</span>
+              </div>
+            </div>
+            {/* Row 2 */}
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">法定休日</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -246,7 +261,20 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
               </div>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">深夜（22:00-5:00）</label>
+              <label className="block text-xs text-gray-500 mb-1">法定外休日</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={data.overtime_rate_holiday_non_statutory}
+                  onChange={(e) => set('overtime_rate_holiday_non_statutory', e.target.value)}
+                  min="0"
+                  className="w-20 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                />
+                <span className="text-sm text-gray-600">％</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">深夜22:00-5:00</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -671,10 +699,37 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
       {/* Retirement section */}
       <section>
         <h3 className="text-lg font-bold text-[#1a2f5e] mb-4">
-          退職に関する事項（解雇予告日数）
+          退職に関する事項
         </h3>
-        <div className="space-y-4">
+        <div className="space-y-6">
+
+          {/* Voluntary resignation procedure */}
           <div>
+            <h4 className="text-sm font-semibold text-gray-800 mb-3">自己都合退職の手続</h4>
+            <div className="flex items-center gap-2 flex-wrap text-sm">
+              <span className="text-gray-700">退職する</span>
+              <input
+                type="number"
+                value={data.voluntary_resignation_notice_days}
+                onChange={(e) => set('voluntary_resignation_notice_days', e.target.value)}
+                min="0"
+                className="w-20 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              />
+              <span className="text-gray-700">日前に</span>
+              <input
+                type="text"
+                value={data.voluntary_resignation_to}
+                onChange={(e) => set('voluntary_resignation_to', e.target.value)}
+                className="w-36 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                placeholder="例：社長、工場長"
+              />
+              <span className="text-gray-700">に届けること</span>
+            </div>
+          </div>
+
+          {/* Dismissal notice days */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-800 mb-3">解雇予告日数</h4>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -686,48 +741,91 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
               <span className="text-sm text-gray-600">日</span>
             </div>
           </div>
-          <div data-error={hasErr('dismissal_article_from') || hasErr('dismissal_article_number') || undefined}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              解雇の事由・手続き
-              <RequiredBadge />
-            </label>
-            <div className="flex items-center gap-2 text-sm flex-wrap">
-              <span className="text-gray-700">就業規則 第</span>
-              <input
-                type="number"
-                min={1}
-                max={200}
-                value={data.dismissal_article_from || data.dismissal_article_number}
-                onChange={(e) => {
-                  onChange({ ...data, dismissal_article_from: e.target.value, dismissal_article_number: e.target.value });
-                }}
-                className={`w-16 rounded-lg border px-2 py-1.5 text-center text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none ${
-                  hasErr('dismissal_article_from') || hasErr('dismissal_article_number') ? 'border-red-400 bg-red-50/30' : 'border-gray-300'
-                }`}
-                placeholder="○"
-              />
-              <span className="text-gray-700">条</span>
-              <span className="text-gray-400">〜</span>
-              <span className="text-gray-700">第</span>
-              <input
-                type="number"
-                min={1}
-                max={200}
-                value={data.dismissal_article_to}
-                onChange={(e) => set('dismissal_article_to', e.target.value)}
-                className="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-center text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
-                placeholder="○"
-              />
-              <span className="text-gray-700">条に定める事由による</span>
+
+          {/* Work rules exist toggle */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-800">就業規則</h4>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => set('work_rules_exist', true)}
+                  className={`px-3 py-1.5 rounded-lg border text-sm transition ${
+                    data.work_rules_exist
+                      ? 'border-[#1a2f5e] bg-[#1a2f5e] text-white'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  あり
+                </button>
+                <button
+                  type="button"
+                  onClick={() => set('work_rules_exist', false)}
+                  className={`px-3 py-1.5 rounded-lg border text-sm transition ${
+                    !data.work_rules_exist
+                      ? 'border-[#1a2f5e] bg-[#1a2f5e] text-white'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  なし
+                </button>
+              </div>
             </div>
-            <ErrorMsg show={hasErr('dismissal_article_from') || hasErr('dismissal_article_number')} text="就業規則の条番号を入力してください" />
-            <div className="mt-2 p-2 rounded bg-gray-50 border border-gray-200">
-              <p className="text-xs text-gray-600">解雇は、やむを得ない事由がある場合に限り、少なくとも30日前に予告して行う。（労働基準法第20条）</p>
-            </div>
+
+            {data.work_rules_exist ? (
+              /* Dismissal article numbers — shown only when work rules exist */
+              <div data-error={hasErr('dismissal_article_from') || hasErr('dismissal_article_number') || undefined}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  解雇の事由・手続き
+                  <RequiredBadge />
+                </label>
+                <div className="flex items-center gap-2 text-sm flex-wrap">
+                  <span className="text-gray-700">就業規則 第</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={200}
+                    value={data.dismissal_article_from || data.dismissal_article_number}
+                    onChange={(e) => {
+                      onChange({ ...data, dismissal_article_from: e.target.value, dismissal_article_number: e.target.value });
+                    }}
+                    className={`w-16 rounded-lg border px-2 py-1.5 text-center text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none ${
+                      hasErr('dismissal_article_from') || hasErr('dismissal_article_number') ? 'border-red-400 bg-red-50/30' : 'border-gray-300'
+                    }`}
+                    placeholder="○"
+                  />
+                  <span className="text-gray-700">条</span>
+                  <span className="text-gray-400">〜</span>
+                  <span className="text-gray-700">第</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={200}
+                    value={data.dismissal_article_to}
+                    onChange={(e) => set('dismissal_article_to', e.target.value)}
+                    className="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-center text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                    placeholder="○"
+                  />
+                  <span className="text-gray-700">条に定める事由による</span>
+                </div>
+                <ErrorMsg show={hasErr('dismissal_article_from') || hasErr('dismissal_article_number')} text="就業規則の条番号を入力してください" />
+                <div className="mt-2 p-2 rounded bg-gray-50 border border-gray-200">
+                  <p className="text-xs text-gray-600">解雇は、やむを得ない事由がある場合に限り、少なくとも30日前に予告して行う。（労働基準法第20条）</p>
+                </div>
+              </div>
+            ) : (
+              /* Info box when no work rules */
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                <Info size={16} className="text-blue-600 mt-0.5 shrink-0" />
+                <p className="text-xs text-blue-800">
+                  従業員10名未満の事業所のため就業規則なし。個別の雇用契約に定める解雇事由による。
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Dismissal special clauses for foreign workers */}
-          <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200">
+          <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
             <p className="text-xs font-bold text-amber-800 mb-2">
               外国人雇用特有の退職・解雇事由（推奨・自動挿入）
             </p>
@@ -764,44 +862,70 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">雇入れ時健診</label>
-            <select
-              value={data.health_check_hire_month}
-              onChange={(e) => set('health_check_hire_month', e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
-            >
-              <option value="">未定</option>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={String(i + 1)}>{i + 1}月</option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={data.health_check_hire_year}
+                onChange={(e) => set('health_check_hire_year', e.target.value)}
+                min={2020}
+                max={2040}
+                className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                placeholder="2026"
+              />
+              <span className="text-sm text-gray-600">年</span>
+              <select
+                value={data.health_check_hire_month}
+                onChange={(e) => set('health_check_hire_month', e.target.value)}
+                className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              >
+                <option value="">未定</option>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={String(i + 1)}>{i + 1}月</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">定期健診</label>
-            <select
-              value={data.health_check_periodic_month}
-              onChange={(e) => set('health_check_periodic_month', e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
-            >
-              <option value="">未定</option>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={String(i + 1)}>{i + 1}月</option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={data.health_check_periodic_year}
+                onChange={(e) => set('health_check_periodic_year', e.target.value)}
+                min={2020}
+                max={2040}
+                className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+                placeholder="2026"
+              />
+              <span className="text-sm text-gray-600">年</span>
+              <select
+                value={data.health_check_periodic_month}
+                onChange={(e) => set('health_check_periodic_month', e.target.value)}
+                className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              >
+                <option value="">未定</option>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={String(i + 1)}>{i + 1}月</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Insurance */}
+      {/* Insurance — 3x2 grid (6 items) */}
       <section>
         <h3 className="text-base font-bold text-[#1a2f5e] mb-4">
           社会保険
         </h3>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-3">
           {([
             { key: 'insurance_pension', label: '厚生年金' },
             { key: 'insurance_health', label: '健康保険' },
             { key: 'insurance_employment', label: '雇用保険' },
             { key: 'insurance_workers_comp', label: '労災保険' },
+            { key: 'insurance_national_pension', label: '国民年金' },
+            { key: 'insurance_national_health', label: '国民健康保険' },
           ] as const).map(({ key, label }) => (
             <label key={key} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
               <input
@@ -864,7 +988,7 @@ export default function Step4Wages({ data, onChange, showErrors = false, errors 
         )}
       </section>
 
-      {/* Work rules */}
+      {/* Work rules location */}
       <section>
         <h3 className="text-base font-bold text-[#1a2f5e] mb-3">
           就業規則の周知場所

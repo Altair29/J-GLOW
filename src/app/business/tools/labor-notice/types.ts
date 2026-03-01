@@ -8,6 +8,8 @@ export type VisaType =
 
 export type ContractType = 'fixed' | 'indefinite';
 
+export type EmploymentType = 'direct' | 'dispatch';
+
 export type SectorType =
   | 'nursing_care' | 'building_cleaning' | 'manufacturing' | 'construction'
   | 'shipbuilding' | 'auto_maintenance' | 'aviation' | 'accommodation'
@@ -79,7 +81,15 @@ export interface Step2Data {
   renewal_limit_reason: string;
   renewal_limit_reason_text: string;
   transfer_clause: boolean;    // 転籍条項（育成就労 & 特定技能のみ）
-  workplace_initial: string;
+  // 育成就労 転籍詳細
+  transfer_restriction_period: string;    // 転籍制限期間（例：1年、2年）
+  transfer_conditions: string;            // やむを得ない事情による転籍条件
+  transfer_voluntary_conditions: string;  // 本人意向による転籍条件
+  // 就業場所（構造化）
+  employment_type: EmploymentType;         // 直接雇用 / 派遣雇用
+  workplace_office_name: string;           // 事業所名
+  workplace_initial: string;               // 所在地
+  workplace_office_phone: string;          // 事業所連絡先
   workplace_change_range_type: RangeType;
   workplace_change_range: string;
   job_description_initial: string;
@@ -105,7 +115,11 @@ export interface Step3Data {
   days_off_days: string[];
   days_off_weekly: string; // computed from days_off_days: "土・日・祝日"
   days_off_other: string;
+  annual_holiday_days: string;            // 年間合計休日日数
   paid_leave_days: string;
+  pre_6month_leave_enabled: boolean;      // 6か月未満有休の有無
+  pre_6month_leave_months: string;        // __か月経過で
+  pre_6month_leave_days: string;          // __日
   other_leave: string;
   shift_patterns: ShiftPattern[];
   variant_start_date: string;
@@ -117,10 +131,13 @@ export interface Step4Data {
   wage_type: WageType;
   basic_salary: string;
   allowances: { name: string; amount: string }[];
-  overtime_rate_normal: string;
-  overtime_rate_over60: string;
-  overtime_rate_holiday: string;
-  overtime_rate_night: string;
+  // 割増賃金率（6区分：公式様式準拠）
+  overtime_rate_normal: string;               // 法定超月60h以内
+  overtime_rate_over60: string;               // 法定超月60h超
+  overtime_rate_prescribed: string;           // 所定超
+  overtime_rate_holiday: string;              // 法定休日
+  overtime_rate_holiday_non_statutory: string; // 法定外休日
+  overtime_rate_night: string;                // 深夜
   deduction_agreement: OvertimeType; // 労使協定控除の有無
   deduction_items: { type: string; amount: string }[];
   deduction_tax_estimate: string;
@@ -143,18 +160,28 @@ export interface Step4Data {
   retirement_allowance: OvertimeType;
   work_stoppage_enabled: boolean;
   work_stoppage_rate: string;
-  retirement_notice_days: string;
+  // 退職に関する事項（分離）
+  voluntary_resignation_notice_days: string;  // 自己都合退職の予告日数
+  voluntary_resignation_to: string;           // 届出先（例：社長、工場長）
+  retirement_notice_days: string;             // 解雇予告日数
   dismissal_procedure: string;
+  work_rules_exist: boolean;                  // 就業規則の有無
   dismissal_article_number: string;
   dismissal_article_from: string;
   dismissal_article_to: string;
   dismissal_special_clauses: string[];
+  // 健康診断（年月形式）
+  health_check_hire_year: string;
   health_check_hire_month: string;
+  health_check_periodic_year: string;
   health_check_periodic_month: string;
+  // 社会保険（6項目：公式様式準拠）
   insurance_pension: boolean;
   insurance_health: boolean;
   insurance_employment: boolean;
   insurance_workers_comp: boolean;
+  insurance_national_pension: boolean;    // 国民年金
+  insurance_national_health: boolean;     // 国民健康保険
   labor_union: 'yes' | 'no';
   work_rules_location: string;
 }
@@ -177,6 +204,7 @@ export interface VisaConfig {
   maxPeriod: string;
   contractDefault: ContractType;
   showTransferClause: boolean;
+  formNumber: string; // 参考様式番号
 }
 
 export const VISA_CONFIGS: Record<VisaType, VisaConfig> = {
@@ -185,26 +213,45 @@ export const VISA_CONFIGS: Record<VisaType, VisaConfig> = {
     maxPeriod: '3年',
     contractDefault: 'fixed',
     showTransferClause: true,
+    formNumber: '参考様式第１－６号',
   },
   tokutei1: {
     label: '特定技能1号',
     maxPeriod: '1年（更新あり・通算5年上限）',
     contractDefault: 'fixed',
     showTransferClause: true,
+    formNumber: '参考様式第１－６号',
   },
   tokutei2: {
     label: '特定技能2号',
     maxPeriod: '制限なし（無期限も可）',
     contractDefault: 'indefinite',
     showTransferClause: false,
+    formNumber: '参考様式第１－６号',
   },
   ginou_jisshu: {
     label: '技能実習（旧制度）',
     maxPeriod: '3年（優良なら5年）',
     contractDefault: 'fixed',
     showTransferClause: false,
+    formNumber: '',
   },
 };
+
+/** Get document title based on visa type */
+export function getDocumentTitle(visaType: VisaType): { title: string; subtitle: string } {
+  const config = VISA_CONFIGS[visaType];
+  if (config.formNumber) {
+    return {
+      title: `${config.formNumber}　雇用条件書`,
+      subtitle: '（兼 労働条件通知書）',
+    };
+  }
+  return {
+    title: '労働条件通知書',
+    subtitle: '（一般労働者用；常用、有期雇用型）',
+  };
+}
 
 export const LANGUAGES: { code: Lang; label: string; flag: string }[] = [
   { code: 'ja', label: '日本語', flag: '🇯🇵' },
@@ -286,6 +333,46 @@ export function formatPayDay(value: string, month: PaymentMonth, lang: Lang = 'j
   return lang === 'ja' ? `${monthLabel}${value}日` : `${monthLabel}, ${value}th`;
 }
 
+/* ── Date cross-validation ── */
+export interface DateValidationError {
+  field: string;
+  message: string;
+}
+
+export function validateDates(step1: Step1Data, step2: Step2Data): DateValidationError[] {
+  const errors: DateValidationError[] = [];
+  const issueDate = step1.issue_date ? new Date(step1.issue_date) : null;
+  const entryDate = step2.entry_date ? new Date(step2.entry_date) : null;
+  const contractStart = step2.contract_start ? new Date(step2.contract_start) : null;
+  const contractEnd = step2.contract_end ? new Date(step2.contract_end) : null;
+
+  // 発行日 ≤ 契約開始日
+  if (issueDate && contractStart && issueDate > contractStart) {
+    errors.push({
+      field: 'issue_date',
+      message: '発行日が契約開始日より後になっています',
+    });
+  }
+
+  // 入国予定日 ≤ 契約開始日
+  if (entryDate && contractStart && entryDate > contractStart) {
+    errors.push({
+      field: 'entry_date',
+      message: '入国予定日が契約開始日より後になっています',
+    });
+  }
+
+  // 契約開始日 < 契約終了日
+  if (contractStart && contractEnd && contractStart >= contractEnd) {
+    errors.push({
+      field: 'contract_end',
+      message: '契約終了日は契約開始日より後にしてください',
+    });
+  }
+
+  return errors;
+}
+
 export const RENEWAL_LIMIT_REASONS = [
   { value: 'business_end', label: '当該業務が終了する見込みのため' },
   { value: 'visa', label: '在留資格の期限に合わせるため' },
@@ -342,6 +429,9 @@ export function getSectorList(visaType: VisaType): { value: SectorType; label: s
   }
 }
 
+/** Sectors that allow dispatch employment (派遣可能分野) */
+export const DISPATCH_ALLOWED_SECTORS: SectorType[] = ['agriculture', 'fishery'];
+
 export const PAYMENT_METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
   { value: 'bank_transfer', label: '銀行振込' },
   { value: 'cash', label: '現金払い' },
@@ -352,6 +442,12 @@ export const DEDUCTION_TYPE_OPTIONS = [
   { value: '食費', label: '食費' },
   { value: '水道光熱費', label: '水道光熱費' },
   { value: 'その他', label: 'その他' },
+] as const;
+
+/* ── Transfer restriction period options (育成就労) ── */
+export const TRANSFER_RESTRICTION_OPTIONS = [
+  { value: '1', label: '1年（やむを得ない場合のみ転籍可）' },
+  { value: '2', label: '2年（原則）' },
 ] as const;
 
 /* ── Default form data ── */
@@ -391,7 +487,13 @@ export const DEFAULT_STEP2: Step2Data = {
   renewal_limit_reason: '',
   renewal_limit_reason_text: '',
   transfer_clause: false,
+  transfer_restriction_period: '1',
+  transfer_conditions: '',
+  transfer_voluntary_conditions: '',
+  employment_type: 'direct',
+  workplace_office_name: '',
   workplace_initial: '',
+  workplace_office_phone: '',
   workplace_change_range_type: 'none',
   workplace_change_range: '',
   job_description_initial: '',
@@ -416,7 +518,11 @@ export const DEFAULT_STEP3: Step3Data = {
   days_off_days: [],
   days_off_weekly: '',
   days_off_other: '',
+  annual_holiday_days: '',
   paid_leave_days: '10',
+  pre_6month_leave_enabled: false,
+  pre_6month_leave_months: '',
+  pre_6month_leave_days: '',
   other_leave: '',
   shift_patterns: [],
   variant_start_date: '',
@@ -429,7 +535,9 @@ export const DEFAULT_STEP4: Step4Data = {
   allowances: [],
   overtime_rate_normal: '25',
   overtime_rate_over60: '50',
+  overtime_rate_prescribed: '25',
   overtime_rate_holiday: '35',
+  overtime_rate_holiday_non_statutory: '25',
   overtime_rate_night: '25',
   deduction_agreement: 'no',
   deduction_items: [],
@@ -453,8 +561,11 @@ export const DEFAULT_STEP4: Step4Data = {
   retirement_allowance: 'no',
   work_stoppage_enabled: false,
   work_stoppage_rate: '60',
+  voluntary_resignation_notice_days: '30',
+  voluntary_resignation_to: '社長',
   retirement_notice_days: '30',
   dismissal_procedure: '',
+  work_rules_exist: true,
   dismissal_article_number: '',
   dismissal_article_from: '',
   dismissal_article_to: '',
@@ -463,12 +574,16 @@ export const DEFAULT_STEP4: Step4Data = {
     'dismissal_false_record',
     'dismissal_deportation',
   ],
+  health_check_hire_year: '',
   health_check_hire_month: '',
+  health_check_periodic_year: '',
   health_check_periodic_month: '',
   insurance_pension: true,
   insurance_health: true,
   insurance_employment: true,
   insurance_workers_comp: true,
+  insurance_national_pension: false,
+  insurance_national_health: false,
   labor_union: 'no',
   work_rules_location: '',
 };

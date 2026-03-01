@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getContentBlocks, getThemeVars } from '@/lib/data';
-import ToolsSection from './ToolsSection';
 import { FadeUp, FadeUpGroup } from '@/components/common/FadeUp';
 
 export default async function BusinessPage() {
@@ -13,30 +12,6 @@ export default async function BusinessPage() {
     getContentBlocks(supabase, 'business_home'),
     getThemeVars(supabase, 'business'),
   ]);
-
-  const pillars = [
-    {
-      title: 'はじめての外国人雇用',
-      desc: '国籍・分野・時期を入力するだけでコスト・リスクを即試算',
-      href: '/business/hiring-guide',
-      image: '/images/card-hiring.png',
-      external: false,
-    },
-    {
-      title: '外国人スタッフをもっと活かすために',
-      desc: 'コミュニケーション・定着・スキルアップの課題を解決します',
-      href: '/business/existing-users',
-      image: '/images/card-existing.png',
-      external: false,
-    },
-    {
-      title: '育成就労ロードマップ',
-      desc: '2027年4月の制度変更に向けた準備スケジュールを確認',
-      href: '/business/roadmap',
-      image: '/images/card-roadmap.png',
-      external: false,
-    },
-  ];
 
   const primaryColor = theme['--biz-primary'] || '#1a2f5e';
 

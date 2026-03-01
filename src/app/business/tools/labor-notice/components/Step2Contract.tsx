@@ -1,13 +1,32 @@
 'use client';
 
-import type { Step2Data, VisaType, RangeType, SectorType } from '../types';
-import { VISA_CONFIGS, RENEWAL_LIMIT_REASONS, RENEWAL_CRITERIA_OPTIONS, getSectorList, WORKPLACE_RANGE_OPTIONS, JOB_RANGE_OPTIONS } from '../types';
+import type {
+  Step2Data,
+  Step1Data,
+  VisaType,
+  RangeType,
+  SectorType,
+  EmploymentType,
+  DateValidationError,
+} from '../types';
+import {
+  VISA_CONFIGS,
+  RENEWAL_LIMIT_REASONS,
+  RENEWAL_CRITERIA_OPTIONS,
+  getSectorList,
+  WORKPLACE_RANGE_OPTIONS,
+  JOB_RANGE_OPTIONS,
+  DISPATCH_ALLOWED_SECTORS,
+  TRANSFER_RESTRICTION_OPTIONS,
+  validateDates,
+} from '../types';
 
 interface Props {
   data: Step2Data;
   onChange: (data: Step2Data) => void;
   showErrors?: boolean;
   errors?: string[];
+  step1Data: Step1Data;
 }
 
 function RequiredBadge() {
@@ -21,6 +40,20 @@ function RequiredBadge() {
 function ErrorMsg({ show, text }: { show: boolean; text: string }) {
   if (!show) return null;
   return <p className="text-xs text-red-500 mt-1">{text}</p>;
+}
+
+function DateWarningBanner({ errors }: { errors: DateValidationError[] }) {
+  if (errors.length === 0) return null;
+  return (
+    <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 space-y-1">
+      {errors.map((err, i) => (
+        <p key={i} className="text-xs text-amber-800">
+          <span className="font-semibold">日付の整合性エラー: </span>
+          {err.message}
+        </p>
+      ))}
+    </div>
+  );
 }
 
 const RENEWAL_TYPE_LABELS: Record<string, string> = {
@@ -71,7 +104,13 @@ function getMaxDateLabel(visaType: VisaType): string {
   return `${visaLabel}：1契約最長${visaYears}年（労基法上限3年）`;
 }
 
-export default function Step2Contract({ data, onChange, showErrors = false, errors = [] }: Props) {
+export default function Step2Contract({
+  data,
+  onChange,
+  showErrors = false,
+  errors = [],
+  step1Data,
+}: Props) {
   const set = <K extends keyof Step2Data>(key: K, value: Step2Data[K]) =>
     onChange({ ...data, [key]: value });
 
@@ -94,6 +133,9 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
   const visaConfig = VISA_CONFIGS[data.visa_type];
   const showTransfer = visaConfig.showTransferClause;
 
+  const isDispatchAllowed = DISPATCH_ALLOWED_SECTORS.includes(data.tokutei_sector as SectorType);
+  const isDispatch = data.employment_type === 'dispatch';
+
   const hasErr = (key: string) => showErrors && errors.includes(key);
 
   const inputCls = (key: string, base?: string) =>
@@ -104,6 +146,9 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
   const maxEndDate = data.contract_type === 'fixed'
     ? calcMaxEndDate(data.contract_start, data.visa_type)
     : undefined;
+
+  // Date cross-validation
+  const dateErrors: DateValidationError[] = validateDates(step1Data, data);
 
   return (
     <div className="space-y-8">
@@ -203,6 +248,44 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
         </div>
       </section>
 
+      {/* Employment type */}
+      <section>
+        <h3 className="text-base font-bold text-[#1a2f5e] mb-4">
+          雇用形態
+          <RequiredBadge />
+        </h3>
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="employment_type"
+              checked={data.employment_type === 'direct'}
+              onChange={() => set('employment_type', 'direct' as EmploymentType)}
+              className="accent-[#1a2f5e]"
+            />
+            <span className="text-sm font-medium">直接雇用</span>
+          </label>
+          {isDispatchAllowed && (
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="employment_type"
+                checked={data.employment_type === 'dispatch'}
+                onChange={() => set('employment_type', 'dispatch' as EmploymentType)}
+                className="accent-[#1a2f5e]"
+              />
+              <span className="text-sm font-medium">派遣雇用</span>
+            </label>
+          )}
+        </div>
+        {isDispatch && (
+          <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200 text-sm text-blue-800">
+            派遣雇用の場合、別途「就業条件明示書」の作成が必要です。
+            本書類は雇用条件（基本契約）を記載するものです。
+          </div>
+        )}
+      </section>
+
       {/* Contract Period */}
       <section>
         <h3 className="text-lg font-bold text-[#1a2f5e] mb-4">
@@ -280,6 +363,13 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
               </p>
             )}
           </>
+        )}
+
+        {/* Date cross-validation warnings */}
+        {dateErrors.length > 0 && (
+          <div className="mt-4">
+            <DateWarningBanner errors={dateErrors} />
+          </div>
         )}
       </section>
 
@@ -501,6 +591,104 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
               <div className="text-gray-600 mt-0.5">転籍を認める</div>
             </div>
           </label>
+
+          {/* ikusei transfer details */}
+          {data.visa_type === 'ikusei' && data.transfer_clause && (
+            <div className="mt-4 space-y-4 border-t border-blue-200 pt-4">
+              {/* 転籍制限期間 */}
+              <div>
+                <label className="block text-sm font-semibold text-[#1a2f5e] mb-2">
+                  転籍制限期間
+                  <RequiredBadge />
+                </label>
+                <div className="space-y-2">
+                  {TRANSFER_RESTRICTION_OPTIONS.map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="transfer_restriction_period"
+                        checked={data.transfer_restriction_period === opt.value}
+                        onChange={() => {
+                          const voluntaryDefault = `同一の受入れ機関において就労した期間が${opt.value}年を超え、技能検定試験基礎級等又は日本語能力A1相当以上の試験に合格した場合。`;
+                          onChange({
+                            ...data,
+                            transfer_restriction_period: opt.value,
+                            transfer_voluntary_conditions: data.transfer_voluntary_conditions
+                              ? data.transfer_voluntary_conditions.replace(/\d+年を超え/, `${opt.value}年を超え`)
+                              : voluntaryDefault,
+                          });
+                        }}
+                        className="accent-[#1a2f5e]"
+                      />
+                      <span className="text-sm">{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* やむを得ない事情による転籍条件 */}
+              <div>
+                <label className="block text-sm font-semibold text-[#1a2f5e] mb-1">
+                  やむを得ない事情による転籍条件
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  転籍制限期間内でもやむを得ない場合に転籍が認められる条件を記載します
+                </p>
+                <textarea
+                  value={data.transfer_conditions}
+                  onChange={(e) => set('transfer_conditions', e.target.value)}
+                  rows={3}
+                  className="w-full rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none resize-y"
+                  placeholder="やむを得ない事情がある場合、育成就労実施者の変更（転籍）が認められます。"
+                />
+                {!data.transfer_conditions && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      set(
+                        'transfer_conditions',
+                        'やむを得ない事情がある場合、育成就労実施者の変更（転籍）が認められます。'
+                      )
+                    }
+                    className="mt-1 text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    標準文を挿入
+                  </button>
+                )}
+              </div>
+
+              {/* 本人意向による転籍条件 */}
+              <div>
+                <label className="block text-sm font-semibold text-[#1a2f5e] mb-1">
+                  本人意向による転籍条件
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  育成就労計画の終了後、本人の意向で転籍できる条件を記載します
+                </p>
+                <textarea
+                  value={data.transfer_voluntary_conditions}
+                  onChange={(e) => set('transfer_voluntary_conditions', e.target.value)}
+                  rows={3}
+                  className="w-full rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none resize-y"
+                  placeholder={`同一の受入れ機関において就労した期間が${data.transfer_restriction_period || '1'}年を超え、技能検定試験基礎級等又は日本語能力A1相当以上の試験に合格した場合。`}
+                />
+                {!data.transfer_voluntary_conditions && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      set(
+                        'transfer_voluntary_conditions',
+                        `同一の受入れ機関において就労した期間が${data.transfer_restriction_period || '1'}年を超え、技能検定試験基礎級等又は日本語能力A1相当以上の試験に合格した場合。`
+                      )
+                    }
+                    className="mt-1 text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    標準文を挿入
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -511,16 +699,50 @@ export default function Step2Contract({ data, onChange, showErrors = false, erro
           <RequiredBadge />
         </h3>
         <div className="space-y-4">
+          {/* 事業所名 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              事業所名
+            </label>
+            <input
+              type="text"
+              value={data.workplace_office_name}
+              onChange={(e) => set('workplace_office_name', e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              placeholder="例：第一製造工場"
+            />
+          </div>
+
+          {/* 所在地 */}
           <div data-error={hasErr('workplace_initial') || undefined}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              所在地
+            </label>
             <input
               type="text"
               value={data.workplace_initial}
               onChange={(e) => set('workplace_initial', e.target.value)}
               className={inputCls('workplace_initial')}
-              placeholder="例：本社工場（東京都...）"
+              placeholder="例：東京都千代田区..."
             />
             <ErrorMsg show={hasErr('workplace_initial')} text="就業場所を入力してください" />
           </div>
+
+          {/* 連絡先 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              連絡先（電話番号）
+            </label>
+            <input
+              type="text"
+              value={data.workplace_office_phone}
+              onChange={(e) => set('workplace_office_phone', e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1a2f5e] focus:ring-1 focus:ring-[#1a2f5e] outline-none"
+              placeholder="例：03-1234-5678"
+            />
+          </div>
+
+          {/* 就業場所の変更の範囲 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               就業場所の変更の範囲

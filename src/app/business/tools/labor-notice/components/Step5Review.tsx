@@ -14,6 +14,7 @@ import {
   TOKUTEI_SECTORS,
   PAYMENT_METHOD_OPTIONS,
   WAGE_TYPE_OPTIONS,
+  TRANSFER_RESTRICTION_OPTIONS,
   getSectorList,
   resolveWorkplaceRange,
   resolveJobRange,
@@ -22,6 +23,8 @@ import {
   formatCutoffDay,
   formatPayDay,
   formatJPY,
+  getDocumentTitle,
+  validateDates,
 } from '../types';
 
 interface Props {
@@ -92,6 +95,13 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
       errors.push('更新上限の理由（2024年4月改正・必須）');
     }
     if (lang === 'ja') errors.push('出力言語（外国語を1つ選択してください）');
+
+    // 日付クロスバリデーション
+    const dateErrors = validateDates(step1, step2);
+    for (const de of dateErrors) {
+      errors.push(de.message);
+    }
+
     setValidationErrors(errors);
     if (errors.length > 0) return;
     setPdfGenerating(true);
@@ -106,7 +116,10 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
       ).toBlob();
       const workerName = data.step1.worker_name || 'worker';
       const issueDate = data.step1.issue_date || new Date().toISOString().slice(0, 10);
-      saveAs(blob, `労働条件通知書_${workerName}_${issueDate}.pdf`);
+      const docTitle = getDocumentTitle(data.step2.visa_type);
+      // Use simplified title for filename (strip form number prefix if present)
+      const fileTitle = docTitle.title.includes('雇用条件書') ? '雇用条件書' : '労働条件通知書';
+      saveAs(blob, `${fileTitle}_${workerName}_${issueDate}.pdf`);
       setPdfGenerated(true);
     } catch (err) {
       console.error('PDF generation failed:', err);
@@ -188,6 +201,28 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
   const paymentMethodLabel = step4.payment_method === 'bank_transfer'
     ? tx(t, 'value_payment_bank_transfer', lang)
     : tx(t, 'value_payment_cash', lang);
+
+  // Employment type label
+  const employmentTypeLabel = step2.employment_type === 'dispatch' ? '派遣雇用' : '直接雇用';
+
+  // Transfer restriction period label (育成就労)
+  const transferRestrictionLabel = TRANSFER_RESTRICTION_OPTIONS.find(
+    (o) => o.value === step2.transfer_restriction_period
+  )?.label ?? `${step2.transfer_restriction_period}年`;
+
+  // Health check display (year+month format)
+  const healthCheckHireDisplay = (step4.health_check_hire_year || step4.health_check_hire_month)
+    ? [
+        step4.health_check_hire_year && `${step4.health_check_hire_year}年`,
+        step4.health_check_hire_month && `${step4.health_check_hire_month}月`,
+      ].filter(Boolean).join('')
+    : '';
+  const healthCheckPeriodicDisplay = (step4.health_check_periodic_year || step4.health_check_periodic_month)
+    ? [
+        step4.health_check_periodic_year && `${step4.health_check_periodic_year}年`,
+        step4.health_check_periodic_month && `${step4.health_check_periodic_month}月`,
+      ].filter(Boolean).join('')
+    : '';
 
   return (
     <div className="space-y-8">
@@ -299,6 +334,10 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
             />
           )}
           <ReviewRow
+            label="雇用形態"
+            value={employmentTypeLabel}
+          />
+          <ReviewRow
             label={<T t={t} k="section_contract" lang={lang} />}
             value={
               step2.contract_type === 'indefinite'
@@ -340,10 +379,43 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
               value={<T t={t} k="label_transfer_yes" lang={lang} />}
             />
           )}
+          {/* 育成就労の転籍詳細 */}
+          {step2.visa_type === 'ikusei' && step2.transfer_clause && (
+            <>
+              <ReviewRow
+                label="転籍制限期間"
+                value={transferRestrictionLabel}
+              />
+              {step2.transfer_conditions && (
+                <ReviewRow
+                  label="やむを得ない事情による転籍条件"
+                  value={step2.transfer_conditions}
+                />
+              )}
+              {step2.transfer_voluntary_conditions && (
+                <ReviewRow
+                  label="本人意向による転籍条件"
+                  value={step2.transfer_voluntary_conditions}
+                />
+              )}
+            </>
+          )}
           <ReviewRow
             label={<T t={t} k="label_workplace" lang={lang} />}
             value={step2.workplace_initial}
           />
+          {step2.workplace_office_name && (
+            <ReviewRow
+              label="事業所名"
+              value={step2.workplace_office_name}
+            />
+          )}
+          {step2.workplace_office_phone && (
+            <ReviewRow
+              label="事業所連絡先"
+              value={step2.workplace_office_phone}
+            />
+          )}
           {workplaceRangeTx && (
             <ReviewRow
               label={<T t={t} k="label_workplace_range" lang={lang} />}
@@ -443,10 +515,26 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
             label={<T t={t} k="label_holidays" lang={lang} />}
             value={step3.days_off_pattern === 'weekly' ? step3.days_off_weekly : step3.days_off_other}
           />
+          {step3.annual_holiday_days && (
+            <ReviewRow
+              label="年間合計休日日数"
+              value={`${step3.annual_holiday_days}日`}
+            />
+          )}
           <ReviewRow
             label={<T t={t} k="label_paid_leave" lang={lang} />}
             value={`${step3.paid_leave_days} ${days}`}
           />
+          {step3.pre_6month_leave_enabled && (
+            <ReviewRow
+              label="継続勤務6か月未満の有給休暇"
+              value={
+                step3.pre_6month_leave_months && step3.pre_6month_leave_days
+                  ? `あり（${step3.pre_6month_leave_months}か月経過で${step3.pre_6month_leave_days}日）`
+                  : 'あり'
+              }
+            />
+          )}
           {step3.other_leave && (
             <ReviewRow
               label={<T t={t} k="label_other_leave" lang={lang} />}
@@ -481,7 +569,14 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
           )}
           <ReviewRow
             label={<T t={t} k="label_overtime_rate" lang={lang} />}
-            value={`時間外≤60h: ${step4.overtime_rate_normal}% / 60h超: ${step4.overtime_rate_over60}% / 休日: ${step4.overtime_rate_holiday}% / 深夜: ${step4.overtime_rate_night}%`}
+            value={[
+              `所定超: ${step4.overtime_rate_prescribed}%`,
+              `法定超≤60h: ${step4.overtime_rate_normal}%`,
+              `法定超60h超: ${step4.overtime_rate_over60}%`,
+              `法定休日: ${step4.overtime_rate_holiday}%`,
+              `法定外休日: ${step4.overtime_rate_holiday_non_statutory}%`,
+              `深夜: ${step4.overtime_rate_night}%`,
+            ].join(' / ')}
           />
           {step4.deduction_agreement === 'yes' && (
             <ReviewRow
@@ -543,6 +638,16 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
               value={`平均賃金の${step4.work_stoppage_rate}％以上`}
             />
           )}
+          {/* 自己都合退職 */}
+          {(step4.voluntary_resignation_notice_days || step4.voluntary_resignation_to) && (
+            <ReviewRow
+              label="自己都合退職"
+              value={[
+                step4.voluntary_resignation_notice_days && `${step4.voluntary_resignation_notice_days}日前に`,
+                step4.voluntary_resignation_to && `${step4.voluntary_resignation_to}に届出`,
+              ].filter(Boolean).join('')}
+            />
+          )}
           <ReviewRow
             label={<T t={t} k="label_notice_days" lang={lang} />}
             value={`${step4.retirement_notice_days} ${days}`}
@@ -550,19 +655,21 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
           <ReviewRow
             label={<T t={t} k="dismissal_section_title" lang={lang} />}
             value={
-              (step4.dismissal_article_from || step4.dismissal_article_number)
-                ? step4.dismissal_article_to
-                  ? `就業規則第${step4.dismissal_article_from || step4.dismissal_article_number}条〜第${step4.dismissal_article_to}条に定める事由による`
-                  : (t.label_dismissal_work_rules?.[lang] ?? '就業規則第{n}条に定める事由による').replace('{n}', step4.dismissal_article_from || step4.dismissal_article_number)
-                : (t.label_dismissal_work_rules_general?.[lang] ?? '就業規則の定める事由による')
+              !step4.work_rules_exist
+                ? '就業規則なし（個別契約による）'
+                : (step4.dismissal_article_from || step4.dismissal_article_number)
+                  ? step4.dismissal_article_to
+                    ? `就業規則第${step4.dismissal_article_from || step4.dismissal_article_number}条〜第${step4.dismissal_article_to}条に定める事由による`
+                    : (t.label_dismissal_work_rules?.[lang] ?? '就業規則第{n}条に定める事由による').replace('{n}', step4.dismissal_article_from || step4.dismissal_article_number)
+                  : (t.label_dismissal_work_rules_general?.[lang] ?? '就業規則の定める事由による')
             }
           />
-          {(step4.health_check_hire_month || step4.health_check_periodic_month) && (
+          {(healthCheckHireDisplay || healthCheckPeriodicDisplay) && (
             <ReviewRow
               label={<T t={t} k="label_health_check" lang={lang} />}
               value={[
-                step4.health_check_hire_month && `雇入れ時: ${step4.health_check_hire_month}月`,
-                step4.health_check_periodic_month && `定期: ${step4.health_check_periodic_month}月`,
+                healthCheckHireDisplay && `雇入れ時: ${healthCheckHireDisplay}`,
+                healthCheckPeriodicDisplay && `定期: ${healthCheckPeriodicDisplay}`,
               ].filter(Boolean).join(' / ')}
             />
           )}
@@ -581,6 +688,8 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
               step4.insurance_health && (t.label_health_insurance?.[lang] ?? '健康保険'),
               step4.insurance_employment && (t.label_employment_insurance?.[lang] ?? '雇用保険'),
               step4.insurance_workers_comp && (t.label_workers_comp?.[lang] ?? '労災保険'),
+              step4.insurance_national_pension && '国民年金',
+              step4.insurance_national_health && '国民健康保険',
             ]
               .filter(Boolean)
               .join('、')}
@@ -596,7 +705,7 @@ export default function Step5Review({ data, lang, t, onLangChange }: Props) {
       {validationErrors.length > 0 && (
         <div className="bg-red-50 border border-red-300 rounded-xl p-4">
           <p className="text-sm font-bold text-red-700 mb-2">
-            以下の必須項目が未入力です。各ステップに戻って入力してください。
+            以下の必須項目が未入力、または入力内容にエラーがあります。確認してください。
           </p>
           <ul className="text-xs text-red-600 space-y-1">
             {validationErrors.map((e) => (

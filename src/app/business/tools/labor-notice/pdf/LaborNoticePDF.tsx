@@ -18,6 +18,7 @@ import {
   TOKUTEI_SECTORS,
   PAYMENT_METHOD_OPTIONS,
   WAGE_TYPE_OPTIONS,
+  TRANSFER_RESTRICTION_OPTIONS,
   getSectorList,
   resolveWorkplaceRange,
   resolveJobRange,
@@ -26,6 +27,7 @@ import {
   formatCutoffDay,
   formatPayDay,
   formatJPY,
+  getDocumentTitle,
 } from '../types';
 
 /* ── Font Registration ── */
@@ -166,6 +168,20 @@ const s = StyleSheet.create({
     fontSize: 7,
     color: GRAY,
     marginTop: 1,
+  },
+  /* Sub-section header (e.g., 別紙１) */
+  subSectionHeader: {
+    backgroundColor: LIGHT_GRAY,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    marginBottom: 6,
+    borderLeftWidth: 3,
+    borderLeftColor: GOLD,
+  },
+  subSectionHeaderText: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: NAVY,
   },
   /* Rows */
   row: {
@@ -371,6 +387,9 @@ interface ClauseDef {
 function getClause4(
   visaType: VisaType,
   hasTransfer: boolean,
+  transferRestrictionPeriod: string,
+  transferConditions: string,
+  transferVoluntaryConditions: string,
   t: Translations,
   lang: Lang,
 ): ClauseDef | null {
@@ -380,8 +399,56 @@ function getClause4(
   // transfer clause OFF: don't output
   if (!hasTransfer) return null;
 
-  // ikusei: 育成就労 specific wording
+  // ikusei: 育成就労 specific wording with detailed transfer conditions
   if (visaType === 'ikusei') {
+    const restrictionLabel = TRANSFER_RESTRICTION_OPTIONS.find((o) => o.value === transferRestrictionPeriod)?.label
+      ?? (transferRestrictionPeriod ? `${transferRestrictionPeriod}年` : '');
+
+    // Build detailed body text for ikusei
+    const bodyJaParts: string[] = [];
+    bodyJaParts.push(txJa(t, 'clause_4_body'));
+    if (restrictionLabel) {
+      bodyJaParts.push(`転籍制限期間：${restrictionLabel}`);
+    }
+    if (transferConditions) {
+      bodyJaParts.push(`やむを得ない事情による転籍の条件：${transferConditions}`);
+    }
+    if (transferVoluntaryConditions) {
+      bodyJaParts.push(`本人意向による転籍の条件：${transferVoluntaryConditions}`);
+    }
+    const bodyJa = bodyJaParts.join('\n');
+
+    const bodyForeignParts: string[] = [];
+    bodyForeignParts.push(tx(t, 'clause_4_body', lang));
+    if (restrictionLabel) {
+      const restrictionLabelForeign = lang === 'en' ? `Transfer restriction period: ${restrictionLabel}`
+        : lang === 'zh' ? `转籍限制期间：${restrictionLabel}`
+        : lang === 'vi' ? `Thời hạn hạn chế chuyển công ty: ${restrictionLabel}`
+        : lang === 'id' ? `Periode pembatasan transfer: ${restrictionLabel}`
+        : lang === 'tl' ? `Panahon ng paghihigpit sa paglipat: ${restrictionLabel}`
+        : `Transfer restriction period: ${restrictionLabel}`;
+      bodyForeignParts.push(restrictionLabelForeign);
+    }
+    if (transferConditions) {
+      const condLabel = lang === 'en' ? `Conditions for transfer due to unavoidable circumstances: ${transferConditions}`
+        : lang === 'zh' ? `因不可抗力情形的转籍条件：${transferConditions}`
+        : lang === 'vi' ? `Điều kiện chuyển công ty do hoàn cảnh bất khả kháng: ${transferConditions}`
+        : lang === 'id' ? `Kondisi transfer karena keadaan yang tidak dapat dihindari: ${transferConditions}`
+        : lang === 'tl' ? `Mga kondisyon ng paglipat dahil sa hindi maiiwasang pangyayari: ${transferConditions}`
+        : `Conditions for transfer due to unavoidable circumstances: ${transferConditions}`;
+      bodyForeignParts.push(condLabel);
+    }
+    if (transferVoluntaryConditions) {
+      const voluntaryLabel = lang === 'en' ? `Conditions for voluntary transfer: ${transferVoluntaryConditions}`
+        : lang === 'zh' ? `本人意愿的转籍条件：${transferVoluntaryConditions}`
+        : lang === 'vi' ? `Điều kiện chuyển công ty theo ý nguyện bản thân: ${transferVoluntaryConditions}`
+        : lang === 'id' ? `Kondisi transfer atas keinginan sendiri: ${transferVoluntaryConditions}`
+        : lang === 'tl' ? `Mga kondisyon ng boluntaryong paglipat: ${transferVoluntaryConditions}`
+        : `Conditions for voluntary transfer: ${transferVoluntaryConditions}`;
+      bodyForeignParts.push(voluntaryLabel);
+    }
+    const bodyForeign = bodyForeignParts.join('\n');
+
     return {
       subtitleJa: '転籍に関する特約',
       subtitleForeign: lang === 'en' ? 'Transfer Clause'
@@ -392,7 +459,8 @@ function getClause4(
         : lang === 'km' ? 'ប្រការផ្ទេរ'
         : lang === 'my' ? 'လွှဲပြောင်းချက်'
         : 'Transfer Clause',
-      bodyKey: 'clause_4_body', // existing ikusei translation
+      bodyJa,
+      bodyForeign,
     };
   }
 
@@ -419,10 +487,21 @@ function getClause4(
 function buildClauses(
   visaType: VisaType,
   hasTransfer: boolean,
+  transferRestrictionPeriod: string,
+  transferConditions: string,
+  transferVoluntaryConditions: string,
   t: Translations,
   lang: Lang,
 ): { titleJa: string; titleForeign: string; bodyJa: string; bodyForeign: string }[] {
-  const clause4 = getClause4(visaType, hasTransfer, t, lang);
+  const clause4 = getClause4(
+    visaType,
+    hasTransfer,
+    transferRestrictionPeriod,
+    transferConditions,
+    transferVoluntaryConditions,
+    t,
+    lang,
+  );
 
   const defs: (ClauseDef | null)[] = [
     // 1. 在留資格・雇用契約の効力
@@ -538,12 +617,21 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
     : articleNum || '';
   const dismissalReasons: { ja: string; foreign: string }[] = [
     {
-      ja: articleNum
-        ? txJa(t, 'label_dismissal_work_rules').replace('{n}', articleRange)
-        : txJa(t, 'label_dismissal_work_rules_general'),
-      foreign: articleNum
-        ? tx(t, 'label_dismissal_work_rules', lang).replace('{n}', articleRange)
-        : tx(t, 'label_dismissal_work_rules', lang),
+      ja: step4.work_rules_exist
+        ? (articleNum
+          ? txJa(t, 'label_dismissal_work_rules').replace('{n}', articleRange)
+          : txJa(t, 'label_dismissal_work_rules_general'))
+        : '個別の雇用契約に定める解雇事由による',
+      foreign: step4.work_rules_exist
+        ? (articleNum
+          ? tx(t, 'label_dismissal_work_rules', lang).replace('{n}', articleRange)
+          : tx(t, 'label_dismissal_work_rules', lang))
+        : (lang === 'en' ? 'As defined in the individual employment contract'
+          : lang === 'zh' ? '依据个别劳动合同规定的解雇事由'
+          : lang === 'vi' ? 'Theo quy định trong hợp đồng lao động cá nhân'
+          : lang === 'id' ? 'Sebagaimana diatur dalam kontrak kerja individu'
+          : lang === 'tl' ? 'Ayon sa itinakda sa indibidwal na kontrata ng trabaho'
+          : '個別の雇用契約に定める解雇事由による'),
     },
   ];
   if (step4.dismissal_special_clauses.includes('dismissal_visa_loss')) {
@@ -566,20 +654,61 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
   }
 
   // Build dynamic clauses
-  const clauses = buildClauses(step2.visa_type, step2.transfer_clause, t, lang);
+  const clauses = buildClauses(
+    step2.visa_type,
+    step2.transfer_clause,
+    step2.transfer_restriction_period,
+    step2.transfer_conditions,
+    step2.transfer_voluntary_conditions,
+    t,
+    lang,
+  );
+
+  // Document title based on visa type
+  const docTitle = getDocumentTitle(step2.visa_type);
+
+  // Employment type label
+  const employmentTypeLabel = step2.employment_type === 'dispatch'
+    ? (lang === 'ja' ? '派遣雇用' : lang === 'en' ? 'Dispatch Employment' : lang === 'zh' ? '派遣雇佣'
+      : lang === 'vi' ? 'Việc làm phái cử' : lang === 'id' ? 'Kerja Kontrak (Dispatch)'
+      : lang === 'tl' ? 'Dispatch na Trabaho' : '派遣雇用')
+    : (lang === 'ja' ? '直接雇用' : lang === 'en' ? 'Direct Employment' : lang === 'zh' ? '直接雇佣'
+      : lang === 'vi' ? 'Thuê trực tiếp' : lang === 'id' ? 'Kerja Langsung'
+      : lang === 'tl' ? 'Direktang Trabaho' : '直接雇用');
+
+  const employmentTypeJa = step2.employment_type === 'dispatch' ? '派遣雇用' : '直接雇用';
+
+  // Voluntary resignation target label
+  const voluntaryResignationTo = step4.voluntary_resignation_to || '社長';
+
+  // Health check date format helper
+  const formatHealthCheckDate = (year: string, month: string): string => {
+    if (!year && !month) return '';
+    if (year && month) return `${year}年${month}月`;
+    if (year) return `${year}年`;
+    return `${month}月`;
+  };
+
+  const healthCheckHireDisplay = formatHealthCheckDate(step4.health_check_hire_year, step4.health_check_hire_month);
+  const healthCheckPeriodicDisplay = formatHealthCheckDate(step4.health_check_periodic_year, step4.health_check_periodic_month);
 
   return (
     <Document>
       <Page size="A4" style={s.page}>
         {/* ── Header ── */}
         <View style={s.header} fixed>
-          <Text style={[s.headerTitle, { fontFamily: font }]}>{tx(t, 'document_title', lang)}</Text>
-          {showJa && (
-            <Text style={s.headerJaSub}>{txJa(t, 'document_title')}</Text>
+          <Text style={[s.headerTitle, { fontFamily: 'NotoSansJP' }]}>{docTitle.title}</Text>
+          {docTitle.subtitle && (
+            <Text style={[s.headerSubtitle, { fontFamily: 'NotoSansJP' }]}>{docTitle.subtitle}</Text>
           )}
-          <Text style={[s.headerSubtitle, { fontFamily: font }]}>
-            {tx(t, 'document_subtitle_general', lang)}
-          </Text>
+          {showJa && (
+            <Text style={s.headerJaSub}>{docTitle.title}</Text>
+          )}
+          {lang !== 'ja' && (
+            <Text style={[s.headerSubtitle, { fontFamily: font, marginTop: 4 }]}>
+              {tx(t, 'document_subtitle_general', lang)}
+            </Text>
+          )}
         </View>
 
         {/* ── Meta ── */}
@@ -744,6 +873,16 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               )}
             </>
           )}
+          {/* Employment type (直接雇用 / 派遣雇用) */}
+          <BiRow
+            label={lang === 'ja' ? '雇用形態' : lang === 'en' ? 'Employment Type' : lang === 'zh' ? '雇用形态'
+              : lang === 'vi' ? 'Hình thức tuyển dụng' : lang === 'id' ? 'Jenis Pekerjaan'
+              : lang === 'tl' ? 'Uri ng Trabaho' : '雇用形態'}
+            labelJa={showJa ? '雇用形態' : undefined}
+            value={employmentTypeLabel}
+            valueJa={showJa ? employmentTypeJa : undefined}
+            lang={lang}
+          />
           {step2.transfer_clause && (
             <BiRow
               label={tx(t, 'label_transfer_clause', lang)}
@@ -753,12 +892,74 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               lang={lang}
             />
           )}
+          {/* Transfer details for ikusei */}
+          {step2.visa_type === 'ikusei' && step2.transfer_clause && (
+            <>
+              {step2.transfer_restriction_period && (
+                <BiRow
+                  label={lang === 'ja' ? '転籍制限期間' : lang === 'en' ? 'Transfer Restriction Period'
+                    : lang === 'zh' ? '转籍限制期间' : lang === 'vi' ? 'Thời hạn hạn chế chuyển công ty'
+                    : lang === 'id' ? 'Periode Pembatasan Transfer' : lang === 'tl' ? 'Panahon ng Paghihigpit sa Paglipat'
+                    : '転籍制限期間'}
+                  labelJa={showJa ? '転籍制限期間' : undefined}
+                  value={TRANSFER_RESTRICTION_OPTIONS.find((o) => o.value === step2.transfer_restriction_period)?.label
+                    ?? step2.transfer_restriction_period}
+                  lang={lang}
+                />
+              )}
+              {step2.transfer_conditions && (
+                <BiRow
+                  label={lang === 'ja' ? 'やむを得ない事情による転籍条件' : lang === 'en' ? 'Transfer Conditions (Unavoidable Circumstances)'
+                    : lang === 'zh' ? '因不可抗力的转籍条件' : lang === 'vi' ? 'Điều kiện chuyển công ty (trường hợp bất khả kháng)'
+                    : lang === 'id' ? 'Kondisi Transfer (Keadaan Tidak Terhindari)' : lang === 'tl' ? 'Mga Kondisyon ng Paglipat (Di-maiiwasang Pangyayari)'
+                    : 'やむを得ない事情による転籍条件'}
+                  labelJa={showJa ? 'やむを得ない事情による転籍条件' : undefined}
+                  value={step2.transfer_conditions}
+                  lang={lang}
+                />
+              )}
+              {step2.transfer_voluntary_conditions && (
+                <BiRow
+                  label={lang === 'ja' ? '本人意向による転籍条件' : lang === 'en' ? 'Transfer Conditions (Voluntary)'
+                    : lang === 'zh' ? '本人意愿的转籍条件' : lang === 'vi' ? 'Điều kiện chuyển công ty (theo ý nguyện)'
+                    : lang === 'id' ? 'Kondisi Transfer (Sukarela)' : lang === 'tl' ? 'Mga Kondisyon ng Boluntaryong Paglipat'
+                    : '本人意向による転籍条件'}
+                  labelJa={showJa ? '本人意向による転籍条件' : undefined}
+                  value={step2.transfer_voluntary_conditions}
+                  lang={lang}
+                />
+              )}
+            </>
+          )}
+          {/* Workplace information */}
+          {step2.workplace_office_name && (
+            <BiRow
+              label={lang === 'ja' ? '就業場所（事業所名）' : lang === 'en' ? 'Workplace (Office Name)'
+                : lang === 'zh' ? '就业地点（事业所名称）' : lang === 'vi' ? 'Nơi làm việc (Tên văn phòng)'
+                : lang === 'id' ? 'Tempat Kerja (Nama Kantor)' : lang === 'tl' ? 'Lugar ng Trabaho (Pangalan ng Opisina)'
+                : '就業場所（事業所名）'}
+              labelJa={showJa ? '就業場所（事業所名）' : undefined}
+              value={step2.workplace_office_name}
+              lang={lang}
+            />
+          )}
           <BiRow
             label={tx(t, 'label_workplace', lang)}
             labelJa={showJa ? txJa(t, 'label_workplace') : undefined}
             value={step2.workplace_initial}
             lang={lang}
           />
+          {step2.workplace_office_phone && (
+            <BiRow
+              label={lang === 'ja' ? '就業場所（連絡先）' : lang === 'en' ? 'Workplace Contact'
+                : lang === 'zh' ? '就业地点（联系方式）' : lang === 'vi' ? 'Liên hệ nơi làm việc'
+                : lang === 'id' ? 'Kontak Tempat Kerja' : lang === 'tl' ? 'Pakikipag-ugnayan sa Lugar ng Trabaho'
+                : '就業場所（連絡先）'}
+              labelJa={showJa ? '就業場所（連絡先）' : undefined}
+              value={step2.workplace_office_phone}
+              lang={lang}
+            />
+          )}
           {workplaceRange && (
             <BiRow
               label={tx(t, 'label_workplace_range', lang)}
@@ -896,6 +1097,19 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
             }
             lang={lang}
           />
+          {/* Annual total holiday days */}
+          {step3.annual_holiday_days && (
+            <BiRow
+              label={lang === 'ja' ? '年間合計休日日数' : lang === 'en' ? 'Total Annual Holidays'
+                : lang === 'zh' ? '年间合计休假天数' : lang === 'vi' ? 'Tổng số ngày nghỉ hàng năm'
+                : lang === 'id' ? 'Total Hari Libur Tahunan' : lang === 'tl' ? 'Kabuuang Taunang Araw ng Pahinga'
+                : '年間合計休日日数'}
+              labelJa={showJa ? '年間合計休日日数' : undefined}
+              value={`${step3.annual_holiday_days} ${days}`}
+              valueJa={`${step3.annual_holiday_days} 日`}
+              lang={lang}
+            />
+          )}
           <BiRow
             label={tx(t, 'label_paid_leave', lang)}
             labelJa={showJa ? txJa(t, 'label_paid_leave') : undefined}
@@ -903,6 +1117,31 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
             valueJa={`${step3.paid_leave_days} ${txJa(t, 'label_days')}`}
             lang={lang}
           />
+          {/* Pre-6-month leave details */}
+          {step3.pre_6month_leave_enabled && step3.pre_6month_leave_months && step3.pre_6month_leave_days && (
+            <BiRow
+              label={lang === 'ja' ? '6か月未満の有給休暇' : lang === 'en' ? 'Paid Leave Before 6 Months'
+                : lang === 'zh' ? '不足6个月的有薪假期' : lang === 'vi' ? 'Nghỉ phép có lương trước 6 tháng'
+                : lang === 'id' ? 'Cuti Berbayar Sebelum 6 Bulan' : lang === 'tl' ? 'Bayad na Bakasyon Bago ang 6 na Buwan'
+                : '6か月未満の有給休暇'}
+              labelJa={showJa ? '6か月未満の有給休暇' : undefined}
+              value={lang === 'ja'
+                ? `${step3.pre_6month_leave_months}か月経過で${step3.pre_6month_leave_days}日付与`
+                : lang === 'en'
+                  ? `${step3.pre_6month_leave_days} days after ${step3.pre_6month_leave_months} months`
+                : lang === 'zh'
+                  ? `满${step3.pre_6month_leave_months}个月后给予${step3.pre_6month_leave_days}天`
+                : lang === 'vi'
+                  ? `${step3.pre_6month_leave_days} ngày sau ${step3.pre_6month_leave_months} tháng`
+                : lang === 'id'
+                  ? `${step3.pre_6month_leave_days} hari setelah ${step3.pre_6month_leave_months} bulan`
+                : lang === 'tl'
+                  ? `${step3.pre_6month_leave_days} araw pagkatapos ng ${step3.pre_6month_leave_months} buwan`
+                : `${step3.pre_6month_leave_months}か月経過で${step3.pre_6month_leave_days}日付与`}
+              valueJa={showJa ? `${step3.pre_6month_leave_months}か月経過で${step3.pre_6month_leave_days}日付与` : undefined}
+              lang={lang}
+            />
+          )}
           {step3.other_leave && (
             <BiRow
               label={tx(t, 'label_other_leave', lang)}
@@ -926,6 +1165,24 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
           {showJa && (
             <Text style={s.sectionTitleJa}>{txJa(t, 'step4_title')}</Text>
           )}
+
+          {/* 別紙１　賃金の支払 sub-section header */}
+          <View style={s.subSectionHeader}>
+            <Text style={[s.subSectionHeaderText, { fontFamily: 'NotoSansJP' }]}>
+              別紙１　賃金の支払
+            </Text>
+            {showJa && (
+              <Text style={{ fontFamily: font, fontSize: 7, color: GRAY, marginTop: 2 }}>
+                {lang === 'en' ? 'Attachment 1: Wage Payment'
+                  : lang === 'zh' ? '附件１　工资支付'
+                  : lang === 'vi' ? 'Phụ lục 1: Thanh toán lương'
+                  : lang === 'id' ? 'Lampiran 1: Pembayaran Upah'
+                  : lang === 'tl' ? 'Kalakip 1: Pagbabayad ng Sahod'
+                  : '別紙１　賃金の支払'}
+              </Text>
+            )}
+          </View>
+
           <BiRow
             label={tx(t, 'label_base_wage', lang)}
             labelJa={showJa ? txJa(t, 'label_base_wage') : undefined}
@@ -957,11 +1214,26 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               lang={lang}
             />
           )}
+          {/* Overtime rates: all 6 categories */}
           <BiRow
             label={tx(t, 'label_overtime_rate', lang)}
             labelJa={showJa ? txJa(t, 'label_overtime_rate') : undefined}
-            value={`≤60h: ${step4.overtime_rate_normal}% / >60h: ${step4.overtime_rate_over60}% / ${tx(t, 'label_overtime_rate_holiday', lang)}: ${step4.overtime_rate_holiday}% / ${tx(t, 'label_overtime_rate_night', lang)}: ${step4.overtime_rate_night}%`}
-            valueJa={`≤60h: ${step4.overtime_rate_normal}% / >60h: ${step4.overtime_rate_over60}% / ${txJa(t, 'label_overtime_rate_holiday')}: ${step4.overtime_rate_holiday}% / ${txJa(t, 'label_overtime_rate_night')}: ${step4.overtime_rate_night}%`}
+            value={[
+              `≤60h: ${step4.overtime_rate_normal}%`,
+              `>60h: ${step4.overtime_rate_over60}%`,
+              `${lang === 'ja' ? '所定超' : lang === 'en' ? 'Prescribed OT' : lang === 'zh' ? '规定外' : lang === 'vi' ? 'Vượt quy định' : lang === 'id' ? 'Melebihi yang ditentukan' : lang === 'tl' ? 'Lampas sa itinakda' : '所定超'}: ${step4.overtime_rate_prescribed}%`,
+              `${tx(t, 'label_overtime_rate_holiday', lang)}: ${step4.overtime_rate_holiday}%`,
+              `${lang === 'ja' ? '法定外休日' : lang === 'en' ? 'Non-stat. Holiday' : lang === 'zh' ? '法定外假日' : lang === 'vi' ? 'Ngày lễ ngoài luật định' : lang === 'id' ? 'Hari Libur Non-Hukum' : lang === 'tl' ? 'Di-Statutory na Pahinga' : '法定外休日'}: ${step4.overtime_rate_holiday_non_statutory}%`,
+              `${tx(t, 'label_overtime_rate_night', lang)}: ${step4.overtime_rate_night}%`,
+            ].join(' / ')}
+            valueJa={[
+              `≤60h: ${step4.overtime_rate_normal}%`,
+              `>60h: ${step4.overtime_rate_over60}%`,
+              `所定超: ${step4.overtime_rate_prescribed}%`,
+              `${txJa(t, 'label_overtime_rate_holiday')}: ${step4.overtime_rate_holiday}%`,
+              `法定外休日: ${step4.overtime_rate_holiday_non_statutory}%`,
+              `${txJa(t, 'label_overtime_rate_night')}: ${step4.overtime_rate_night}%`,
+            ].join(' / ')}
             lang={lang}
           />
           {step4.deduction_agreement === 'yes' && (
@@ -1089,28 +1361,8 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               lang={lang}
             />
           )}
-          <BiRow
-            label={tx(t, 'label_notice_days', lang)}
-            labelJa={showJa ? txJa(t, 'label_notice_days') : undefined}
-            value={`${step4.retirement_notice_days} ${days}`}
-            valueJa={`${step4.retirement_notice_days} ${txJa(t, 'label_days')}`}
-            lang={lang}
-          />
-          {(step4.health_check_hire_month || step4.health_check_periodic_month) && (
-            <BiRow
-              label={tx(t, 'label_health_check', lang)}
-              labelJa={showJa ? txJa(t, 'label_health_check') : undefined}
-              value={[
-                step4.health_check_hire_month && `${tx(t, 'label_health_check_hire', lang)}: ${step4.health_check_hire_month}${tx(t, 'label_month_unit', lang)}`,
-                step4.health_check_periodic_month && `${tx(t, 'label_health_check_periodic', lang)}: ${step4.health_check_periodic_month}${tx(t, 'label_month_unit', lang)}`,
-              ].filter(Boolean).join(' / ')}
-              valueJa={[
-                step4.health_check_hire_month && `${txJa(t, 'label_health_check_hire')}: ${step4.health_check_hire_month}${txJa(t, 'label_month_unit')}`,
-                step4.health_check_periodic_month && `${txJa(t, 'label_health_check_periodic')}: ${step4.health_check_periodic_month}${txJa(t, 'label_month_unit')}`,
-              ].filter(Boolean).join(' / ')}
-              lang={lang}
-            />
-          )}
+
+          {/* Social insurance: 6 items */}
           <BiRow
             label={tx(t, 'label_social_insurance', lang)}
             labelJa={showJa ? txJa(t, 'label_social_insurance') : undefined}
@@ -1119,6 +1371,8 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               step4.insurance_health && tx(t, 'label_health_insurance', lang),
               step4.insurance_employment && tx(t, 'label_employment_insurance', lang),
               step4.insurance_workers_comp && tx(t, 'label_workers_comp', lang),
+              step4.insurance_national_pension && (lang === 'ja' ? '国民年金' : lang === 'en' ? 'National Pension' : lang === 'zh' ? '国民年金' : lang === 'vi' ? 'Lương hưu quốc gia' : lang === 'id' ? 'Pensiun Nasional' : lang === 'tl' ? 'Pambansang Pensiyon' : '国民年金'),
+              step4.insurance_national_health && (lang === 'ja' ? '国民健康保険' : lang === 'en' ? 'National Health Insurance' : lang === 'zh' ? '国民健康保险' : lang === 'vi' ? 'Bảo hiểm sức khỏe quốc gia' : lang === 'id' ? 'Asuransi Kesehatan Nasional' : lang === 'tl' ? 'Pambansang Seguro sa Kalusugan' : '国民健康保険'),
             ]
               .filter(Boolean)
               .join('、')}
@@ -1127,6 +1381,8 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
               step4.insurance_health && txJa(t, 'label_health_insurance'),
               step4.insurance_employment && txJa(t, 'label_employment_insurance'),
               step4.insurance_workers_comp && txJa(t, 'label_workers_comp'),
+              step4.insurance_national_pension && '国民年金',
+              step4.insurance_national_health && '国民健康保険',
             ]
               .filter(Boolean)
               .join('、')}
@@ -1152,6 +1408,43 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
           />
         </View>
 
+        {/* ── Voluntary Resignation Section ── */}
+        <View style={s.section}>
+          <Text style={[s.sectionTitle, { fontFamily: font }]}>
+            {lang === 'ja' ? '自己都合退職の手続'
+              : lang === 'en' ? 'Voluntary Resignation Procedure'
+              : lang === 'zh' ? '自愿辞职手续'
+              : lang === 'vi' ? 'Thủ tục nghỉ việc tự nguyện'
+              : lang === 'id' ? 'Prosedur Pengunduran Diri Sukarela'
+              : lang === 'tl' ? 'Proseso ng Boluntaryong Pagbibitiw'
+              : '自己都合退職の手続'}
+          </Text>
+          {showJa && (
+            <Text style={s.sectionTitleJa}>自己都合退職の手続</Text>
+          )}
+          <BiRow
+            label={lang === 'ja' ? '退職予告' : lang === 'en' ? 'Resignation Notice' : lang === 'zh' ? '辞职通知'
+              : lang === 'vi' ? 'Thông báo nghỉ việc' : lang === 'id' ? 'Pemberitahuan Pengunduran Diri'
+              : lang === 'tl' ? 'Abiso ng Pagbibitiw' : '退職予告'}
+            labelJa={showJa ? '退職予告' : undefined}
+            value={lang === 'ja'
+              ? `退職する${step4.voluntary_resignation_notice_days || '30'}日前に${voluntaryResignationTo}に届けること`
+              : lang === 'en'
+                ? `Notify ${voluntaryResignationTo} at least ${step4.voluntary_resignation_notice_days || '30'} days before resignation`
+              : lang === 'zh'
+                ? `在辞职前${step4.voluntary_resignation_notice_days || '30'}天向${voluntaryResignationTo}提出申请`
+              : lang === 'vi'
+                ? `Thông báo cho ${voluntaryResignationTo} ít nhất ${step4.voluntary_resignation_notice_days || '30'} ngày trước khi nghỉ`
+              : lang === 'id'
+                ? `Beritahu ${voluntaryResignationTo} minimal ${step4.voluntary_resignation_notice_days || '30'} hari sebelum mengundurkan diri`
+              : lang === 'tl'
+                ? `Abisuhan ang ${voluntaryResignationTo} nang hindi bababa sa ${step4.voluntary_resignation_notice_days || '30'} araw bago magbitiw`
+              : `退職する${step4.voluntary_resignation_notice_days || '30'}日前に${voluntaryResignationTo}に届けること`}
+            valueJa={showJa ? `退職する${step4.voluntary_resignation_notice_days || '30'}日前に${voluntaryResignationTo}に届けること` : undefined}
+            lang={lang}
+          />
+        </View>
+
         {/* ── Dismissal Reasons Section ── */}
         <View style={s.section}>
           <Text style={[s.sectionTitle, { fontFamily: font }]}>
@@ -1160,6 +1453,13 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
           {showJa && (
             <Text style={s.sectionTitleJa}>{txJa(t, 'dismissal_section_title')}</Text>
           )}
+          <BiRow
+            label={tx(t, 'label_notice_days', lang)}
+            labelJa={showJa ? txJa(t, 'label_notice_days') : undefined}
+            value={`${step4.retirement_notice_days} ${days}`}
+            valueJa={`${step4.retirement_notice_days} ${txJa(t, 'label_days')}`}
+            lang={lang}
+          />
           {dismissalReasons.map((reason, i) => (
             <View key={i} style={{ marginBottom: 4 }}>
               <Text style={[s.dismissalItem, { fontFamily: font }]}>
@@ -1173,6 +1473,25 @@ export default function LaborNoticePDF({ form, lang, t }: LaborNoticePDFProps) {
             </View>
           ))}
         </View>
+
+        {/* ── Health Check Section ── */}
+        {(healthCheckHireDisplay || healthCheckPeriodicDisplay) && (
+          <View style={s.section}>
+            <BiRow
+              label={tx(t, 'label_health_check', lang)}
+              labelJa={showJa ? txJa(t, 'label_health_check') : undefined}
+              value={[
+                healthCheckHireDisplay && `${tx(t, 'label_health_check_hire', lang)}: ${healthCheckHireDisplay}`,
+                healthCheckPeriodicDisplay && `${tx(t, 'label_health_check_periodic', lang)}: ${healthCheckPeriodicDisplay}`,
+              ].filter(Boolean).join(' / ')}
+              valueJa={[
+                healthCheckHireDisplay && `${txJa(t, 'label_health_check_hire')}: ${healthCheckHireDisplay}`,
+                healthCheckPeriodicDisplay && `${txJa(t, 'label_health_check_periodic')}: ${healthCheckPeriodicDisplay}`,
+              ].filter(Boolean).join(' / ')}
+              lang={lang}
+            />
+          </View>
+        )}
 
         {/* ── Dynamic Clauses (sequential numbering, visa-aware) ── */}
         <View style={s.section}>

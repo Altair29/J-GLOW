@@ -18,6 +18,7 @@ import {
   DEFAULT_STEP2,
   DEFAULT_STEP3,
   DEFAULT_STEP4,
+  getDocumentTitle,
 } from './types';
 
 import Step1CompanyWorker from './components/Step1CompanyWorker';
@@ -84,7 +85,10 @@ function validateStep4(data: Step4Data): string[] {
   if (!data.basic_salary.trim() || isNaN(salaryNum) || salaryNum <= 0) {
     errors.push('basic_salary');
   }
-  if (!data.dismissal_article_from && !data.dismissal_article_number) errors.push('dismissal_article_from');
+  // 就業規則ありの場合のみ条番号必須
+  if (data.work_rules_exist && !data.dismissal_article_from && !data.dismissal_article_number) {
+    errors.push('dismissal_article_from');
+  }
   return errors;
 }
 
@@ -235,7 +239,7 @@ export default function LaborNoticeWizard() {
                 ← 企業向けトップ
               </Link>
               <h1 className="text-lg font-bold text-[#1a2f5e] leading-tight">
-                労働条件通知書
+                {getDocumentTitle(form.step2.visa_type).title.replace('参考様式第１－６号　', '')}
               </h1>
               <p className="text-[11px] text-gray-400 mt-0.5">
                 外国人労働者向け・バイリンガル対応
@@ -284,6 +288,7 @@ export default function LaborNoticeWizard() {
               onChange={updateStep2}
               showErrors={showErrors}
               errors={showErrors ? currentErrors : []}
+              step1Data={form.step1}
             />
           )}
           {step === 2 && (

@@ -2370,5 +2370,206 @@
     "tl": "※ Ang mga pangalan ay naka-print na. Mangyaring pumirma sa linya.",
     "km": "※ ឈ្មោះបានបោះពុម្ពរួចរាល់។ សូមចុះហត្ថលេខាលើបន្ទាត់។",
     "my": "※ အမည်များကို ကြိုတင်ရိုက်နှိပ်ထားပါသည်။ မျဉ်းပေါ်တွင် လက်မှတ်ထိုးပါ။"
+  },
+
+  "document_title_employment_conditions": {
+    "ja": "雇用条件書",
+    "en": "Statement of Employment Conditions",
+    "zh": "雇佣条件书",
+    "vi": "Bản điều kiện tuyển dụng",
+    "id": "Pernyataan Syarat Kerja",
+    "tl": "Pahayag ng Kondisyon sa Pagtatrabaho",
+    "km": "សេចក្តីថ្លែងការណ៍អំពីលក្ខខណ្ឌការងារ",
+    "my": "အလုပ်ခန့်ထားမှု အခြေအနေ ကြေညာချက်"
+  },
+  "document_subtitle_employment_conditions": {
+    "ja": "（兼 労働条件通知書）",
+    "en": "(Also serving as Notification of Working Conditions)",
+    "zh": "（兼 劳动条件通知书）",
+    "vi": "(Kiêm Thông báo về điều kiện lao động)",
+    "id": "(Juga sebagai Pemberitahuan Syarat Kerja)",
+    "tl": "(Kasama rin bilang Abiso ng Kondisyon sa Pagtatrabaho)",
+    "km": "(ជាសេចក្តីជូនដំណឹងស្តីពីលក្ខខណ្ឌការងារផងដែរ)",
+    "my": "(အလုပ်အကိုင်အခြေအနေ အကြောင်းကြားစာအဖြစ်လည်း ဆောင်ရွက်သည်)"
+  },
+  "label_employment_type": {
+    "ja": "雇用形態",
+    "en": "Employment Type",
+    "zh": "雇佣形态",
+    "vi": "Hình thức tuyển dụng",
+    "id": "Jenis Kepegawaian",
+    "tl": "Uri ng Empleyo",
+    "km": "ប្រភេទការងារ",
+    "my": "အလုပ်ခန့်ထားမှုအမျိုးအစား"
+  },
+  "value_employment_direct": {
+    "ja": "直接雇用",
+    "en": "Direct Employment",
+    "zh": "直接雇佣",
+    "vi": "Tuyển dụng trực tiếp",
+    "id": "Kepegawaian Langsung",
+    "tl": "Direktang Empleyo",
+    "km": "ការងារផ្ទាល់",
+    "my": "တိုက်ရိုက်ခန့်ထားခြင်း"
+  },
+  "value_employment_dispatch": {
+    "ja": "派遣雇用",
+    "en": "Dispatch Employment",
+    "zh": "派遣雇佣",
+    "vi": "Tuyển dụng phái cử",
+    "id": "Kepegawaian Pengiriman",
+    "tl": "Dispatch na Empleyo",
+    "km": "ការងារបញ្ជូន",
+    "my": "စေလွှတ်ခန့်ထားခြင်း"
+  },
+  "label_office_name": {
+    "ja": "事業所名",
+    "en": "Office Name",
+    "zh": "事务所名称",
+    "vi": "Tên văn phòng",
+    "id": "Nama Kantor",
+    "tl": "Pangalan ng Opisina",
+    "km": "ឈ្មោះការិយាល័យ",
+    "my": "ရုံးအမည်"
+  },
+  "label_office_phone": {
+    "ja": "事業所連絡先",
+    "en": "Office Contact",
+    "zh": "事务所联系方式",
+    "vi": "Liên hệ văn phòng",
+    "id": "Kontak Kantor",
+    "tl": "Contact ng Opisina",
+    "km": "ទំនាក់ទំនងការិយាល័យ",
+    "my": "ရုံးဆက်သွယ်ရန်"
+  },
+  "label_transfer_restriction_period": {
+    "ja": "転籍制限期間",
+    "en": "Transfer Restriction Period",
+    "zh": "转籍限制期间",
+    "vi": "Thời gian hạn chế chuyển đổi",
+    "id": "Periode Pembatasan Transfer",
+    "tl": "Panahon ng Pagbabawal sa Paglipat",
+    "km": "រយៈពេលកំណត់ការផ្ទេរ",
+    "my": "လွှဲပြောင်းကန့်သတ်ကာလ"
+  },
+  "label_transfer_conditions": {
+    "ja": "やむを得ない事情による転籍条件",
+    "en": "Transfer Conditions (Unavoidable Circumstances)",
+    "zh": "不可避免情况下的转籍条件",
+    "vi": "Điều kiện chuyển đổi (Trường hợp bất khả kháng)",
+    "id": "Syarat Transfer (Keadaan Tidak Terhindarkan)",
+    "tl": "Kondisyon sa Paglipat (Hindi Maiiwasang Pangyayari)",
+    "km": "លក្ខខណ្ឌផ្ទេរ (កាលៈទេសៈដែលមិនអាចជៀសវាងបាន)",
+    "my": "လွှဲပြောင်းအခြေအနေများ (ရှောင်လွှဲ၍မရသော အခြေအနေများ)"
+  },
+  "label_transfer_voluntary_conditions": {
+    "ja": "本人意向による転籍条件",
+    "en": "Voluntary Transfer Conditions",
+    "zh": "个人意愿转籍条件",
+    "vi": "Điều kiện chuyển đổi tự nguyện",
+    "id": "Syarat Transfer Sukarela",
+    "tl": "Boluntaryong Kondisyon sa Paglipat",
+    "km": "លក្ខខណ្ឌផ្ទេរដោយស្ម័គ្រចិត្ត",
+    "my": "ဆန္ဒအလျောက် လွှဲပြောင်းအခြေအနေများ"
+  },
+  "label_annual_holiday_days": {
+    "ja": "年間合計休日日数",
+    "en": "Total Annual Holidays",
+    "zh": "年度休假总天数",
+    "vi": "Tổng số ngày nghỉ hàng năm",
+    "id": "Total Hari Libur Tahunan",
+    "tl": "Kabuuang Araw ng Bakasyon sa Isang Taon",
+    "km": "ចំនួនថ្ងៃឈប់សម្រាកប្រចាំឆ្នាំសរុប",
+    "my": "နှစ်စဉ်စုစုပေါင်း အားလပ်ရက်များ"
+  },
+  "label_pre_6month_leave": {
+    "ja": "継続勤務6か月未満の年次有給休暇",
+    "en": "Paid Leave Before 6-Month Continuous Service",
+    "zh": "连续工作不满6个月的年假",
+    "vi": "Nghỉ phép có lương trước 6 tháng làm việc liên tục",
+    "id": "Cuti Berbayar Sebelum 6 Bulan Kerja Berkelanjutan",
+    "tl": "Bayad na Bakasyon Bago ang 6 na Buwang Tuloy-tuloy na Serbisyo",
+    "km": "ការឈប់សម្រាកមានប្រាក់ខែមុន ៦ ខែនៃការងារបន្ត",
+    "my": "၆ လ စဉ်ဆက်မပြတ် အလုပ်လုပ်ကိုင်ခြင်း မတိုင်မီ လစာရ အားလပ်ရက်"
+  },
+  "label_overtime_rate_prescribed": {
+    "ja": "所定超",
+    "en": "Exceeding Prescribed Hours",
+    "zh": "超过规定时间",
+    "vi": "Vượt quá giờ quy định",
+    "id": "Melebihi Jam Kerja yang Ditentukan",
+    "tl": "Higit sa Itinakdang Oras",
+    "km": "លើសម៉ោងកំណត់",
+    "my": "သတ်မှတ်နာရီကျော်လွန်"
+  },
+  "label_overtime_rate_holiday_non_statutory": {
+    "ja": "法定外休日",
+    "en": "Non-Statutory Holiday",
+    "zh": "法定外休日",
+    "vi": "Ngày nghỉ ngoài pháp luật",
+    "id": "Hari Libur Non-Hukum",
+    "tl": "Di-Legal na Araw ng Pahinga",
+    "km": "ថ្ងៃឈប់សម្រាកក្រៅច្បាប់",
+    "my": "ဥပဒေပြင်ပ အားလပ်ရက်"
+  },
+  "label_voluntary_resignation": {
+    "ja": "自己都合退職の手続",
+    "en": "Voluntary Resignation Procedure",
+    "zh": "自愿辞职手续",
+    "vi": "Thủ tục nghỉ việc tự nguyện",
+    "id": "Prosedur Pengunduran Diri Sukarela",
+    "tl": "Pamamaraan ng Boluntaryong Pagbibitiw",
+    "km": "នីតិវិធីលាឈប់ដោយស្ម័គ្រចិត្ត",
+    "my": "ဆန္ဒအလျောက် အလုပ်နုတ်ထွက်ခြင်း လုပ်ငန်းစဉ်"
+  },
+  "label_voluntary_resignation_body": {
+    "ja": "退職する{days}日前に{to}に届けること",
+    "en": "Submit resignation notice to {to} at least {days} days in advance",
+    "zh": "须在辞职前{days}天向{to}提出申请",
+    "vi": "Nộp đơn xin nghỉ việc cho {to} trước {days} ngày",
+    "id": "Sampaikan pemberitahuan pengunduran diri kepada {to} minimal {days} hari sebelumnya",
+    "tl": "Magsumite ng abiso ng pagbibitiw sa {to} nang hindi bababa sa {days} araw nang maaga",
+    "km": "ដាក់ពាក្យលាឈប់ទៅ{to}មុនយ៉ាងហោចណាស់{days}ថ្ងៃ",
+    "my": "{to}ထံ အနည်းဆုံး {days} ရက်ကြိုတင်၍ အလုပ်နုတ်ထွက်ကြောင်း အကြောင်းကြားပါ"
+  },
+  "label_work_rules_none": {
+    "ja": "就業規則なし（個別契約による）",
+    "en": "No Work Rules (Based on individual employment contract)",
+    "zh": "无就业规则（基于个别雇佣合同）",
+    "vi": "Không có nội quy lao động (Dựa trên hợp đồng lao động cá nhân)",
+    "id": "Tidak ada Peraturan Kerja (Berdasarkan kontrak kerja individu)",
+    "tl": "Walang Panuntunan sa Trabaho (Batay sa indibidwal na kontrata)",
+    "km": "គ្មានវិធានការងារ (ផ្អែកលើកិច្ចសន្យាការងារផ្ទាល់ខ្លួន)",
+    "my": "အလုပ်စည်းမျဉ်းမရှိ (တစ်ဦးချင်း အလုပ်ခန့်ထားမှု စာချုပ်အပေါ် အခြေခံ)"
+  },
+  "label_national_pension": {
+    "ja": "国民年金",
+    "en": "National Pension",
+    "zh": "国民年金",
+    "vi": "Lương hưu quốc gia",
+    "id": "Pensiun Nasional",
+    "tl": "Pambansang Pensiyon",
+    "km": "សោធននិវត្តន៍ជាតិ",
+    "my": "အမျိုးသားပင်စင်"
+  },
+  "label_national_health_insurance": {
+    "ja": "国民健康保険",
+    "en": "National Health Insurance",
+    "zh": "国民健康保险",
+    "vi": "Bảo hiểm y tế quốc gia",
+    "id": "Asuransi Kesehatan Nasional",
+    "tl": "Pambansang Seguro sa Kalusugan",
+    "km": "ធានារ៉ាប់រងសុខភាពជាតិ",
+    "my": "အမျိုးသားကျန်းမာရေးအာမခံ"
+  },
+  "section_wage_appendix": {
+    "ja": "別紙１　賃金の支払",
+    "en": "Appendix 1: Wage Payment Details",
+    "zh": "附件1 工资支付明细",
+    "vi": "Phụ lục 1: Chi tiết thanh toán lương",
+    "id": "Lampiran 1: Rincian Pembayaran Upah",
+    "tl": "Apendiks 1: Detalye ng Pagbabayad ng Sahod",
+    "km": "ឧបសម្ព័ន្ធ ១៖ ព័ត៌មានលម្អិតការបង់ប្រាក់ឈ្នួល",
+    "my": "ပူးတွဲ ၁: လုပ်ခငွေပေးချေမှု အသေးစိတ်"
   }
 }
