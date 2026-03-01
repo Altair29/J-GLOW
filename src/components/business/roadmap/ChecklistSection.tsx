@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createClient } from "@/lib/supabase/client";
 import type { ChecklistItem } from './data';
 import { categoryBorderColors } from './data';
 
@@ -251,13 +252,61 @@ const categoryConfig: { fullLabel: string; shortLabel: string; color: string }[]
 export default function ChecklistSection({
   initialItems,
   persona,
+  savedChecklist,
+  isLoggedIn,
 }: {
   initialItems: ChecklistItem[];
   persona: "管理団体" | "受入企業" | null;
+  savedChecklist?: Record<string, boolean> | null;
+  isLoggedIn?: boolean;
 }) {
-  const [items, setItems] = useState<ChecklistItem[]>(initialItems);
+  // 保存済み状態をマージした初期値を作成
+  const mergedItems = initialItems.map((item) => ({
+    ...item,
+    checked: savedChecklist?.[item.id] ?? item.checked,
+  }));
+
+  const [items, setItems] = useState<ChecklistItem[]>(mergedItems);
   const [filter, setFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Supabaseへの保存（デバウンス）
+  const saveToSupabase = useCallback(async (updatedItems: ChecklistItem[]) => {
+    if (!isLoggedIn) return;
+    setSaveStatus("saving");
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // 既存のpreferencesを取得してマージ
+      const { data: existing } = await supabase
+        .from("user_settings")
+        .select("preferences")
+        .eq("id", user.id)
+        .single();
+
+      const existingPrefs = (existing?.preferences as Record<string, unknown>) || {};
+      const checklistState: Record<string, boolean> = {};
+      for (const item of updatedItems) {
+        checklistState[item.id] = item.checked;
+      }
+
+      await supabase
+        .from("user_settings")
+        .upsert({
+          id: user.id,
+          preferences: { ...existingPrefs, roadmap_checklist: checklistState },
+        }, { onConflict: "id" });
+
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch {
+      setSaveStatus("idle");
+    }
+  }, [isLoggedIn]);
 
   const categories = Array.from(new Set(items.map((i) => i.category)));
   const allCategories = ["all", ...categories];
@@ -275,9 +324,13 @@ export default function ChecklistSection({
   });
 
   function toggle(id: string) {
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i))
-    );
+    setItems((prev) => {
+      const updated = prev.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i));
+      // デバウンスして保存
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(() => saveToSupabase(updated), 1000);
+      return updated;
+    });
   }
 
   const visibleCategories =
@@ -289,7 +342,77 @@ export default function ChecklistSection({
   const remaining = mounted ? getRemainingTime(new Date("2027-04-01T00:00:00+09:00")) : null;
 
   const handleChecklistPrint = () => {
-    window.print();
+    // チェックリストのみを印刷するためのウィンドウを開く
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) return;
+
+    const categories = Array.from(new Set(items.map(i => i.category)));
+    const catStatsHtml = categoryConfig.map(cfg => {
+      const catItems = items.filter(i => i.category === cfg.fullLabel);
+      const done = catItems.filter(i => i.checked).length;
+      const total = catItems.length;
+      const pct = total > 0 ? Math.floor((done / total) * 100) : 0;
+      return `<span style="margin-right:12px;font-size:10px;color:#555">${cfg.shortLabel}：${pct}%（${done}/${total}）</span>`;
+    }).join('');
+
+    const categoriesHtml = categories.map(cat => {
+      const catItems = items.filter(i => i.category === cat);
+      const done = catItems.filter(i => i.checked).length;
+      const total = catItems.length;
+      const pct = total > 0 ? Math.floor((done / total) * 100) : 0;
+      const itemsHtml = catItems.map(item => {
+        const check = item.checked ? '☑' : '☐';
+        const textStyle = item.checked ? 'text-decoration:line-through;color:#999' : '';
+        const urgencyColors: Record<string, string> = {
+          critical: 'background:#fee2e2;color:#b91c1c;',
+          warning: 'background:#ffedd5;color:#c2410c;',
+          normal: 'background:#f1f5f9;color:#64748b;',
+        };
+        const deadlineHtml = item.deadline.urgency
+          ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;margin-left:6px;${urgencyColors[item.deadline.urgency] || ''}">${item.deadline.label}</span>`
+          : '';
+        return `<div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px dotted #e2e8f0">
+          <span style="font-size:13px;line-height:1.2;flex-shrink:0">${check}</span>
+          <span style="font-size:10px;line-height:1.4;flex:1;${textStyle}">${item.text}${deadlineHtml}</span>
+        </div>`;
+      }).join('');
+
+      return `<div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+          <span style="font-size:11px;font-weight:700;color:#1e293b">${cat}</span>
+          <span style="font-size:9px;color:#64748b">${done}/${total}（${pct}%）</span>
+        </div>
+        <div style="height:3px;background:#e2e8f0;border-radius:2px;margin-bottom:4px">
+          <div style="height:3px;border-radius:2px;background:#1a2f5e;width:${pct}%"></div>
+        </div>
+        ${itemsHtml}
+      </div>`;
+    }).join('');
+
+    printWindow.document.write(`<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>準備チェックリスト</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm 12mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif; color: #1e293b; line-height: 1.4; }
+</style>
+</head><body>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a2f5e;padding-bottom:6px;margin-bottom:8px">
+  <div>
+    <h1 style="font-size:14px;font-weight:700;color:#1a2f5e">育成就労制度　準備チェックリスト</h1>
+    <p style="font-size:9px;color:#94a3b8;margin-top:2px">出力日：${new Date().toLocaleDateString('ja-JP')}　|　J-GLOW　j-glow.vercel.app</p>
+  </div>
+  <div style="text-align:right">
+    <p style="font-size:9px;color:#94a3b8">全体進捗</p>
+    <p style="font-size:16px;font-weight:700;color:#1a2f5e">${totalPercent}%<span style="font-size:10px;color:#64748b;margin-left:4px">(${completedCount}/${totalCount})</span></p>
+  </div>
+</div>
+<div style="margin-bottom:10px;display:flex;flex-wrap:wrap">${catStatsHtml}</div>
+${categoriesHtml}
+</body></html>`);
+    printWindow.document.close();
+    setTimeout(() => { printWindow.print(); }, 300);
   };
 
   return (
@@ -352,6 +475,31 @@ export default function ChecklistSection({
               🖨️ PDF出力 / 印刷
             </button>
           </div>
+        </div>
+
+        {/* 保存状態のお知らせ */}
+        <div className="mb-4 rounded-lg border px-4 py-3 text-xs flex items-center gap-2"
+          style={{
+            backgroundColor: isLoggedIn ? '#f0f9ff' : '#fffbeb',
+            borderColor: isLoggedIn ? '#bae6fd' : '#fde68a',
+            color: isLoggedIn ? '#0369a1' : '#92400e',
+          }}
+        >
+          {isLoggedIn ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 12 15 16 10"/></svg>
+              <span>
+                会員としてログイン中 — チェック状態は自動保存されます。
+                {saveStatus === "saving" && <span className="ml-1 text-blue-500">保存中...</span>}
+                {saveStatus === "saved" && <span className="ml-1 text-emerald-600">保存しました</span>}
+              </span>
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>ゲストモード — チェック状態はページを離れるとリセットされます。<a href="/login" className="underline font-bold ml-1" style={{ color: '#92400e' }}>ログイン</a>すると進捗が保存されます。</span>
+            </>
+          )}
         </div>
 
         {/* 対象者の説明 */}
@@ -454,6 +602,20 @@ export default function ChecklistSection({
             );
           })}
         </div>
+
+        {/* 末尾の保存状態バナー */}
+        {isLoggedIn && (
+          <div className="mt-5 rounded-lg border px-4 py-3 text-xs flex items-center gap-2"
+            style={{ backgroundColor: '#f0f9ff', borderColor: '#bae6fd', color: '#0369a1' }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 12 15 16 10"/></svg>
+            <span>
+              会員としてログイン中 — チェック状態は自動保存されます。
+              {saveStatus === "saving" && <span className="ml-1 text-blue-500">保存中...</span>}
+              {saveStatus === "saved" && <span className="ml-1 text-emerald-600">保存しました</span>}
+            </span>
+          </div>
+        )}
       </section>
     </div>
   );

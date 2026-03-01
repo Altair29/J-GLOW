@@ -2,6 +2,16 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { getNavItems, getContentBlocks } from '@/lib/data';
 import { getIcon } from '@/lib/icons';
+import type { NavigationItem } from '@/types/database';
+
+// editor が表示できるサイドバー項目のパス
+const EDITOR_ALLOWED_HREFS = ['/admin', '/admin/blog'];
+
+function isEditorAllowed(item: NavigationItem): boolean {
+  return EDITOR_ALLOWED_HREFS.some(
+    (p) => item.href === p || item.href.startsWith(p + '/')
+  );
+}
 
 export default async function AdminLayout({
   children,
@@ -9,10 +19,27 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const [sidebarItems, footerTexts] = await Promise.all([
+  const [sidebarItems, footerTexts, { data: { user } }] = await Promise.all([
     getNavItems(supabase, 'admin_sidebar'),
     getContentBlocks(supabase, 'footer'),
+    supabase.auth.getUser(),
   ]);
+
+  // ロール取得
+  let role = 'admin';
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+    role = profile?.role ?? 'admin';
+  }
+
+  const isEditor = role === 'editor';
+  const visibleItems = isEditor
+    ? sidebarItems.filter(isEditorAllowed)
+    : sidebarItems;
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -21,9 +48,19 @@ export default async function AdminLayout({
           <Link href="/admin" className="text-lg font-bold">
             J-GLOW Admin
           </Link>
+          {/* ロールバッジ */}
+          <span
+            className="ml-2 inline-block text-[10px] font-bold px-2 py-0.5 rounded"
+            style={{
+              backgroundColor: isEditor ? '#c9a84c' : '#3b82f6',
+              color: '#fff',
+            }}
+          >
+            {isEditor ? 'EDITOR' : 'ADMIN'}
+          </span>
         </div>
         <nav className="p-4 space-y-1">
-          {sidebarItems.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = getIcon(item.icon);
             return (
               <Link

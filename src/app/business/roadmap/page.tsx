@@ -11,6 +11,18 @@ export const metadata = {
 export default async function RoadmapPage() {
   const supabase = await createClient();
 
+  // ログインユーザーのチェックリスト保存状態を取得
+  const { data: { user } } = await supabase.auth.getUser();
+  let savedChecklist: Record<string, boolean> | null = null;
+  if (user) {
+    const { data: settings } = await supabase
+      .from('user_settings')
+      .select('preferences')
+      .eq('id', user.id)
+      .single();
+    savedChecklist = (settings?.preferences as Record<string, unknown>)?.roadmap_checklist as Record<string, boolean> | null ?? null;
+  }
+
   // カテゴリ取得
   const { data: categories } = await supabase
     .from('blog_categories')
@@ -60,7 +72,11 @@ export default async function RoadmapPage() {
 
   return (
     <Suspense>
-      <RoadmapLanding posts={serializedPosts} />
+      <RoadmapLanding
+        posts={serializedPosts}
+        savedChecklist={savedChecklist}
+        isLoggedIn={!!user}
+      />
     </Suspense>
   );
 }

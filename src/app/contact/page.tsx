@@ -15,6 +15,7 @@ type FormData = {
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 const INQUIRY_TYPES = [
+  '外国人雇用についての相談',
   '掲載・広告について',
   'サービス・機能について',
   '取材・メディア',

@@ -1202,13 +1202,12 @@ export default function App({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         {/* 次のアクション CTA */}
         <Card>
           <h3 style={{ fontWeight: 800, color: NB, margin: '0 0 16px', fontSize: 18 }}>{'🚀'} 次に何をすればいいか</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: isPC ? '1fr 1fr 1fr' : '1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isPC ? '1fr 1fr' : '1fr', gap: 12 }}>
             {[
-              { icon: '💬', title: '専門家に無料相談する（J-GLOW）', desc: 'J-GLOWの専門スタッフが最適な採用プランをご提案' },
-              { icon: '📄', title: '助成金・補助金を確認する', desc: '外国人雇用に使える助成金制度で初期費用を削減' },
-              { icon: '📞', title: '監理支援機関・支援機関を探す', desc: '地域の受入支援機関に相談して具体的な費用・サポート内容を確認' },
+              { icon: '💬', title: 'J-GLOWに相談する', desc: 'J-GLOWの専門スタッフが最適な採用プランをご提案', href: '/business/contact' },
+              { icon: '📞', title: '監理団体・登録支援機関を探す', desc: '地域の受入支援機関に相談して具体的な費用・サポート内容を確認', href: '/business/partners' },
             ].map((item, i) => (
-              <a key={i} href="#" onClick={e => e.preventDefault()} style={{ display: 'block', border: `1px solid ${NB}`, borderRadius: 12, padding: '18px 16px', textDecoration: 'none', color: 'inherit', transition: 'background 0.15s', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = '#f0f4fa')} onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
+              <a key={i} href={item.href} style={{ display: 'block', border: `1px solid ${NB}`, borderRadius: 12, padding: '18px 16px', textDecoration: 'none', color: 'inherit', transition: 'background 0.15s', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = '#f0f4fa')} onMouseLeave={e => (e.currentTarget.style.background = 'white')}>
                 <div style={{ fontSize: 24, marginBottom: 8 }}>{item.icon}</div>
                 <div style={{ fontWeight: 700, color: NB, fontSize: 15, marginBottom: 6 }}>{item.title}</div>
                 <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.5 }}>{item.desc}</div>

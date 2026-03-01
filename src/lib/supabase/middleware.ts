@@ -69,12 +69,26 @@ export async function updateSession(request: NextRequest) {
   const role = profile?.role ?? '';
 
   // ========================================
-  // /admin/* — adminロール必須
+  // /admin/* — admin または editor ロール
   // ========================================
-  if (pathname.startsWith('/admin') && role !== 'admin') {
-    const url = request.nextUrl.clone();
-    url.pathname = getHomePath(role);
-    return NextResponse.redirect(url);
+  if (pathname.startsWith('/admin')) {
+    if (role === 'admin') {
+      // admin: 全パス許可
+    } else if (role === 'editor') {
+      // editor: /admin と /admin/blog/* のみ許可
+      const editorAllowed =
+        pathname === '/admin' || pathname.startsWith('/admin/blog');
+      if (!editorAllowed) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/admin';
+        return NextResponse.redirect(url);
+      }
+    } else {
+      // その他: ホームにリダイレクト
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
   }
 
   // ========================================

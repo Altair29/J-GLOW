@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 const INQUIRY_TYPES = [
+  '外国人雇用についての相談',
   '監理団体・行政書士への相談',
   'コストシミュレーターについて',
   '労働条件通知書ツールについて',

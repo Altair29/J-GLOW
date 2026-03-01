@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'business' | 'worker';
+export type Role = 'admin' | 'business' | 'worker' | 'editor';
 
 export type Plan = 'free' | 'premium';
 
@@ -758,4 +758,87 @@ export type SimulatorSession = {
   user_type: string | null;
   sim_mode: string | null;
   visa_type_detail: string | null;
+};
+
+// ========================================
+// 経営シミュレーション
+// ========================================
+
+export type MsimScenarioCategory =
+  | 'compliance' | 'cost' | 'field_issue' | 'life_support'
+  | 'relations' | 'neighbor' | 'positive' | 'government' | 'retention';
+
+export type MsimScenario = {
+  id: string;
+  category: MsimScenarioCategory;
+  title: string;
+  situation: string;
+  detail: string | null;
+  icon: string | null;
+  industries: string[];
+  visa_types: string[];
+  phase_min: number;
+  phase_max: number;
+  weight: number;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MsimChoice = {
+  id: string;
+  scenario_id: string;
+  sort_order: number;
+  label: string;
+  description: string | null;
+  cost_delta: number;
+  compliance_delta: number;
+  morale_delta: number;
+  productivity_delta: number;
+  retention_delta: number;
+  outcome_text: string;
+  learning_point: string;
+  created_at: string;
+};
+
+export type MsimDelayedEffect = {
+  id: string;
+  choice_id: string;
+  delay_turns: number;
+  cost_delta: number;
+  compliance_delta: number;
+  morale_delta: number;
+  productivity_delta: number;
+  retention_delta: number;
+  message: string;
+  created_at: string;
+};
+
+export type MsimConfig = {
+  id: string;
+  key: string;
+  value: unknown;
+  description: string | null;
+  updated_at: string;
+};
+
+export type MsimSessionStatus = 'in_progress' | 'cleared' | 'game_over';
+
+export type MsimSession = {
+  id: string;
+  user_id: string;
+  industry: string;
+  visa_type: string;
+  company_size: number;
+  hire_count: number;
+  total_months: number;
+  current_month: number;
+  status: MsimSessionStatus;
+  game_over_reason: string | null;
+  final_gauges: Record<string, number> | null;
+  grade: string | null;
+  snapshot: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
 };

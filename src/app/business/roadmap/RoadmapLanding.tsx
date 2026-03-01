@@ -112,8 +112,12 @@ type DashboardPersona = '管理団体' | '受入企業';
 
 export default function RoadmapLanding({
   posts,
+  savedChecklist,
+  isLoggedIn,
 }: {
   posts: ArticlePost[];
+  savedChecklist: Record<string, boolean> | null;
+  isLoggedIn: boolean;
 }) {
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type');
@@ -332,28 +336,7 @@ export default function RoadmapLanding({
       </section>
       </FadeUp>
 
-      {/* 6. あわせて読みたい記事 */}
-      {extraPosts.length > 0 && (
-        <FadeUp>
-        <section
-          className="border-t border-gray-200"
-          style={{ backgroundColor: '#f8fafc' }}
-        >
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-            <h3 className="text-lg font-bold text-[#1a2f5e] mb-6">
-              あわせて読みたい記事
-            </h3>
-            <FadeUpGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {extraPosts.map((post) => (
-                <ArticleCard key={post.slug} post={post} />
-              ))}
-            </FadeUpGroup>
-          </div>
-        </section>
-        </FadeUp>
-      )}
-
-      {/* 7. 育成就労制度 準備スケジュール */}
+      {/* 6. 育成就労制度 準備スケジュール */}
       <FadeUp>
       <section className="border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
@@ -395,12 +378,35 @@ export default function RoadmapLanding({
               <ChecklistSection
                 initialItems={initialChecklist}
                 persona={dashPersona}
+                savedChecklist={savedChecklist}
+                isLoggedIn={isLoggedIn}
               />
             )}
           </div>
         </div>
       </section>
       </FadeUp>
+
+      {/* 7. あわせて読みたい記事（ページ最下部） */}
+      {extraPosts.length > 0 && (
+        <FadeUp>
+        <section
+          className="border-t border-gray-200"
+          style={{ backgroundColor: '#f8fafc' }}
+        >
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+            <h3 className="text-lg font-bold text-[#1a2f5e] mb-6">
+              あわせて読みたい記事
+            </h3>
+            <FadeUpGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {extraPosts.map((post) => (
+                <ArticleCard key={post.slug} post={post} />
+              ))}
+            </FadeUpGroup>
+          </div>
+        </section>
+        </FadeUp>
+      )}
     </div>
   );
 }
@@ -413,7 +419,7 @@ function ArticleCard({ post }: { post: ArticlePost }) {
   return (
     <Link
       href={`/business/articles/${post.slug}`}
-      className="block rounded-xl border border-gray-200 bg-white p-5 hover:shadow-md transition-shadow group"
+      className="flex flex-col rounded-xl border border-gray-200 bg-white p-5 hover:shadow-md transition-shadow group h-full"
     >
       {/* ペルソナバッジ */}
       <div className="flex flex-wrap gap-1.5 mb-3">
@@ -433,7 +439,7 @@ function ArticleCard({ post }: { post: ArticlePost }) {
       </div>
 
       {/* タイトル */}
-      <h4 className="text-sm font-bold text-gray-800 leading-relaxed group-hover:underline">
+      <h4 className="text-sm font-bold text-gray-800 leading-relaxed group-hover:underline flex-1">
         {post.title}
       </h4>
 

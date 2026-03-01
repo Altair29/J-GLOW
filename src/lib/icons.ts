@@ -3,6 +3,7 @@ import {
   Shield, FileText, BookOpen, Wallet, Coffee, AlertTriangle,
   TrendingUp, ClipboardCheck, Newspaper, GitBranch, Calculator,
   Settings, Globe, Menu, X, LayoutDashboard, Banknote, SquarePen,
+  Gamepad2, MessageSquare, Bell,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -31,6 +32,9 @@ const iconMap: Record<string, LucideIcon> = {
   LayoutDashboard,
   Banknote,
   PenSquare: SquarePen,
+  Gamepad2,
+  MessageSquare,
+  Bell,
 };
 
 export function getIcon(name: string | null | undefined): LucideIcon | null {

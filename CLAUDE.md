@@ -52,6 +52,7 @@ src/
 │  │  │  ├─ components/Step1-5       # ウィザードステップ（5段階）
 │  │  │  └─ pdf/                     # PDF生成コンポーネント（別紙1対応）
 │  │  ├─ simulation/                 # シミュレーションゲーム
+│  │  ├─ management-sim/             # 経営シミュレーター（5シナリオ・ゲージ演出・DB駆動）
 │  │  ├─ diagnosis/                  # 適正診断 + [sessionId] + report/[reportId]
 │  │  ├─ blog/[slug]                 # ブログ記事
 │  │  ├─ subsidies/[slug]            # 助成金
@@ -67,12 +68,13 @@ src/
 │  ├─ worker/                        # 労働者向け [LAYOUT: WorkerHeader + LangProvider]
 │  │  ├─ {home,mypage}/              # 認証後ページ
 │  │  └─ topics/[topicSlug]          # 多言語トピック
-│  ├─ admin/                         # 管理画面CMS [LAYOUT: Sidebar]（15セクション）
+│  ├─ admin/                         # 管理画面CMS [LAYOUT: Sidebar]（16セクション、editor制限対応）
 │  │  ├─ settings/{business,worker}/ # テーマ・ナビ・コンテンツ設定
-│  │  ├─ blog/                       # ブログ管理
+│  │  ├─ blog/                       # ブログ管理（editor アクセス可）
 │  │  ├─ diagnosis/                  # 診断管理
 │  │  ├─ simulation/                 # シミュレーション管理
 │  │  ├─ simulator/                  # コストシミュレーター設定
+│  │  ├─ management-sim/             # 経営シミュレーター管理
 │  │  ├─ {news,translations,whitepapers,subsidies,trends}/
 │  │  ├─ partners/                   # パートナー管理
 │  │  ├─ contact/                    # 問い合わせ管理
@@ -105,7 +107,7 @@ src/
 │  │  ├─ IndustrySystemFlow.tsx      # キャリアパスフローチャート（3ビザ種別）
 │  │  └─ ArticleHeader.tsx           # 汎用記事ヘッダー
 │  ├─ worker/                        # ワーカー向けUI
-│  ├─ admin/                         # 管理画面コンポーネント
+│  ├─ admin/                         # 管理画面コンポーネント（ManagementSimAdmin.tsx 含む）
 │  ├─ shared/                        # 汎用UI（Button, Input, Modal, Badge等）
 │  ├─ ActivityLogProvider.tsx        # ページ閲覧ログ（layout.tsxで使用）
 │  └─ common/
@@ -133,8 +135,8 @@ e2e/                                 # Playwright E2Eテスト
 ├─ auth.setup.ts                     # 認証セットアップ（storageState保存）
 └─ labor-notice.spec.ts              # 労働条件通知書ウィザード（25テスト）
 playwright.config.ts                 # Playwright設定（setup + chromium）
-supabase/migrations/                 # 00001〜00037（38ファイル）
-scripts/                             # DB投入スクリプト
+supabase/migrations/                 # 00001〜00040（41ファイル）
+scripts/                             # DB投入・アカウント作成スクリプト
 ```
 
 ---
@@ -178,6 +180,7 @@ scripts/                             # DB投入スクリプト
 | `/` | トップ — 企業向け/働く方向けの2分岐ポータル（DB駆動） |
 | `/business` | 企業向けランディング（ヒーロー→3本柱→ツール→制度記事→監理団体/士業セクション、FadeUpアニメーション適用） |
 | `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
+| `/business/management-sim` | 経営シミュレーター（5シナリオ・ゲージ演出・DB駆動） |
 | `/business/diagnosis` | 外国人雇用 適正診断 |
 | `/business/navigator` | 外国人採用ナビゲーター（ステップ式ビザ提案・業種/条件→最適在留資格自動提案・概算コスト表示） |
 | `/business/cost-simulator` | 採用計画コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・4ユーザー種別・ゲストblur制御・発注デッドライン・PDF提案書） |
@@ -185,7 +188,7 @@ scripts/                             # DB投入スクリプト
 | `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
 | `/business/hiring-guide/trends` | 採用動向サブページ |
 | `/business/hiring-guide/honest-guide` | 正直ガイドサブページ |
-| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン、`?type=kanri` で監理団体初期選択対応、FadeUp適用） |
+| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン+準備チェックリスト（会員自動保存）、`?type=kanri` で監理団体初期選択対応、FadeUp適用） |
 | `/business/articles` | 分野別外国人採用ガイド（19分野） |
 | `/business/articles/[slug]` | 記事詳細（Markdown/HTML自動判別、19分野はIndustryHero/Stats/Flow付き） |
 | `/business/existing-users` | 外国人スタッフ活用ハブ（FadeUp/FadeUpGroup適用） |
@@ -207,7 +210,7 @@ scripts/                             # DB投入スクリプト
 | `/business/articles/career-ikusei-tokutei` | 育成就労→特定技能キャリア記事 |
 | `/business/articles/fair-wage-guide` | 公正な賃金ガイド記事 |
 | `/business/articles/why-workers-leave` | 離職原因分析記事 |
-| `/contact` | お問い合わせ（スタンドアロン、種別任意・名前/メール/内容必須） |
+| `/contact` | お問い合わせ（スタンドアロン、種別: 外国人雇用相談が先頭・名前/メール/内容必須） |
 | `/privacy-policy` | プライバシーポリシー（現在ドラフト版） |
 | `/worker` | 外国人向けランディング |
 | `/login` | 共通ログイン |
@@ -222,14 +225,14 @@ scripts/                             # DB投入スクリプト
 | `/business/home` | business | リダイレクトハブ（→ onboarding or mypage） |
 | `/worker/mypage` | worker | ワーカーマイページ |
 | `/worker/home` | worker | ワーカーホーム |
-| `/admin/*` | admin | 管理画面（CMS） |
+| `/admin/*` | admin, editor | 管理画面（CMS）— editor は `/admin` + `/admin/blog/*` のみ |
 
 ---
 
 ## 認証・認可
 
 ### ロール
-`'admin' | 'business' | 'worker'`
+`'admin' | 'business' | 'worker' | 'editor'`
 
 ### 3層アクセスモデル
 - **guest**: 未登録。ほとんどのツール・コンテンツを閲覧可能
@@ -237,7 +240,7 @@ scripts/                             # DB投入スクリプト
 - **premium**: 有料会員（将来拡充）
 
 ### ミドルウェア (`src/lib/supabase/middleware.ts`)
-- `/admin/*` → role=admin 必須
+- `/admin/*` → role=admin（全パス許可）or role=editor（`/admin` + `/admin/blog/*` のみ）
 - `/business/*` サブパス → role=business 必須（`/business` 自体は公開）
 - `/worker/*` サブパス → role=worker 必須（`/worker` 自体は公開）
 - AUTH_REQUIRED_PATHS: `/business/mypage`, `/business/onboarding`, `/worker/mypage`, `/admin`
@@ -254,11 +257,11 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 3. 安全策: 3秒タイムアウトで loading 強制解除
 
 ### ルーティング (`src/lib/utils/routing.ts`)
-- `getHomePath(role)`: admin→`/admin`, business→`/business/home`, worker→`/worker/home`
+- `getHomePath(role)`: admin→`/admin`, editor→`/admin`, business→`/business/home`, worker→`/worker/home`
 
 ---
 
-## データベース主要テーブル（49テーブル / 38マイグレーション）
+## データベース主要テーブル（49テーブル+ / 41マイグレーション）
 
 ### ユーザー系（8テーブル）
 - `profiles` — ユーザー基本情報（role, plan, display_name, is_active, privacy_agreed_at）
@@ -306,10 +309,16 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 - `ikusei_timeline` + `ikusei_flowcharts` — 育成就労制度参照
 - `skill_upgrade_steps` — キャリア段階マスタ
 
+### 経営シミュレーター系（M00038 + M00039）
+- `msim_scenarios` — シナリオ定義（5件）
+- `msim_choices` — 選択肢（シナリオ紐付き、effects JSONB）
+- `msim_sessions` + `msim_session_answers` — プレイ記録
+
 ### RLS共通パターン
 - `is_admin()` (SECURITY DEFINER) で admin 全件操作可
+- `is_editor()` (SECURITY DEFINER) で editor 判定（blog RLS用）
 - ユーザー系テーブル: 本人のみ SELECT/UPDATE
-- コンテンツ系: 全員 SELECT、admin のみ管理
+- コンテンツ系: 全員 SELECT、admin のみ管理（blog_posts は editor も INSERT/UPDATE 可）
 
 ---
 
@@ -360,6 +369,7 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 | トレンド | `/admin/trends` | ✅ |
 | シミュレーション | `/admin/simulation` | ✅ |
 | コストシミュレーター | `/admin/simulator` | ✅ |
+| 経営シミュレーター | `/admin/management-sim` | ✅ |
 | パートナー | `/admin/partners` | ✅ |
 | 問い合わせ | `/admin/contact` | ✅ |
 | 通知 | `/admin/notifications` | ✅ |
@@ -568,11 +578,14 @@ New（partners/ 検索UI・申請フォームで使用）:
 
 ## マイグレーション実行状況
 
-`00001` 〜 `00037` — **38ファイル全て定義済み**（49テーブル）
+`00001` 〜 `00040` — **41ファイル全て定義済み**
 
 - `00035` — activity_logs（行動ログ）
 - `00036` — contact_inquiries（お問い合わせ）+ partners 拡張（5種別×3ティア）
 - `00037` — simulator_v2（visa_type CHECK拡張、tokutei→tokutei1リネーム、新ビザコスト項目12件INSERT、sessions/presets カラム追加）
+- `00038` — management_sim（msim_scenarios/choices/sessions/session_answers テーブル + 5シナリオ・選択肢INSERT）
+- `00039` — msim_rebalance（シナリオ・選択肢パラメータ調整）
+- `00040` — add_editor_role（profiles CHECK制約拡張、`is_editor()` 関数、blog_posts editor用RLSポリシー）
 
 ---
 
