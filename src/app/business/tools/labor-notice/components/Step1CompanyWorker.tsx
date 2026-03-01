@@ -1,7 +1,40 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import type { Step1Data } from '../types';
 import { sanitizeName, sanitizeAddress } from '../types';
+
+/** Animated yellow highlighter that draws on when visible */
+function HighlightMarker({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <span ref={ref} className="relative inline">
+      <span
+        className="absolute left-0 bottom-0 h-[40%] rounded-sm"
+        style={{
+          background: 'linear-gradient(90deg, #fde68a 0%, #fbbf24 50%, #fde68a 100%)',
+          opacity: visible ? 0.5 : 0,
+          width: visible ? '100%' : '0%',
+          transition: 'width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.3s, opacity 0.4s ease 0.3s',
+        }}
+      />
+      <span className="relative">{children}</span>
+    </span>
+  );
+}
 
 interface Props {
   data: Step1Data;
@@ -36,6 +69,23 @@ export default function Step1CompanyWorker({ data, onChange, showErrors = false,
 
   return (
     <div className="space-y-8">
+      {/* Motivation banner */}
+      <div className="rounded-xl border border-[#1a2f5e]/10 bg-gradient-to-br from-[#f0f4fa] to-white p-5 sm:p-6">
+        <p className="text-sm text-gray-600 leading-relaxed">
+          「サインをもらった」だけでは不十分な時代です。
+        </p>
+        <p className="text-sm text-gray-500 leading-relaxed mt-2">
+          厚労省・入管庁のテンプレートは法令遵守の第一歩。しかし多忙な現場では、外国人スタッフが契約内容を本当に理解しているか確認しきれていないケースが多く見受けられます。
+        </p>
+        <p className="text-sm text-gray-500 leading-relaxed mt-2">
+          J-GLOWの労働条件通知書ツールは、日本語と母国語を並べた<span className="font-semibold text-[#1a2f5e]">バイリンガルPDF</span>を5分で生成します。
+        </p>
+        <p className="mt-3 text-sm font-bold text-[#1a2f5e] leading-relaxed border-l-[3px] border-[#c9a84c] pl-3">
+          <HighlightMarker>未払い賃金請求・行政指導・突然の離職</HighlightMarker>——<br className="hidden sm:inline" />
+          これらのリスクを「仕組み」で防ぐための、<HighlightMarker>企業側の最初の一手</HighlightMarker>です。
+        </p>
+      </div>
+
       {/* Worker info */}
       <section>
         <h3 className="text-lg font-bold text-[#1a2f5e] mb-4 flex items-center">
