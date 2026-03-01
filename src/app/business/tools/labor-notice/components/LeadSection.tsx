@@ -1,3 +1,39 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+/** Animated yellow highlighter that draws on when visible */
+function HighlightMarker({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <span ref={ref} className="relative inline">
+      <span
+        className="absolute left-0 bottom-0 h-[40%] rounded-sm"
+        style={{
+          background: 'linear-gradient(90deg, #fde68a 0%, #fbbf24 50%, #fde68a 100%)',
+          opacity: visible ? 0.5 : 0,
+          width: visible ? '100%' : '0%',
+          transition: 'width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.3s, opacity 0.4s ease 0.3s',
+        }}
+      />
+      <span className="relative">{children}</span>
+    </span>
+  );
+}
+
 export default function LeadSection() {
   return (
     <div style={{
@@ -21,8 +57,11 @@ export default function LeadSection() {
           </p>
           <p style={{ color: '#444', fontSize: '13px', lineHeight: 1.85, margin: 0 }}>
             J-GLOWの労働条件通知書ツールは、日本語と母国語を並べたバイリンガルPDFを
-            5分で生成します。未払い賃金請求・行政指導・突然の離職——
-            これらのリスクを「仕組み」で防ぐための、企業側の最初の一手です。
+            5分で生成します。
+          </p>
+          <p style={{ fontWeight: 700, color: '#1a2f5e', fontSize: '13px', lineHeight: 1.85, marginTop: '10px', marginBottom: 0 }}>
+            <HighlightMarker>未払い賃金請求・行政指導・突然の離職</HighlightMarker>——
+            これらのリスクを「仕組み」で防ぐための、<HighlightMarker>企業側の最初の一手</HighlightMarker>です。
           </p>
         </div>
         <p style={{ color: '#666', fontSize: '12px', margin: '0 0 4px' }}>
