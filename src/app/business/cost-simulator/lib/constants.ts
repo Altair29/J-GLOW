@@ -17,7 +17,7 @@ import type {
 // --- 20業種リスト ---
 
 export const INDUSTRIES_V2: IndustryDef[] = [
-  { id: 'manufacturing_metal', label: '素形材・産業機械製造業', icon: '🏭', visaTypes: ['ikusei', 'tokutei1_kaigai', 'tokutei1_kokunai', 'tokutei2'] },
+  { id: 'manufacturing_metal', label: '工業製品製造業', icon: '🏭', visaTypes: ['ikusei', 'tokutei1_kaigai', 'tokutei1_kokunai', 'tokutei2'] },
   { id: 'electronics', label: '電気・電子情報関連産業', icon: '🔌', visaTypes: ['ikusei', 'tokutei1_kaigai', 'tokutei1_kokunai', 'tokutei2'] },
   { id: 'construction', label: '建設', icon: '🏗️', visaTypes: ['ikusei', 'tokutei1_kaigai', 'tokutei1_kokunai', 'tokutei2'] },
   { id: 'shipbuilding', label: '造船・舶用工業', icon: '🚢', visaTypes: ['ikusei', 'tokutei1_kaigai', 'tokutei1_kokunai', 'tokutei2'] },
@@ -145,7 +145,7 @@ export const defaultStep0: Step0Data = {
 export const defaultStep1: Step1Data = {
   companyName: '',
   industry: '',
-  foreignStatus: 'none',
+  foreignStatus: ['none'],
   fullTimeStaff: 50,
   pastTurnoverRate: null,
   initialBudget: null,

@@ -340,25 +340,36 @@ export function Step2Plan({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               雇用形態
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {([
-                { value: 'fulltime', label: '正社員' },
-                { value: 'parttime', label: 'パート' },
-                { value: 'contract', label: '契約社員' },
-              ] as const).map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => update('employmentType', data.employmentType === value ? null : value)}
-                  className={`p-3 rounded-lg border-2 text-center transition-all text-sm font-medium ${
-                    data.employmentType === value
-                      ? 'border-[#1a2f5e] bg-[#1a2f5e]/5 text-[#1a2f5e]'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            {data.visaChoice === 'student' ? (
+              <div>
+                <div className="p-3 rounded-lg border-2 border-[#1a2f5e] bg-[#1a2f5e]/5 text-center text-sm font-medium text-[#1a2f5e]">
+                  正社員（ビザ変更後）
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  留学→就労ビザ変更は正社員雇用が前提です（パート・契約は在留資格の要件を満たしません）
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-3">
+                {([
+                  { value: 'fulltime', label: '正社員' },
+                  { value: 'parttime', label: 'パート' },
+                  { value: 'contract', label: '契約社員' },
+                ] as const).map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => update('employmentType', data.employmentType === value ? null : value)}
+                    className={`p-3 rounded-lg border-2 text-center transition-all text-sm font-medium ${
+                      data.employmentType === value
+                        ? 'border-[#1a2f5e] bg-[#1a2f5e]/5 text-[#1a2f5e]'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 計画期間 */}

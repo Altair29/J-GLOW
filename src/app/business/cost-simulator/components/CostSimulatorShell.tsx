@@ -176,7 +176,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
     step1: {
       companyName: step1.companyName,
       industry: step1.industry,
-      foreignStatus: step1.foreignStatus === 'both' ? 'tokutei' as const : step1.foreignStatus,
+      foreignStatus: step1.foreignStatus,
       fullTimeStaff: step1.fullTimeStaff,
     },
     step2: {
@@ -505,7 +505,14 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
             {phase === 'detail-step2' && (
               <Step2Plan
                 data={step2}
-                onChange={setStep2}
+                onChange={(d) => {
+                  // student選択時はfulltime固定
+                  if (d.visaChoice === 'student' && d.employmentType !== 'fulltime') {
+                    setStep2({ ...d, employmentType: 'fulltime' });
+                  } else {
+                    setStep2(d);
+                  }
+                }}
                 onNext={goNextPhase}
                 onBack={goPrevPhase}
                 canProceed={canProceedStep2}

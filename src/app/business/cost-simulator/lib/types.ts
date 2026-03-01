@@ -59,7 +59,7 @@ export type Step0Data = {
 export type Step1Data = {
   companyName: string;
   industry: string;
-  foreignStatus: 'none' | 'ginou' | 'tokutei' | 'both';
+  foreignStatus: ('none' | 'ginou' | 'tokutei' | 'ikusei' | 'student')[];
   fullTimeStaff: number;
   // v2拡張（トグル内）
   pastTurnoverRate: TurnoverRate | null;

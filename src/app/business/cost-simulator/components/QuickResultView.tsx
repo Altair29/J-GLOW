@@ -4,6 +4,7 @@ import type { QuickInputs, CostBreakdown } from '../lib/types';
 import { VISA_LEAD_TIMES } from '../lib/constants';
 import { getMonthsUntilStart, getEarliestStartMonth, isFeasible } from '../lib/calculate';
 import type { VisaTypeV2 } from '../lib/types';
+import { useAuth } from '@/hooks/useAuth';
 
 type Props = {
   inputs: QuickInputs;
@@ -34,6 +35,9 @@ function getVisaTypeV2FromKey(key: string): VisaTypeV2 | null {
 }
 
 export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }: Props) {
+  const { user, loading: authLoading } = useAuth();
+  const isGuest = !authLoading && !user;
+
   if (breakdowns.length === 0) return null;
 
   const primary = breakdowns[0];
@@ -111,37 +115,68 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
         )}
       </div>
 
-      {/* 比較表示（複数ビザ時） */}
-      {breakdowns.length > 1 && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-[#1a2f5e]">ビザ種別ごとの概算比較</h3>
-          <div className="grid gap-3">
-            {breakdowns.map((b) => (
-              <div key={b.visaType} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <span className="text-sm font-medium text-gray-700">{b.visaLabel}</span>
-                <span className="text-sm font-bold text-[#1a2f5e] font-mono">
-                  {formatMidYen(b.threeYearTotal.min, b.threeYearTotal.max)}
-                </span>
+      {/* ゲスト向け: 比較部分をぼかして登録誘導 */}
+      <div className={isGuest ? 'relative' : ''}>
+        {isGuest && (
+          <div className="sticky top-20 z-30 flex flex-col items-center justify-center py-6 -mb-6">
+            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#1a2f5e]/20 rounded-2xl p-6 shadow-xl text-center max-w-sm">
+              <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               </div>
-            ))}
+              <h3 className="text-base font-bold text-[#1a2f5e] mb-2">詳細な比較・分析を見る</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                ビザ別比較や詳細シミュレーションは無料登録でご利用いただけます。
+              </p>
+              <a
+                href={`/register/business?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}&from=simulator`}
+                className="inline-block w-full px-5 py-3 rounded-lg font-bold text-sm transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
+              >
+                無料会員登録して詳細を見る &rarr;
+              </a>
+              <p className="text-xs text-gray-400 mt-2">
+                <a href={`/login?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}`} className="text-[#1a2f5e] hover:underline">
+                  ログインはこちら
+                </a>
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className={isGuest ? 'blur-[6px] select-none pointer-events-none' : ''} aria-hidden={isGuest}>
+          {/* 比較表示（複数ビザ時） */}
+          {breakdowns.length > 1 && (
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold text-[#1a2f5e]">ビザ種別ごとの概算比較</h3>
+              <div className="grid gap-3">
+                {breakdowns.map((b) => (
+                  <div key={b.visaType} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">{b.visaLabel}</span>
+                    <span className="text-sm font-bold text-[#1a2f5e] font-mono">
+                      {formatMidYen(b.threeYearTotal.min, b.threeYearTotal.max)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTAボタン */}
+          <div className="space-y-3 mt-6">
+            <button
+              onClick={onDetailMode}
+              className="w-full px-6 py-4 bg-[#1a2f5e] text-white rounded-xl font-bold text-base hover:bg-[#1a2f5e]/90 transition-all"
+            >
+              詳細シミュレーションへ &rarr;
+            </button>
+            <a
+              href="/business/partners"
+              className="block w-full px-6 py-4 bg-white border-2 border-[#c9a84c] text-[#8a6d2b] rounded-xl font-bold text-base text-center hover:bg-[#c9a84c]/10 transition-all"
+            >
+              専門家に相談する &rarr;
+            </a>
           </div>
         </div>
-      )}
-
-      {/* CTAボタン */}
-      <div className="space-y-3">
-        <button
-          onClick={onDetailMode}
-          className="w-full px-6 py-4 bg-[#1a2f5e] text-white rounded-xl font-bold text-base hover:bg-[#1a2f5e]/90 transition-all"
-        >
-          詳細シミュレーションへ &rarr;
-        </button>
-        <a
-          href="/business/partners"
-          className="block w-full px-6 py-4 bg-white border-2 border-[#c9a84c] text-[#8a6d2b] rounded-xl font-bold text-base text-center hover:bg-[#c9a84c]/10 transition-all"
-        >
-          専門家に相談する &rarr;
-        </a>
       </div>
 
       {/* ナビ */}

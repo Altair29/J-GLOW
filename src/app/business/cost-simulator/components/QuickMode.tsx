@@ -26,6 +26,7 @@ export function QuickMode({ data, onChange, onComplete, onBack }: Props) {
     { value: 'tokutei', label: '特定技能1号' },
     { value: 'tokutei2', label: '特定技能2号' },
     { value: 'ginou', label: '技人国' },
+    { value: 'student', label: '留学→就労' },
     { value: 'compare', label: '複数比較' },
   ];
 

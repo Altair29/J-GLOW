@@ -197,149 +197,195 @@ export function ResultView({
         </div>
       </div>
 
-      {/* 業種別ベンチマーク比較 */}
-      {benchmarkComparison && (
-        <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-          <h3 className="text-sm font-bold text-[#1a2f5e] mb-3">業界平均との比較</h3>
-          <div className="flex items-center gap-4">
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-              benchmarkComparison.initialDiff <= -10
-                ? 'bg-green-100 text-green-700'
-                : benchmarkComparison.initialDiff <= 10
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-orange-100 text-orange-700'
-            }`}>
-              {benchmarkComparison.label}
-            </span>
-            <span className="text-sm text-gray-600">
-              初期費用: 業界平均比 {benchmarkComparison.initialDiff > 0 ? '+' : ''}{benchmarkComparison.initialDiff}%
-              ／月次費用: {benchmarkComparison.monthlyDiff > 0 ? '+' : ''}{benchmarkComparison.monthlyDiff}%
-            </span>
-          </div>
-          <p className="text-xs text-gray-400 mt-2">
-            ※ 業界平均は各種調査データに基づく参考値です
-          </p>
-        </div>
-      )}
-
-      {/* コスト比較テーブル */}
-      <CostTable breakdowns={breakdowns} headcount={inputs.step2.headcount} />
-
-      {/* 日本人採用との比較 */}
-      {jpBenchmark && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-[#1a2f5e]">日本人採用との比較（参考）</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#1a2f5e] text-white">
-                  <th className="px-4 py-3 text-left">比較項目</th>
-                  <th className="px-4 py-3 text-right">外国人採用（今回の試算）</th>
-                  <th className="px-4 py-3 text-right">日本人採用（業種平均）</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-gray-700">採用初期費用 / 人</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
-                    {formatMidYen(maxBreakdown.initialTotal.min, maxBreakdown.initialTotal.max)}
-                  </td>
-                  <td className="px-4 py-3 text-right font-mono">
-                    {formatYen(jpBenchmark.adCostPerHire.min)} 〜 {formatYen(jpBenchmark.adCostPerHire.max)}
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-gray-700">月次給与（企業負担込み）</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
-                    {formatMidYen(maxBreakdown.monthlyTotal.min, maxBreakdown.monthlyTotal.max)}
-                  </td>
-                  <td className="px-4 py-3 text-right font-mono">
-                    {formatYen(Math.round(jpBenchmark.averageMonthlyWage * 1.165))}
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-gray-700">有効求人倍率</td>
-                  <td className="px-4 py-3 text-right text-green-600 font-bold">
-                    監理団体/機関経由で高い採用成功率
-                  </td>
-                  <td className="px-4 py-3 text-right font-mono text-orange-600">
-                    {jpBenchmark.effectiveJobOpeningsRatio}倍
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-gray-700">紹介手数料率</td>
-                  <td className="px-4 py-3 text-right font-mono text-[#1a2f5e]">
-                    送出機関費（定額）
-                  </td>
-                  <td className="px-4 py-3 text-right font-mono">
-                    年収の{Math.round(jpBenchmark.agencyFeeRate * 100)}%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="text-xs text-gray-400">
-            ※ 日本人採用データは厚生労働省 一般職業紹介状況、リクルートワークス研究所等の業種別平均に基づく参考値です。
-            有効求人倍率が高い業種ほど日本人の採用が困難であり、外国人採用の合理性が高まります。
-          </p>
-        </div>
-      )}
-
-      {/* 逆算スケジュール */}
-      <ScheduleTimeline
-        visaChoice={inputs.step2.visaChoice}
-        targetChoice={inputs.step2.targetChoice}
-        startDate={inputs.step2.startDate}
-      />
-
-      {/* リスク分析 */}
-      <RiskAnalysis
-        headcount={inputs.step2.headcount}
-        initialCostPerPerson={maxBreakdown.initialTotal}
-        visaChoice={allInputs?.step2.visaChoice}
-      />
-
-      {/* 自動診断 */}
-      {allInputs && (
-        <ConsultationPanel inputs={allInputs} breakdowns={breakdowns} />
-      )}
-
-      {/* アクションプラン */}
-      {actionPlan && actionPlan.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-[#1a2f5e]">推奨アクションプラン</h3>
-          <div className="space-y-4">
-            {actionPlan.map((step, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1a2f5e] text-white text-xs font-bold shrink-0">
-                    {i + 1}
-                  </span>
-                  <h4 className="font-bold text-sm text-[#1a2f5e]">{step.phase}</h4>
-                </div>
-                <ul className="space-y-2 pl-10">
-                  {step.tasks.map((task, j) => (
-                    <li key={j} className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-0.5 shrink-0">&#9744;</span>
-                      <div>
-                        <span className="text-sm text-gray-700">{task.label}</span>
-                        {task.ctaHref && (
-                          <a
-                            href={task.ctaHref}
-                            className="inline-flex items-center gap-1 ml-2 text-xs font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors"
-                          >
-                            {task.ctaLabel} &rarr;
-                          </a>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+      {/* ゲスト向け: ぼかしオーバーレイで詳細を隠す */}
+      <div className={isGuest ? 'relative' : ''}>
+        {isGuest && (
+          <div className="sticky top-20 z-30 flex flex-col items-center justify-center py-8 -mb-8">
+            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#1a2f5e]/20 rounded-2xl p-6 md:p-8 shadow-xl text-center max-w-md">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               </div>
-            ))}
+              <h3 className="text-lg font-bold text-[#1a2f5e] mb-2">詳細な試算結果を確認する</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                コスト内訳・日本人採用比較・リスク分析・アクションプランなどの詳細は、無料会員登録でご覧いただけます。
+              </p>
+              <ul className="text-left text-xs text-gray-500 space-y-1.5 mb-5 max-w-xs mx-auto">
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>コスト内訳の完全表示</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>日本人採用との比較表</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>リスク分析・診断</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>PDF提案書ダウンロード</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>結果のURL共有・保存</li>
+              </ul>
+              <a
+                href={`/register/business?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}&from=simulator`}
+                className="inline-block w-full px-6 py-3 rounded-lg font-bold text-base transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
+              >
+                無料会員登録して詳細を見る &rarr;
+              </a>
+              <p className="text-xs text-gray-400 mt-3">
+                <a href={`/login?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}`} className="text-[#1a2f5e] hover:underline">
+                  すでにアカウントをお持ちの方はログイン
+                </a>
+              </p>
+            </div>
           </div>
+        )}
+
+        <div className={isGuest ? 'blur-[6px] select-none pointer-events-none' : ''} aria-hidden={isGuest}>
+          {/* 業種別ベンチマーク比較 */}
+          {benchmarkComparison && (
+            <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+              <h3 className="text-sm font-bold text-[#1a2f5e] mb-3">業界平均との比較</h3>
+              <div className="flex items-center gap-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  benchmarkComparison.initialDiff <= -10
+                    ? 'bg-green-100 text-green-700'
+                    : benchmarkComparison.initialDiff <= 10
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-orange-100 text-orange-700'
+                }`}>
+                  {benchmarkComparison.label}
+                </span>
+                <span className="text-sm text-gray-600">
+                  初期費用: 業界平均比 {benchmarkComparison.initialDiff > 0 ? '+' : ''}{benchmarkComparison.initialDiff}%
+                  ／月次費用: {benchmarkComparison.monthlyDiff > 0 ? '+' : ''}{benchmarkComparison.monthlyDiff}%
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                ※ 業界平均は各種調査データに基づく参考値です
+              </p>
+            </div>
+          )}
+
+          {/* コスト比較テーブル */}
+          <div className="mt-8">
+            <CostTable breakdowns={breakdowns} headcount={inputs.step2.headcount} />
+          </div>
+
+          {/* 日本人採用との比較 */}
+          {jpBenchmark && (
+            <div className="space-y-4 mt-8">
+              <h3 className="text-lg font-bold text-[#1a2f5e]">日本人採用との比較（参考）</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-[#1a2f5e] text-white">
+                      <th className="px-4 py-3 text-left">比較項目</th>
+                      <th className="px-4 py-3 text-right">外国人採用（今回の試算）</th>
+                      <th className="px-4 py-3 text-right">日本人採用（業種平均）</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-4 py-3 text-gray-700">採用初期費用 / 人</td>
+                      <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
+                        {formatMidYen(maxBreakdown.initialTotal.min, maxBreakdown.initialTotal.max)}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {formatYen(jpBenchmark.adCostPerHire.min)} 〜 {formatYen(jpBenchmark.adCostPerHire.max)}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-4 py-3 text-gray-700">月次給与（企業負担込み）</td>
+                      <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
+                        {formatMidYen(maxBreakdown.monthlyTotal.min, maxBreakdown.monthlyTotal.max)}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {formatYen(Math.round(jpBenchmark.averageMonthlyWage * 1.165))}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-4 py-3 text-gray-700">有効求人倍率</td>
+                      <td className="px-4 py-3 text-right text-green-600 font-bold">
+                        監理団体/機関経由で高い採用成功率
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono text-orange-600">
+                        {jpBenchmark.effectiveJobOpeningsRatio}倍
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-4 py-3 text-gray-700">紹介手数料率</td>
+                      <td className="px-4 py-3 text-right font-mono text-[#1a2f5e]">
+                        送出機関費（定額）
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        年収の{Math.round(jpBenchmark.agencyFeeRate * 100)}%
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-400">
+                ※ 日本人採用データは厚生労働省 一般職業紹介状況、リクルートワークス研究所等の業種別平均に基づく参考値です。
+                有効求人倍率が高い業種ほど日本人の採用が困難であり、外国人採用の合理性が高まります。
+              </p>
+            </div>
+          )}
+
+          {/* 逆算スケジュール */}
+          <div className="mt-8">
+            <ScheduleTimeline
+              visaChoice={inputs.step2.visaChoice}
+              targetChoice={inputs.step2.targetChoice}
+              startDate={inputs.step2.startDate}
+            />
+          </div>
+
+          {/* リスク分析 */}
+          <div className="mt-8">
+            <RiskAnalysis
+              headcount={inputs.step2.headcount}
+              initialCostPerPerson={maxBreakdown.initialTotal}
+              visaChoice={allInputs?.step2.visaChoice}
+            />
+          </div>
+
+          {/* 自動診断 */}
+          {allInputs && (
+            <div className="mt-8">
+              <ConsultationPanel inputs={allInputs} breakdowns={breakdowns} />
+            </div>
+          )}
+
+          {/* アクションプラン */}
+          {actionPlan && actionPlan.length > 0 && (
+            <div className="space-y-4 mt-8">
+              <h3 className="text-lg font-bold text-[#1a2f5e]">推奨アクションプラン</h3>
+              <div className="space-y-4">
+                {actionPlan.map((step, i) => (
+                  <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1a2f5e] text-white text-xs font-bold shrink-0">
+                        {i + 1}
+                      </span>
+                      <h4 className="font-bold text-sm text-[#1a2f5e]">{step.phase}</h4>
+                    </div>
+                    <ul className="space-y-2 pl-10">
+                      {step.tasks.map((task, j) => (
+                        <li key={j} className="flex items-start gap-2">
+                          <span className="text-gray-400 mt-0.5 shrink-0">&#9744;</span>
+                          <div>
+                            <span className="text-sm text-gray-700">{task.label}</span>
+                            {task.ctaHref && (
+                              <a
+                                href={task.ctaHref}
+                                className="inline-flex items-center gap-1 ml-2 text-xs font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors"
+                              >
+                                {task.ctaLabel} &rarr;
+                              </a>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* アクションボタンエリア */}
       <div className="border-t pt-6 space-y-4">
@@ -416,8 +462,8 @@ export function ResultView({
           )}
         </div>
 
-        {/* ゲスト向けCTAバナー */}
-        {!isLoggedIn && (
+        {/* ゲスト向けCTAバナー（ログイン済みだが非会員の場合用） */}
+        {!isLoggedIn && !isGuest && (
           <div className="p-4 bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl text-white">
             <p className="text-sm font-bold mb-1">
               結果の保存・カスタマイズをしたい方へ

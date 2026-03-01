@@ -49,31 +49,60 @@ export function Step1Company({ data, onChange, onNext, onBack, canProceed }: Pro
         />
       </div>
 
-      {/* 外国人雇用状況 */}
+      {/* 外国人雇用状況（複数選択可） */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           現在の外国人雇用状況 <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <p className="text-xs text-gray-400 mb-2">該当するものを全て選択してください</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {([
             { value: 'none', label: 'なし', desc: '外国人雇用未経験' },
-            { value: 'ginou', label: '技能実習生あり', desc: '現在受入れ中' },
-            { value: 'tokutei', label: '特定技能あり', desc: '現在受入れ中' },
-            { value: 'both', label: '両方あり', desc: '実習+特定技能' },
-          ] as const).map(({ value, label, desc }) => (
-            <button
-              key={value}
-              onClick={() => update('foreignStatus', value)}
-              className={`p-4 rounded-lg border-2 text-left transition-all ${
-                data.foreignStatus === value
-                  ? 'border-[#1a2f5e] bg-[#1a2f5e]/5'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="font-medium text-sm">{label}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{desc}</div>
-            </button>
-          ))}
+            { value: 'ginou', label: '技能実習生', desc: '現在受入れ中' },
+            { value: 'tokutei', label: '特定技能', desc: '現在受入れ中' },
+            { value: 'ikusei', label: '育成就労', desc: '現在受入れ中' },
+            { value: 'student', label: '留学生', desc: 'アルバイト等' },
+          ] as const).map(({ value, label, desc }) => {
+            const isSelected = data.foreignStatus.includes(value);
+            const handleClick = () => {
+              if (value === 'none') {
+                // 「なし」を選ぶ→他をクリア
+                update('foreignStatus', ['none']);
+              } else {
+                // 「なし」以外を選ぶ→「なし」を外す
+                const without = data.foreignStatus.filter((v) => v !== 'none' && v !== value);
+                if (isSelected) {
+                  // 外す。全部外れたら「なし」に戻す
+                  update('foreignStatus', without.length > 0 ? without : ['none']);
+                } else {
+                  update('foreignStatus', [...without, value]);
+                }
+              }
+            };
+            return (
+              <button
+                key={value}
+                onClick={handleClick}
+                className={`p-4 rounded-lg border-2 text-left transition-all ${
+                  isSelected
+                    ? 'border-[#1a2f5e] bg-[#1a2f5e]/5'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-4 h-4 rounded border-2 flex items-center justify-center text-xs shrink-0 ${
+                    isSelected ? 'bg-[#1a2f5e] border-[#1a2f5e] text-white' : 'border-gray-300'
+                  }`}>
+                    {isSelected && '✓'}
+                  </span>
+                  <div>
+                    <div className="font-medium text-sm">{label}</div>
+                    <div className="text-xs text-gray-500">{desc}</div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
