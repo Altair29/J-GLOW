@@ -445,9 +445,10 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 
 ### 雇用条件書 / 労働条件通知書 (`/business/tools/labor-notice`)
 - **書類種別動的切替**: 特定技能/育成就労→「参考様式第１－６号 雇用条件書」、技能実習→「労働条件通知書」
-- 8言語対応（ja/en/zh/vi/tl/pt/id/th）、5ステップウィザード、入管庁様式準拠
+- 8言語対応（ja/en/zh/vi/id/tl/km/my）、5ステップウィザード、入管庁様式準拠
 - @react-pdf/renderer でクライアントサイドPDF生成（別紙1: 賃金の支払）
 - 在留資格: ikusei / tokutei1 / tokutei2 / ginou_jisshu
+- **ページ構成**: `page.tsx` → `LeadSection`（導入バナー + マーカーアニメーション）+ `LaborNoticeWizard`（5ステップ）
 - **主要機能**:
   - 雇用形態（直接/派遣）・就業場所構造化（事業所名・住所・電話）
   - 育成就労転籍制限条項（制限期間・条件・自発的転籍条件、標準文挿入）
@@ -456,7 +457,9 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
   - 社会保険6項目（雇用・健康・厚生年金・労災・国民年金・国民健康）
   - 年間休日日数・6か月未満有給休暇・健診年月形式
   - 日付クロスバリデーション（交付日≤契約開始、入国日≤契約開始、開始<終了）
+  - 賃金締切日・支払日の表示: 全8言語対応（`formatCutoffDay`/`formatPayDay`）
 - **型定義・定数**: `types.ts` に集約（`getDocumentTitle()`, `validateDates()`, `VISA_CONFIGS`, `DISPATCH_ALLOWED_SECTORS`）
+- **分野**: 19分野（製造業は「工業製品製造業」名称）
 
 ### 現場指示書ビルダー (`/business/existing-users/connect/templates`)
 - 6言語 (ja, vi, id, en, my, zh)、7業種フィルタ
