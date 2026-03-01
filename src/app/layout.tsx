@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Geist, Geist_Mono, Noto_Sans_JP, Space_Mono } from 'next/font/google';
+import { ActivityLogProvider } from '@/components/ActivityLogProvider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -41,7 +43,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} ${spaceMono.variable} antialiased`}
       >
-        {children}
+        <ActivityLogProvider>{children}</ActivityLogProvider>
+        <GoogleAnalytics gaId="G-K3J8QS3EQ3" />
       </body>
     </html>
   );

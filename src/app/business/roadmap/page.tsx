@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import RoadmapLanding from './RoadmapLanding';
 
@@ -57,5 +58,9 @@ export default async function RoadmapPage() {
     tags: tagMap[p.id] || [],
   }));
 
-  return <RoadmapLanding posts={serializedPosts} />;
+  return (
+    <Suspense>
+      <RoadmapLanding posts={serializedPosts} />
+    </Suspense>
+  );
 }

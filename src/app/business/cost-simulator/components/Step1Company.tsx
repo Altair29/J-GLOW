@@ -1,16 +1,18 @@
 'use client';
 
-import type { Step1Data } from './CostSimulatorShell';
-import { INDUSTRIES } from './CostSimulatorShell';
+import type { Step1Data } from '../lib/types';
+import { INDUSTRIES } from '../lib/constants';
+import { IndustryButtonGrid } from './IndustryButtonGrid';
 
 type Props = {
   data: Step1Data;
   onChange: (data: Step1Data) => void;
   onNext: () => void;
+  onBack: () => void;
   canProceed: boolean;
 };
 
-export function Step1Company({ data, onChange, onNext, canProceed }: Props) {
+export function Step1Company({ data, onChange, onNext, onBack, canProceed }: Props) {
   const update = <K extends keyof Step1Data>(key: K, value: Step1Data[K]) =>
     onChange({ ...data, [key]: value });
 
@@ -36,21 +38,15 @@ export function Step1Company({ data, onChange, onNext, canProceed }: Props) {
         <p className="text-xs text-gray-400 mt-1">提案書モード時に表紙へ表示されます</p>
       </div>
 
-      {/* 業種 */}
+      {/* 業種 — IndustryButtonGrid */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           業種 <span className="text-red-500">*</span>
         </label>
-        <select
-          value={data.industry}
-          onChange={(e) => update('industry', e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a2f5e]/20 focus:border-[#1a2f5e] outline-none bg-white"
-        >
-          <option value="">選択してください</option>
-          {INDUSTRIES.map((ind) => (
-            <option key={ind} value={ind}>{ind}</option>
-          ))}
-        </select>
+        <IndustryButtonGrid
+          selected={data.industry}
+          onChange={(v) => update('industry', v)}
+        />
       </div>
 
       {/* 外国人雇用状況 */}
@@ -58,11 +54,12 @@ export function Step1Company({ data, onChange, onNext, canProceed }: Props) {
         <label className="block text-sm font-medium text-gray-700 mb-2">
           現在の外国人雇用状況 <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {([
             { value: 'none', label: 'なし', desc: '外国人雇用未経験' },
             { value: 'ginou', label: '技能実習生あり', desc: '現在受入れ中' },
             { value: 'tokutei', label: '特定技能あり', desc: '現在受入れ中' },
+            { value: 'both', label: '両方あり', desc: '実習+特定技能' },
           ] as const).map(({ value, label, desc }) => (
             <button
               key={value}
@@ -115,8 +112,75 @@ export function Step1Company({ data, onChange, onNext, canProceed }: Props) {
         </p>
       </div>
 
-      {/* 次へボタン */}
-      <div className="flex justify-end pt-4">
+      {/* v2: もっと詳しく入力する */}
+      <details className="border border-gray-200 rounded-lg">
+        <summary className="px-4 py-3 text-sm font-medium text-gray-600 cursor-pointer hover:bg-gray-50">
+          もっと詳しく入力する
+        </summary>
+        <div className="px-4 pb-4 space-y-4 border-t border-gray-100 pt-4">
+          {/* 過去離職率 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              外国人スタッフの過去離職率
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {([
+                { value: 'low', label: '10%未満', desc: '離職がほぼない' },
+                { value: 'mid', label: '10〜30%', desc: '業界平均程度' },
+                { value: 'high', label: '30%超', desc: '課題を感じている' },
+              ] as const).map(({ value, label, desc }) => (
+                <button
+                  key={value}
+                  onClick={() => update('pastTurnoverRate', data.pastTurnoverRate === value ? null : value)}
+                  className={`p-3 rounded-lg border-2 text-left transition-all text-sm ${
+                    data.pastTurnoverRate === value
+                      ? 'border-[#1a2f5e] bg-[#1a2f5e]/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-medium">{label}</div>
+                  <div className="text-xs text-gray-500">{desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 初期予算 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              採用にかけられる初期予算（1人あたり）
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {([
+                { value: 'under50', label: '〜50万円' },
+                { value: '50to150', label: '50〜150万円' },
+                { value: 'unlimited', label: '制限なし' },
+              ] as const).map(({ value, label }) => (
+                <button
+                  key={value}
+                  onClick={() => update('initialBudget', data.initialBudget === value ? null : value)}
+                  className={`p-3 rounded-lg border-2 text-center transition-all text-sm font-medium ${
+                    data.initialBudget === value
+                      ? 'border-[#1a2f5e] bg-[#1a2f5e]/5 text-[#1a2f5e]'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </details>
+
+      {/* ナビボタン */}
+      <div className="flex justify-between pt-4">
+        <button
+          onClick={onBack}
+          className="px-6 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          &larr; 戻る
+        </button>
         <button
           onClick={onNext}
           disabled={!canProceed}
@@ -126,7 +190,7 @@ export function Step1Company({ data, onChange, onNext, canProceed }: Props) {
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
         >
-          次へ →
+          次へ &rarr;
         </button>
       </div>
     </div>

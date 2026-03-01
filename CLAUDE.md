@@ -1,1648 +1,462 @@
-# J-GLOW Development Log
+# J-GLOW — プロジェクト構成リファレンス
 
-## 2026-02-19
+## デプロイ情報
 
-### 11カ国語多言語対応（/worker セクション）
+- **Vercel**: https://j-glow.vercel.app
+- **Supabase**: tckwizynvfiqezjrcedk（ap-southeast-1）
+- **デプロイ方法**: `vercel deploy --prod`（CLIログイン済み環境）
+- **author_id**（記事投入用）: `7bb78a5a-da02-469f-b81c-5d9243b52397`
 
-#### 追加・変更ファイル
-- `src/contexts/LangContext.tsx` — 言語切替コンテキスト（11言語対応）
-- `src/components/worker/LangSelector.tsx` — 言語セレクターUI
-- `src/components/worker/WorkerHeader.tsx` — ヘッダーに言語切替統合
-- `src/components/worker/WorkerHomeClient.tsx` — ワーカーホームのクライアントコンポーネント
-- `src/app/worker/layout.tsx` — LangProvider ラップ追加
-- `src/app/worker/page.tsx` — クライアントコンポーネント分離
-- `src/app/page.tsx` — トップページ更新
-- `src/components/business/BusinessHeader.tsx` — 軽微修正
-- `src/lib/data.ts` — 多言語データ取得関数追加
-- `src/types/database.ts` — 型定義追加
-- `src/hooks/useAuth.ts` — 軽微修正
-- `public/images/hero-top.png` — ヒーロー画像追加
-- `supabase/migrations/00021_worker_multilingual.sql` — 多言語テーブル・初期データ
+---
 
-#### 対応言語（11言語）
-ja, en, zh, vi, tl, pt, id, th, my, ne, km
+## 技術スタック
 
-#### 多言語開発プロトコル（以降の /worker 開発で厳守）
-1. **No Hardcoded Strings** — テキスト直書き禁止。辞書JSONまたはSupabase翻訳テーブルから取得
-2. **JP-First** — 日本語定義 → Claudeが10言語一括翻訳
-3. **可変長テキスト対応** — Flexbox/Gridで柔軟レイアウト（ビルマ語・ネパール語等の長文に対応）
+- Next.js (App Router) + TypeScript + Tailwind CSS v4
+- Supabase（Auth + PostgreSQL + RLS）
+- @react-pdf/renderer + file-saver（PDF生成）
+- recharts（グラフ）
+- framer-motion（アニメーション）
+- nanoid（共有トークン生成）
+- rehype-raw + remark-gfm（Markdown/HTML記事レンダリング）
+
+---
+
+## ディレクトリ構成
+
+```
+src/
+├─ app/                              # Next.js App Router（71 page.tsx）
+│  ├─ (auth)/                        # 認証（共通login + ロール別register）
+│  │  ├─ login/
+│  │  └─ register/{business,worker}/
+│  ├─ contact/                       # お問い合わせ（スタンドアロン、Header/Footer なし）
+│  ├─ business/                      # 企業向け [LAYOUT: BusinessHeader + Footer]
+│  │  ├─ cost-simulator/             # コストシミュレーター v2（DB駆動・2モード）
+│  │  │  ├─ lib/                     # types.ts, constants.ts, calculate.ts
+│  │  │  └─ components/              # Shell, LandingGate, Step0-4, Quick*, Result*, PDF等（20+）
+│  │  ├─ hiring-guide/               # 採用完全ガイド + サブ3本
+│  │  │  ├─ labor-shortage/
+│  │  │  ├─ trends/
+│  │  │  ├─ honest-guide/
+│  │  │  └─ cost-simulator/          # → /business/cost-simulator にリダイレクト
+│  │  ├─ roadmap/                    # 育成就労ロードマップ
+│  │  ├─ articles/                   # 19分野ガイド + [slug] + industry-overview
+│  │  ├─ existing-users/             # 外国人スタッフ活用ハブ
+│  │  │  ├─ ladder/{checker,[slug]}  # キャリアラダー + 移行チェッカー
+│  │  │  ├─ continue/[slug]          # 続ける・判断する記事
+│  │  │  └─ connect/templates        # 現場指示書ビルダー
+│  │  ├─ tools/labor-notice/         # 労働条件通知書生成
+│  │  │  ├─ components/Step1-5       # ウィザードステップ
+│  │  │  └─ pdf/                     # PDF生成コンポーネント
+│  │  ├─ simulation/                 # シミュレーションゲーム
+│  │  ├─ diagnosis/                  # 適正診断 + [sessionId] + report/[reportId]
+│  │  ├─ blog/[slug]                 # ブログ記事
+│  │  ├─ subsidies/[slug]            # 助成金
+│  │  ├─ whitepapers/[slug]          # ホワイトペーパー
+│  │  ├─ trends/                     # トレンド情報
+│  │  ├─ news/[articleId]            # ニュース（スタブ）
+│  │  ├─ partners/                   # パートナー検索（5種別×3ティア）
+│  │  │  └─ apply/{,complete}        # パートナー申請フォーム + 完了
+│  │  ├─ contact/                    # お問い合わせフォーム
+│  │  ├─ search/                     # サイト内統合検索
+│  │  ├─ {home,onboarding,mypage}/   # 認証後ページ
+│  │  └─ ikusei/                     # 育成就労
+│  ├─ worker/                        # 労働者向け [LAYOUT: WorkerHeader + LangProvider]
+│  │  ├─ {home,mypage}/              # 認証後ページ
+│  │  └─ topics/[topicSlug]          # 多言語トピック
+│  ├─ admin/                         # 管理画面CMS [LAYOUT: Sidebar]（15セクション）
+│  │  ├─ settings/{business,worker}/ # テーマ・ナビ・コンテンツ設定
+│  │  ├─ blog/                       # ブログ管理
+│  │  ├─ diagnosis/                  # 診断管理
+│  │  ├─ simulation/                 # シミュレーション管理
+│  │  ├─ simulator/                  # コストシミュレーター設定
+│  │  ├─ {news,translations,whitepapers,subsidies,trends}/
+│  │  ├─ partners/                   # パートナー管理
+│  │  ├─ contact/                    # 問い合わせ管理
+│  │  └─ notifications/              # 通知管理
+│  └─ privacy-policy/                # PP（ドラフト）
+├─ components/
+│  ├─ business/                      # 企業向けUI
+│  │  ├─ BusinessHeader.tsx          # ソリッドネイビーヘッダー + UserArea
+│  │  ├─ cost-simulator/             # 旧コストシミュレーター（デッドコード）
+│  │  ├─ hiring-guide/               # 採用ガイド24コンポーネント
+│  │  ├─ roadmap/                    # ロードマップ4コンポーネント
+│  │  ├─ partners/                   # パートナー検索UI（Phase 3）
+│  │  │  ├─ PartnersSearch.tsx       # メイン検索（useMemoフィルタリング・3ティア表示）
+│  │  │  ├─ FilterPanel.tsx          # フィルターパネル（種別連動ビザ切替）
+│  │  │  ├─ PlatinumCard.tsx         # プラチナカード（design.jsx移植・インラインスタイル）
+│  │  │  ├─ GoldCard.tsx             # ゴールドカード
+│  │  │  ├─ RegularCard.tsx          # レギュラーカード
+│  │  │  ├─ TierBadge.tsx            # ティアバッジ（PLATINUM/GOLD/MEMBER）
+│  │  │  ├─ TypeBadge.tsx            # 種別バッジ（5種別アイコン+ラベル）
+│  │  │  └─ ApplicationForm.tsx      # 掲載申請フォーム（5ステップ）
+│  │  ├─ PartnerDirectory.tsx        # 旧パートナー一覧（Legacy型使用）
+│  │  ├─ MigrationChecker.tsx        # 移行チェッカー全ロジック
+│  │  ├─ TemplateBuilder.tsx         # 現場指示書ビルダー v4
+│  │  └─ ArticleContent.tsx          # Markdownレンダラー
+│  ├─ worker/                        # ワーカー向けUI
+│  ├─ admin/                         # 管理画面コンポーネント
+│  ├─ shared/                        # 汎用UI（Button, Input, Modal, Badge等）
+│  ├─ ActivityLogProvider.tsx        # ページ閲覧ログ（layout.tsxで使用）
+│  └─ common/Footer.tsx              # 共通フッター（PP + お問い合わせリンク）
+├─ lib/
+│  ├─ supabase/{client,server,middleware}.ts
+│  ├─ utils/routing.ts               # getHomePath()
+│  ├─ translations/labor-notice.json  # 8言語翻訳辞書
+│  ├─ templateData.ts                # 現場指示書データ（6言語）
+│  ├─ hiring-guide-data.ts           # 採用ガイドデータ
+│  ├─ partners-config.ts             # パートナー設定（TIER_CONFIG, PARTNER_TYPE_CONFIG, TYPE_VISA_OPTIONS, FORM_FIELDS）
+│  ├─ analytics/useActivityLog.ts    # 行動ログフック（page_view イベント）
+│  └─ constants.ts, data.ts
+├─ hooks/useAuth.ts                  # ハイブリッド認証
+├─ contexts/LangContext.tsx          # 11言語切替
+└─ types/database.ts                 # 全型定義
+public/
+├─ fonts/                            # Noto Sans 5系統
+├─ images/                           # ヒーロー・カード・SVG図解
+│  └─ tools/                         # ツールスクリーンショット（6枚）
+└─ downloads/                        # PDF・Excel
+supabase/migrations/                 # 00001〜00037（38ファイル）
+scripts/                             # DB投入スクリプト
+```
+
+---
+
+## 言語対応方針
+
+| セクション | 言語 | ルール |
+|---|---|---|
+| /worker | 11言語 (ja, en, zh, vi, tl, pt, id, th, my, ne, km) | テキスト直書き禁止・辞書JSON必須 |
+| /business | 日本語のみ | テキスト直書きOK |
+| / (トップ) | 日本語のみ | テキスト直書きOK |
+
+### 多言語開発プロトコル（/worker 側で厳守）
+1. **No Hardcoded Strings** — 辞書JSONまたはSupabase翻訳テーブルから取得
+2. **JP-First** — 日本語定義 → 10言語一括翻訳
+3. **可変長テキスト対応** — Flexbox/Gridで柔軟レイアウト
 4. **フォントフォールバック** — 各国語フォントのCSS共通スタック
 5. **管理者修正導線** — 翻訳データは疎結合、管理パネルから手動修正可能
 
 ---
 
-### 認証・DBシステム再構築
+## デザインシステム
 
-#### マイグレーション `00022_auth_system_rebuild.sql`
-- **profiles リファクタリング**: `organization`/`email_domain` 削除、`plan`(free/premium)/`plan_expires_at`/`is_active`/`metadata` 追加
-- **business_profiles**: 法人プロフィール（company_name, contact_name, business_email, email_domain 等）
-- **worker_profiles**: ワーカープロフィール（nationality, residence_status）
-- **user_settings**: ユーザー設定（preferences jsonb）
-- **user_scores**: スコア履歴（category: diagnosis/simulation/jp_test）
-- **bookmarks**: ブックマーク（content_type: article/job/resource）
-- **billing_history**: 課金履歴（status: paid/failed/refunded）
-- **handle_new_user() トリガー更新**: admin不可、display_name優先順位（full_name→name→email）、user_settings同時作成、is_active=false
-- **blocked_email_domains 追加**: live.com, msn.com, googlemail.com
+- **プライマリ**: ネイビー `#1a2f5e` (`var(--biz-primary)`)
+- **アクセント**: ゴールド `#c9a84c` (`var(--biz-accent)`)
+- **セクション背景交互**: `#f8fafc` ↔ `#ffffff`
+- **セクション区切り**: `border-top: 1px solid #e2e8f0`
+- **外部リンク**: `target="_blank" rel="noopener noreferrer"`
 
-#### 型定義 `src/types/database.ts`
-- `Role`: `'admin' | 'business' | 'worker'`（editor 削除）
-- 新型: `BusinessProfile`, `WorkerProfile`, `UserSettings`, `UserScore`, `Bookmark`, `BillingHistory`, `Plan`, `ScoreCategory`, `BookmarkContentType`, `BillingStatus`
+---
 
-#### ルーティング `src/lib/utils/routing.ts`
-- `getHomePath(role)`: admin→`/admin`, business→`/business/home`, worker→`/worker/home`
-- `useAuth.ts` と `middleware.ts` の両方から共通利用
+## サイト構成マップ
 
-#### ミドルウェア `src/lib/supabase/middleware.ts`
+### 公開ページ（ゲストアクセス可）
+
+| パス | 説明 |
+|---|---|
+| `/` | トップ — 企業向け/働く方向けの2分岐ポータル（DB駆動） |
+| `/business` | 企業向けランディング（ヒーロー→数字→理由→流れ→3本柱→ツール→記事） |
+| `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
+| `/business/diagnosis` | 外国人雇用 適正診断 |
+| `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・3ユーザー種別・PDF提案書） |
+| `/business/hiring-guide` | 採用完全ガイド（7ステップ） |
+| `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
+| `/business/hiring-guide/trends` | 採用動向サブページ |
+| `/business/hiring-guide/honest-guide` | 正直ガイドサブページ |
+| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン） |
+| `/business/articles` | 分野別外国人採用ガイド（19分野） |
+| `/business/articles/[slug]` | 記事詳細（Markdown/HTML自動判別） |
+| `/business/existing-users` | 外国人スタッフ活用ハブ |
+| `/business/existing-users/ladder` | キャリアラダー記事セクション（Stage 1〜4） |
+| `/business/existing-users/ladder/[slug]` | キャリアラダー記事詳細 |
+| `/business/existing-users/ladder/checker` | 特定技能移行チェッカー（5問ウィザード） |
+| `/business/existing-users/connect/templates` | 現場指示書ビルダー v4（6言語対応） |
+| `/business/existing-users/continue/[slug]` | 「続ける・判断する」記事（フルHTML対応） |
+| `/business/blog/[slug]` | ブログ記事詳細（同一記事が複数ルートからアクセス可能） |
+| `/business/tools/labor-notice` | 労働条件通知書生成ツール（8言語・5ステップ・PDF出力） |
+| `/business/subsidies` | 助成金情報 |
+| `/business/partners` | パートナーディレクトリ（5種別×3ティア） |
+| `/business/partners/apply` | パートナー掲載申請フォーム |
+| `/business/contact` | お問い合わせフォーム |
+| `/business/search` | サイト内統合検索（ツール・ガイド・記事・パートナー） |
+| `/business/trends` | トレンド情報 |
+| `/business/articles/career-ikusei-tokutei` | 育成就労→特定技能キャリア記事 |
+| `/business/articles/fair-wage-guide` | 公正な賃金ガイド記事 |
+| `/business/articles/why-workers-leave` | 離職原因分析記事 |
+| `/contact` | お問い合わせ（スタンドアロン、種別任意・名前/メール/内容必須） |
+| `/privacy-policy` | プライバシーポリシー（現在ドラフト版） |
+| `/worker` | 外国人向けランディング |
+| `/login` | 共通ログイン |
+| `/register/business` | 企業向け登録 |
+
+### 認証必須ページ
+
+| パス | ロール | 説明 |
+|---|---|---|
+| `/business/mypage` | business | マイページ（スコア・ブックマーク・通知） |
+| `/business/onboarding` | business | オンボーディング（business_type + 会社情報） |
+| `/business/home` | business | リダイレクトハブ（→ onboarding or mypage） |
+| `/worker/mypage` | worker | ワーカーマイページ |
+| `/worker/home` | worker | ワーカーホーム |
+| `/admin/*` | admin | 管理画面（CMS） |
+
+---
+
+## 認証・認可
+
+### ロール
+`'admin' | 'business' | 'worker'`
+
+### 3層アクセスモデル
+- **guest**: 未登録。ほとんどのツール・コンテンツを閲覧可能
+- **free**: 無料会員。ほぼ全機能
+- **premium**: 有料会員（将来拡充）
+
+### ミドルウェア (`src/lib/supabase/middleware.ts`)
 - `/admin/*` → role=admin 必須
-- `/business/*` → role=business 必須（`/business` 自体はランディング公開）
-- `/worker/*` → role=worker 必須（`/worker` 自体はランディング公開）
-- 判定は `startsWith('/business/')` でサブパスのみガード
-- 未認証時は共通 `/login` にリダイレクト（認証ルートは `/(auth)/*` に集約）
-
-#### RLS設計
-- 全テーブル共通: `is_admin()` (SECURITY DEFINER) で admin 全件操作可
-- business_profiles / worker_profiles: 本人 SELECT/UPDATE
-- user_settings / bookmarks: 本人全操作
-- user_scores: 本人 SELECT/INSERT
-- billing_history: 本人 SELECT のみ
-
-#### 3層アクセスモデル
-- guest（未登録）: 触りのみ
-- free（無料会員）: ほぼ全機能
-- premium（有料会員）: 将来の拡充サービス
-
-#### デプロイ情報
-- Vercel: https://j-glow.vercel.app
-- Supabase: tckwizynvfiqezjrcedk（ap-southeast-1）
-- デプロイ方法: ターミナルで `vercel deploy --prod`（CLIログイン済み環境から）
-
-#### Supabase手動設定（要確認）
-- Authentication → Site URL を本番URLに設定
-- Authentication → Redirect URLs に `/callback`, `/worker/auth/callback`, `/business/auth/callback` を追加
-- メール認証有効化（is_active連動）
-
-### トップページUI改善
-- 「For Workers」→「For Foreign Residents」に変更
-- ヒーローパネルを中央寄せ
-- CTAボタンのサイズ拡大（px-8 py-4 text-base）
-
----
-
-### コード品質改善
-
-#### getHomePath 共通化
-- `src/lib/utils/routing.ts` に切り出し
-- `src/hooks/useAuth.ts` と `src/lib/supabase/middleware.ts` の両方から import（重複解消）
-
-#### /business/home・/worker/home ページ追加
-- `src/app/business/home/page.tsx` — 企業ホーム（準備中）
-- `src/app/worker/home/page.tsx` — ワーカーホーム（準備中）
-- ログイン後 `getHomePath` による遷移先の404を解消
-
-#### 言語リスト統一
-- 正しい11言語: ja, en, zh, vi, tl, pt, id, th, my, ne, km
-- `src/lib/constants.ts`, `src/contexts/LangContext.tsx`, CLAUDE.md を統一
-- mn（モンゴル語）・ko（韓国語）を削除、pt（ポルトガル語）を追加
-
-#### 未使用ファイル削除
-- `src/hooks/useTranslation.ts` — 未使用（`LangContext` + `useLang` が実使用系統）
-- `src/lib/settings.ts` — 未使用（`useSettings.ts` がクライアント側で直接取得）
-
-#### ミドルウェア修正
-- PUBLIC_PATHS から存在しないルート（`/business/login` 等）を除去
-- 未認証時のリダイレクト先を共通 `/login` に統一（`/business/login`, `/worker/login` は存在しない）
-
----
-
-### 外国人雇用シミュレーション（/business/simulation）
-
-#### DB テーブル（マイグレーション `00023`, `00024`）
-- **simulation_cards**: シナリオカード（turn_order, situation, yes_label, no_label, is_active）
-- **simulation_effects**: カード別の選択効果（card_id FK, choice yes/no, gauge, delta, 遅延ペナルティ対応）
-- **simulation_config**: ゲーム設定（key/value: initial_gauges, total_turns, guest_max_turns）
-- RLS: SELECT は全員、ALL は `is_admin()` のみ
-- シードデータ: 20枚のカード（`00024` で投入、`ON CONFLICT (key) DO NOTHING` 付き）
-
-#### 型定義 `src/types/database.ts`
-- `GaugeType`: `'operation' | 'morale' | 'compliance'`
-- `SimulationCard`, `SimulationEffect`, `SimulationConfig`, `SimulationCardWithEffects`
-
-#### ゲーム画面 `src/app/business/simulation/`
-- `page.tsx` — サーバーコンポーネント（cards + config + user認証を取得）
-- `SimulationGame.tsx` — クライアントコンポーネント（ゲーム本体）
-
-#### SimulationGame.tsx の構成
-- **イントロ画面**: 背景画像(`/images/3.png`) + オーバーレイ + framer-motion fadeIn、「シミュレーションを始める」ボタンでゲーム開始
-- **ゲーム画面**: ボタンのみ（YES/NO）で選択、framer-motionのドラッグは削除済み
-- **ゲージ**: operation（稼働力）, morale（士気）, compliance（コンプライアンス）— CSS transitionでアニメーション
-- **遅延ペナルティ**: 特定ターンで発動するペナルティ（DelayAlertモーダルで通知）
-- **ゲームオーバー/クリア画面**: 最終ゲージ表示、総合評価（S/A/B/C）、結果保存・実地監査ボタン
-- **ゲスト対応**: 全問プレイ可、「結果を保存」ボタンで RegisterModal（登録/ログイン誘導）
-- **重複カード対策**: `turn_order` でソート後、同一 `turn_order` の重複を排除するフィルタ付き
-
-#### 管理画面 `src/app/admin/simulation/`
-- `page.tsx` — サーバーコンポーネント
-- `src/components/admin/SimulationCardAdmin.tsx` — カード・エフェクト・設定のCRUD
-
-#### ミドルウェア `src/lib/supabase/middleware.ts`
-- `/business/simulation` はゲストアクセス可（AUTH_REQUIRED_PATHS に含まれない）
-- AUTH_REQUIRED_PATHS: `/business/mypage`, `/worker/mypage`, `/admin` のみ
-
-#### 既知の注意点
-- シード SQL（`00024`）を複数回実行すると同一 turn_order のカードが重複する（コード側で排除済みだが、DB側も `DELETE` で清掃推奨）
-- framer-motion はイントロ画面のアニメーションのみで使用（ドラッグ/スワイプは削除済み）
-
----
-
-### 管理画面（CMS）実装状況
-
-#### ページ一覧 `src/app/admin/`
-
-| ページ | パス | コンポーネント | 完成度 |
-|---|---|---|---|
-| ダッシュボード | `/admin` | DB駆動カードグリッド | ✅ |
-| サイドバー | `layout.tsx` | DB駆動ナビ | ✅ |
-| グローバル設定 | `/admin/settings` | ThemeEditor | ✅ |
-| Business設定 | `/admin/settings/business` | ThemeEditor + NavigationEditor + ContentBlockEditor | ✅ |
-| Worker設定 | `/admin/settings/worker` | 同上 | ✅ |
-| ブログ | `/admin/blog` | BlogAdmin（一覧+Markdownエディタ+タグ+カテゴリ+ピン+AIカバー画像） | ✅ |
-| ニュース | `/admin/news` | NewsAdmin（3タブ: ソースCRUD / 記事閲覧+ピン / 独自記事閲覧） | ⚠️ |
-| 診断 | `/admin/diagnosis` | DiagnosisAdmin（カテゴリ+質問フルCRUD） | ✅ |
-| 翻訳 | `/admin/translations` | TranslationsAdmin（インライン編集+キャッシュクリア） | ✅ |
-| ホワイトペーパー | `/admin/whitepapers` | WhitepapersAdmin（フルCRUD、Markdown本文、DL URL） | ✅ |
-| 助成金 | `/admin/subsidies` | SubsidiesAdmin（フルCRUD、ステータス/金額/締切） | ✅ |
-| トレンド | `/admin/trends` | TrendsAdmin（3タブ: ソース / ウィジェット / インサイト記事） | ✅ |
-| シミュレーション | `/admin/simulation` | SimulationCardAdmin（カード+エフェクト+設定CRUD） | ✅ |
-
-#### コンポーネント `src/components/admin/`
-- `ThemeEditor.tsx` — ライブCSS変数エディタ（カラーピッカー+hex入力）
-- `ContentBlockEditor.tsx` — テキスト/コンテンツブロック編集
-- `NavigationEditor.tsx` — ナビリンク編集（label, href, icon, sort_order, is_active）
-- `SimulationCardAdmin.tsx` — シミュレーションカード・エフェクト・設定のCRUD（**現行使用**）
-- `SimulationAdmin.tsx` — **デッドコード**（旧 `simulation_params` 用、削除推奨）
-- `DiagnosisAdmin.tsx` — 診断カテゴリ+質問CRUD
-- `NewsAdmin.tsx` — RSSソース+記事ピン+独自記事（読み取り専用）
-- `TranslationsAdmin.tsx` — ui_translationsインライン編集+キャッシュクリア
-- `WhitepapersAdmin.tsx` — ホワイトペーパーCRUD
-- `SubsidiesAdmin.tsx` — 助成金CRUD
-- `TrendsAdmin.tsx` — トレンドソース+ウィジェット+インサイト記事
-- `blog/BlogAdmin.tsx` — ブログ管理シェル（一覧/エディタ切替）
-- `blog/BlogPostList.tsx` — フィルタ付き記事一覧（ステータス/ピン/削除）
-- `blog/BlogPostEditor.tsx` — Markdownエディタ（タグ、カテゴリ、AIカバー画像生成）
-- `blog/MarkdownPreview.tsx` — ReactMarkdown + remark-gfm プレビュー（公開ページでも共用）
-
-#### Articles関連テーブル（3系統）
-
-| 系統 | テーブル | 型名 | 管理画面の状態 |
-|---|---|---|---|
-| ブログ記事 | `blog_posts` + `blog_tags` + `blog_post_tags` + `blog_categories` | `BlogPost`, `BlogTag`, `BlogPostTag`, `BlogCategory` | ✅ フルCRUD |
-| ニュース記事 | `news_articles` + `news_sources` | `NewsArticle`, `NewsSource` | ⚠️ 閲覧+ピンのみ（編集不可） |
-| 独自記事 | `editorial_articles` | `EditorialArticle` | ❌ 読み取り専用（作成・編集UIなし） |
-
-#### 既知のギャップ（TODO）
-1. **`editorial_articles` の作成・編集UIがない** — NewsAdmin の3タブ目は読み取り専用
-2. **RSSスクレイパーが未実装** — `/api/news/scrape/route.ts` は TODO プレースホルダー
-3. **`/api/blog/generate-cover` が存在しない** — BlogPostEditor が参照しているがAPIルート未作成
-4. **`SimulationAdmin.tsx` がデッドコード** — 旧テーブル用、削除推奨
-5. **ニュース記事詳細ページがスタブ** — `/business/news/[articleId]/page.tsx` は「開発中」表示
-
----
-
-## 2026-02-23
-
-### /business トップページ全面リニューアル
-
-#### ページ構成 `src/app/business/page.tsx`
-ヒーロー → 数字セクション → 選ばれる理由 → コンサルティングの流れ → 3本柱カード → サポートツール → 深掘り記事 → フッター
-
-#### ヒーローセクション
-- 大見出し:「あなたの会社の外国人雇用を、もう一段階先へ。」
-- 中見出し:「グローバル人材の熱量(Glow)を、日本の新たな成長力(Grow)に。」
-- 英語サブ:「Japan and Global: Talent Glowing and Growing Together」（最小・控えめ）
-- 背景画像: `/images/hero-1.png`、テーマカラーはDB(`theme_config`)から取得
-
-#### 数字で語るセクション
-- 背景 `#f8fafc`、数字色 `#1a2f5e`（ネイビー）
-- 230万人 / 60.5% / 1,100万人
-
-#### 選ばれる理由セクション
-- 背景 `#ffffff`、glassカード3枚（制度情報 / ツール / 伴走型サポート）
-- リンクなし（クリッカブルにしない）、コンパクトサイズ
-
-#### コンサルティングの流れセクション
-- 背景 `#f8fafc`、3ステップ（現状診断 → 課題特定 → 実行支援）
-- 矢印付き、ステップラベルはゴールド `#c9a84c`
-
-#### 3本柱カード（メインコンテンツ）
-- 見出し:「あなたの状況に合わせてお選びください」
-- 背景 `#ffffff`、各カード上部にカバー画像（200px, object-cover, hover時ズーム）
-- カードデータ（TSXハードコード）:
-
-| カード | 画像 | リンク | 外部 |
-|---|---|---|---|
-| はじめての外国人雇用 | `/images/card-hiring.png` | `https://first-foreign-hiring-guide.vercel.app/business/hiring-guide` | ✅ |
-| 外国人スタッフをもっと活かすために | `/images/card-existing.png` | `/business/existing-users` | ❌ |
-| 育成就労ロードマップ | `/images/card-roadmap.png` | `https://html-lake-rho.vercel.app/` | ✅ |
-
-#### サポートツール
-- 背景 `#f8fafc`
-
-| ツール | リンク | 状態 |
-|---|---|---|
-| 外国人雇用コストシミュレーター | `https://costsimulation.vercel.app/` | 外部リンク |
-| 育成就労・特定技能 全19分野 解説 | `https://html-lake-rho.vercel.app/industry` | 外部リンク |
-| 助成金活用 | — | グレーアウト（準備中） |
-
-#### 深掘り記事
-- 背景 `#ffffff`、3枚の外部リンクカード（すべて `target="_blank"`）
-- 日本の労働力不足の現実 / 外国人採用の最新動向 / 外国人雇用の正直ガイド
-- リンク先: `https://first-foreign-hiring-guide.vercel.app/business/hiring-guide/*`
-
-#### セクション共通デザインルール
-- 背景色は交互: `#f8fafc` → `#ffffff` → `#f8fafc` → ...
-- 各セクション上部に `border-top: 1px solid #e2e8f0`
-- 外部リンクはすべて `target="_blank" rel="noopener noreferrer"`
-
-#### 画像ファイル
-- `public/images/card-hiring.png` — `picture/4.png` からコピー
-- `public/images/card-existing.png` — `picture/8.png` からコピー
-- `public/images/card-roadmap.png` — `picture/11.png` からコピー
-
----
-
-### ナビゲーション修正
-
-#### BusinessHeader.tsx `src/components/business/BusinessHeader.tsx`
-- **主要機能メニュー** (`featureHrefs`): `/business/simulation`, `/business/diagnosis`, `/business/ikusei`, `/business/existing-users`
-- **リソースメニュー** (`resourceHrefs`): `/business/subsidies`, `/business/trends`
-- ホワイトペーパー (`/business/whitepapers`) をリソースから削除
-
-#### マイグレーション `00028_update_business_navigation.sql`
-- `navigation_items` の `/business/whitepapers` を `is_active=false` に
-- `/business/existing-users` を `business_header` セクションに追加
-- **Supabase SQL Editorで要実行**
-
----
-
-### フッター修正 `src/components/common/Footer.tsx`
-
-#### 構成変更
-- 2カラム構成（ブランド説明 + 企業の方リンク）
-- **働く方列を完全削除**
-- **クロスリンク（「外国人労働者の方はこちら →」）を削除**
-- リンクはハードコード（DB navigation_items に依存しない）
-
-#### 企業の方リンク一覧
-| ラベル | リンク | 外部 |
-|---|---|---|
-| 企業向けトップ | `/business` | ❌ |
-| はじめての外国人雇用 | `https://first-foreign-hiring-guide.vercel.app/business/hiring-guide` | ✅ |
-| 外国人スタッフをもっと活かすために | `/business/existing-users` | ❌ |
-| 育成就労ロードマップ | `https://html-lake-rho.vercel.app/` | ✅ |
-| 外国人雇用コストシミュレーター | `https://costsimulation.vercel.app/` | ✅ |
-| 外国人雇用の無料適正診断 | `/business/diagnosis` | ❌ |
-
----
-
-### トップページ（/）`src/app/page.tsx`
-- gitコミット済みの元の状態を維持（`git checkout HEAD` で復元済み）
-- 企業向け（/business）と働く方向け（/worker）の2分岐ポータル
-- DB駆動: `content_blocks`(page='top') + `theme_config`(business/worker/global)
-
----
-
-### マイグレーション実行済み
-- `00027_cleanup_top_page_content.sql` — content_blocks の旧トップページデータ整理
-- `00028_update_business_navigation.sql` — ナビゲーション更新（ホワイトペーパー非表示 + existing-users追加）
-
----
-
-## 言語対応方針
-- /worker 側：11言語対応済み（テキスト直書き禁止・辞書JSON必須）
-- /business 側：日本語のみ（テキスト直書きOK）
-- /トップページ：日本語のみ
-
----
-
-## 2026-02-23（追記）
-
-### 特定技能移行チェッカー `/business/existing-users/ladder/checker`
-
-#### 概要
-5問のウィザード形式で外国人スタッフの在留資格・業種・経験を診断し、移行ロードマップと企業ToDoを生成するツール。
-
-#### ファイル構成
-- `src/app/business/existing-users/ladder/checker/page.tsx` — サーバーコンポーネント（metadata + MigrationChecker呼び出し）
-- `src/components/business/MigrationChecker.tsx` — クライアントコンポーネント（全ロジック・UIを内包、DB依存なし）
-
-#### STEP構成（動的5問 or 4問）
-
-| STEP | 質問 | 選択肢数 | 備考 |
-|---|---|---|---|
-| 1 | 業種 | 8 | グリッド表示 |
-| 2 | 在留資格 | 7 | `VisaPath`判定（ikusei/tokutei1/other） |
-| 3 | 在日年数 | 4 | リスト表示 |
-| 4 | 日本語レベル | 5 | リスト表示 |
-| 5 | 試験準備状況 | 4 | **STEP2の回答で動的に変化（3パターン）** |
-
-#### STEP5の動的パターン（`Step5Pattern`）
-
-```typescript
-type Step5Pattern = 'ikusei' | 'tokutei1' | 'skip';
+- `/business/*` サブパス → role=business 必須（`/business` 自体は公開）
+- `/worker/*` サブパス → role=worker 必須（`/worker` 自体は公開）
+- AUTH_REQUIRED_PATHS: `/business/mypage`, `/business/onboarding`, `/worker/mypage`, `/admin`
+
+### 認証フロー
+```
+signInWithPassword → Cookie書込 → getSession() → router.push + router.refresh
+→ サーバー再レンダリング（middleware Cookie再評価） → useAuth getSession()
 ```
 
-| パターン | 対象在留資格 | STEP5の質問 | 選択肢 |
-|---|---|---|---|
-| `ikusei` | 育成就労（早期/後期） | 特定技能1号の試験準備は？ | not_started / japanese_only / exam_only / both_passed |
-| `tokutei1` | 特定技能1号 | 特定技能2号に向けた準備は？ | no_plan / leader_assigned / leader_with_doc / exam_preparing |
-| `skip` | 技人国/留学生/特定活動/不明 | **STEP5をスキップ** | — （STEP4→結果画面へ直接遷移） |
+### useAuth.ts（ハイブリッドアプローチ）
+1. マウント時: `getSession()` で初期セッション即座取得
+2. その後: `onAuthStateChange` で状態変更監視
+3. 安全策: 3秒タイムアウトで loading 強制解除
 
-- `skip`の場合: `totalSteps=4`、進捗バー `STEP 4/4` → 結果画面
-- `ikusei`/`tokutei1`の場合: `totalSteps=5`（従来通り）
+### ルーティング (`src/lib/utils/routing.ts`)
+- `getHomePath(role)`: admin→`/admin`, business→`/business/home`, worker→`/worker/home`
 
-#### 結果画面の分岐（`DiagnosisResult`）
+---
 
-```typescript
-type DiagnosisResult =
-  | { kind: 'other'; data: OtherVisaData }    // 技人国・留学生・特定活動・不明
-  | { kind: 'standard'; data: CheckerResult }  // 育成就労・特定技能1号
+## データベース主要テーブル（49テーブル / 38マイグレーション）
+
+### ユーザー系（8テーブル）
+- `profiles` — ユーザー基本情報（role, plan, display_name, is_active, privacy_agreed_at）
+- `business_profiles` — 法人プロフィール（company_name, contact_name, business_type, industry）
+- `worker_profiles` — ワーカープロフィール（nationality, residence_status）
+- `user_settings` — ユーザー設定（preferences JSONB）
+- `user_scores` — スコア履歴（category: diagnosis/simulation/jp_test）
+- `bookmarks` — ブックマーク（content_type: article/job/resource）
+- `notifications` — お知らせ（user_id NULL=全員向け）
+
+### コンテンツ系（12テーブル）
+- `blog_posts` + `blog_tags` + `blog_post_tags` + `blog_categories` — ブログ記事
+- `content_blocks` — ページ動的コンテンツ（多言語対応）
+- `feature_cards` — 機能カード（section別、色設定付き）
+- `news_articles` + `news_sources` — ニュース記事
+- `editorial_articles` — 独自記事
+- `whitepapers` + `whitepaper_categories` + `whitepaper_downloads` — ホワイトペーパー
+
+### 診断・ゲーム系（11テーブル）
+- `diagnosis_categories` + `diagnosis_questions` + `diagnosis_sessions` + `diagnosis_reports` + `diagnosis_ai_config`
+
+### ツール系
+- `simulation_cards` + `simulation_effects` + `simulation_config` — シミュレーションゲーム
+- `simulator_cost_items` — コストシミュレーター項目マスタ（v2: 6ビザ種別対応、M00037で拡張）
+- `simulator_org_presets` — プリセット保存（v2: user_type カラム追加）
+- `simulator_sessions` — 試算結果セッション（v2: user_type, sim_mode, visa_type_detail カラム追加）
+
+### 多言語系（4テーブル）
+- `worker_topics` + `worker_topic_contents` — ワーカー向け多言語トピック
+- `translation_cache` — LLM翻訳キャッシュ
+- `ui_translations` — UI翻訳
+
+### サイト管理系（4テーブル）
+- `theme_config` — テーマ設定（CSS変数）
+- `navigation_items` — ナビゲーション項目
+- `site_settings` — サイト全般設定
+
+### サービス系（10テーブル）
+- `partners` — パートナーディレクトリ（5種別×3ティア、M00036で拡張）
+- `contact_inquiries` — お問い合わせ（M00036、status: new/in_progress/done）
+- `subsidies` + `subsidy_conditions` + `subsidy_search_logs` — 助成金情報
+- `trend_sources` + `trend_data` + `trend_widgets` + `trend_insights` — トレンド分析
+- `notifications` — お知らせ通知
+- `activity_logs` — 行動ログ（M00035、ActivityLogProviderから page_view 記録）
+- `ikusei_timeline` + `ikusei_flowcharts` — 育成就労制度参照
+- `skill_upgrade_steps` — キャリア段階マスタ
+
+### RLS共通パターン
+- `is_admin()` (SECURITY DEFINER) で admin 全件操作可
+- ユーザー系テーブル: 本人のみ SELECT/UPDATE
+- コンテンツ系: 全員 SELECT、admin のみ管理
+
+---
+
+## ナビゲーション（BusinessHeader）
+
+### ツールメニュー (`toolItems`)
+| ラベル | パス |
+|---|---|
+| コストシミュレーター | `/business/cost-simulator` |
+| 労働条件通知書 生成ツール | `/business/tools/labor-notice` |
+| 現場指示書ビルダー | `/business/existing-users/connect/templates` |
+| 特定技能移行チェッカー | `/business/existing-users/ladder/checker` |
+| 外国人雇用 適正診断 | `/business/existing-users/ladder#diagnostic` |
+
+### ガイド・情報メニュー (`guideItems`)
+| ラベル | パス |
+|---|---|
+| はじめての外国人雇用 | `/business/hiring-guide` |
+| 外国人スタッフ活用ハブ | `/business/existing-users` |
+| 育成就労ロードマップ | `/business/roadmap` |
+| 全19分野 解説 | `/business/articles` |
+| 19分野 制度比較マップ | `/business/articles/industry-overview` |
+| 助成金情報 | `/business/subsidies` |
+| パートナー検索 | `/business/partners` |
+| お問い合わせ | `/business/contact` |
+
+### ヘッダーデザイン
+- ソリッドネイビー背景、sticky top-0 z-50、h-16
+- UserArea: 未ログイン→ログインボタン / ログイン中→ドロップダウン
+- lg以上: DesktopDropdown × 2 / lg未満: ハンバーガーメニュー
+
+---
+
+## 管理画面（CMS） `/admin/*`
+
+| ページ | パス | 状態 |
+|---|---|---|
+| ダッシュボード | `/admin` | ✅ |
+| グローバル設定 | `/admin/settings` | ✅ |
+| Business/Worker設定 | `/admin/settings/business`, `/admin/settings/worker` | ✅ |
+| ブログ | `/admin/blog` | ✅ |
+| ニュース | `/admin/news` | ⚠️ 閲覧+ピンのみ |
+| 診断 | `/admin/diagnosis` | ✅ |
+| 翻訳 | `/admin/translations` | ✅ |
+| ホワイトペーパー | `/admin/whitepapers` | ✅ |
+| 助成金 | `/admin/subsidies` | ✅ |
+| トレンド | `/admin/trends` | ✅ |
+| シミュレーション | `/admin/simulation` | ✅ |
+| コストシミュレーター | `/admin/simulator` | ✅ |
+| パートナー | `/admin/partners` | ✅ |
+| 問い合わせ | `/admin/contact` | ✅ |
+| 通知 | `/admin/notifications` | ✅ |
+
+---
+
+## フッター (`src/components/common/Footer.tsx`)
+
+- 3カラム: ブランド説明 / 企業の方リンク / ツールリンク
+- 下部: プライバシーポリシー | お問い合わせ | コピーライト
+
+---
+
+## 記事レンダリング方式
+
+- body が `<style>` で始まる → **フルHTML記事**: `dangerouslySetInnerHTML` で直接レンダリング
+- それ以外 → **Markdown記事**: `ArticleContent`（ReactMarkdown + remarkGfm + rehypeRaw）
+- 同一記事が複数ルートからアクセス可能（`/business/blog/[slug]`, `/business/existing-users/continue/[slug]` 等）
+
+---
+
+## フォントファイル (`public/fonts/`)
+
+| ファイル | 対応言語 |
+|---|---|
+| NotoSansJP-Regular/Bold.otf | ja, en, vi, tl, pt, id |
+| NotoSansSC-Regular.otf | zh |
+| NotoSansKhmer-Regular/Bold.ttf | km |
+| NotoSansMyanmar-Regular.ttf | my |
+| NotoSansDevanagari-Regular.ttf | ne（将来用） |
+
+---
+
+## 主要ツール仕様概要
+
+### コストシミュレーター v2 (`/business/cost-simulator`)
+- DB駆動（simulator_cost_items）、2モード構成 + PDF提案書
+- **アーキテクチャ**: ロジック分離済み
+  - `lib/types.ts` — 全型定義（Step0-3Data, AllInputs, CostBreakdown, ShellPhase等）
+  - `lib/constants.ts` — 20業種、ビザリードタイム、送出国手数料、デフォルト値
+  - `lib/calculate.ts` — コスト計算、リスク分析、診断ロジック
+- **入口**: LandingGate（UserType→Mode 2段階選択）
+  - UserType: kanri（監理団体）/ company（受入企業）/ guest
+  - Mode: quick（5問概算）/ detail（多ステップ詳細）、guest→自動quick
+- **Detailモード**: phase制御（landing→step0→step1→step2→step3→result）
+  - kanri: Step0（団体情報）→Step1→Step2→Step3→Result（4ステップ）
+  - company/guest: Step1→Step2→Step3→Result（3ステップ）
+- **Quickモード**: 5問カード → QuickResultView → 詳細モード引き継ぎ可
+- **6ビザ種別**: ikusei / tokutei1_kaigai / tokutei1_kokunai / tokutei2 / ginou / student（+ compare比較モード）
+- **結果画面**: KPIカード + コスト内訳 + VisaTimelineChart + RiskAnalysis + ConsultationPanel（6診断パターン）+ ScheduleTimeline + PDF
+- **ゲーティング**: ゲストは結果閲覧可、PDF出力・URL共有はGateModalで会員登録誘導
+- **旧パス**: `/business/hiring-guide/cost-simulator` → リダイレクト済み
+
+### 労働条件通知書 (`/business/tools/labor-notice`)
+- 8言語対応、5ステップウィザード、入管庁様式準拠
+- @react-pdf/renderer でクライアントサイドPDF生成
+- 在留資格: ikusei / tokutei1 / tokutei2 / ginou_jisshu
+
+### 現場指示書ビルダー (`/business/existing-users/connect/templates`)
+- 6言語 (ja, vi, id, en, my, zh)、7業種フィルタ
+- 安全16+緊急8+毎日12ルール + 12フレーズ（絵文字アイコン付き）
+- 2カラムレイアウト、別ウィンドウ印刷（フォント自動スケール）
+
+### 特定技能移行チェッカー (`/business/existing-users/ladder/checker`)
+- 5問ウィザード（STEP2の回答で動的分岐: ikusei/tokutei1/skip）
+- 結果: ロードマップ + 試験情報 + 企業ToDo + 業界別戦略
+
+---
+
+## パートナーディレクトリ
+
+### 型システム（二重型定義）
+
+```
+Legacy（PartnersAdmin / PartnerDirectory で使用）:
+  PartnerTypeLegacy = 'supervisory' | 'admin_scrivener' | 'support_org'
+  PartnerPlanLegacy = 'sponsor' | 'member'
+
+New（partners/ 検索UI・申請フォームで使用）:
+  PartnerType = 'kanri' | 'support' | 'gyosei' | 'bengoshi' | 'sharoshi'
+  PlanTier    = 'platinum' | 'gold' | 'regular'
+  PartnerStatus = 'pending' | 'active' | 'suspended'
 ```
 
-**other パス**: 在留資格ごとのオプションカード + 企業ToDo（アコーディオン）
-**standard パス**: ロードマップタイムライン + 試験情報 + 逆算スケジュール + 企業ToDo（アコーディオン）+ 業界別戦略カード（tokutei1のみ）
+`Partner` 型は両方のフィールドを持つ（`type: PartnerTypeLegacy | null` + `partner_type: PartnerType`）。
+`PARTNER_TYPE_LABELS` は旧・新両方のキーに対応。
 
-#### tokutei1 × STEP5回答別の結果分岐
+### Phase 3 フロントエンド構成
 
-| STEP5回答 | urgency | ヘッドライン | 特記事項 |
-|---|---|---|---|
-| `no_plan` | high | 特定技能2号への準備を今すぐ始めてください | 全ToDo表示 |
-| `leader_assigned` | high | 辞令の未発行が最大のボトルネックです | 警告バナー + 辞令発行が最優先ToDo |
-| `leader_with_doc` | medium | 着実に前進しています | 試験準備フォーカス |
-| `exam_preparing` | low | あとは2号試験に合格するのみです | 試験日程確認がurgent昇格 |
-
-#### ToDoセクション（アコーディオン）
-- `TodoItem`型: `{ text, priority: 'urgent'|'normal', detail: { why, how[], watch_out?, timeframe? } }`
-- 各Todoをクリックで展開/折り畳み（`AnimatePresence`）
-- チェックボックスとアコーディオンは独立した操作
-
-#### 業界別戦略カード（`StrategyCard`）
-- `result.visaStatus === 'tokutei1'` の場合のみ表示
-- 8業種分のデータ（`STRATEGY_BY_INDUSTRY`）
-- 介護は特別見出し「介護分野で長期就労を実現するための戦略」
-- 内容: サマリー → 最大の壁 → 合格率を上げる戦略 → 年別アクションプラン → 合格者パターン
-
-#### 相談CTAセクション（`ConsultCTA`）
-- **最上部**: J-GLOW相談カード（ネイビーグラデーション背景 + ゴールドボタン「J-GLOWに無料相談する →」）
-- **区切り線**:「または専門家に直接相談」
-- **パートナーカード**: 監理団体・行政書士の2カラム（`consultType`で表示順を変更）
-- **注釈**: 「将来的にJ-GLOW登録パートナーの一覧からご紹介予定」
-
-#### 主要サブコンポーネント
-- `ProgressBar` — 動的 totalSteps 対応
-- `RoadmapTimeline` — ステータス別スタイル（done/current/next/future）
-- `TodoSection` — urgent/normal 分類 + アコーディオン
-- `ExamInfoCard` — 業種別試験情報（難易度・合格率・頻度・日本語注意点）
-- `TimelineCard` — 逆算スケジュール（フェーズ別月数）
-- `StrategyCard` — 業界別2号取得戦略（tokutei1のみ）
-- `ConsultCTA` — J-GLOW + パートナー相談導線
-- `OtherVisaResultScreen` — other パス結果画面
-- `StandardResultScreen` — standard パス結果画面
+- **page.tsx**: SSRで3ティア別並列クエリ（`Promise.all` × platinum/gold/regular）
+- **PartnersSearch**: `useMemo` でクライアントサイドフィルタリング（keyword, type, regions, visas, industries, countries）
+- **FilterPanel**: 種別変更でビザ選択肢が動的切替（`TYPE_VISA_OPTIONS`連動）、sharoshi時は「対応サービス」ラベル
+- **カード3種**: design.jsx からインラインスタイルで移植（hover shadow/transform付き）
+  - PlatinumCard: ヘッダー帯（ネイビーグラデーション）+ スペック数字カード + 左アクセントライン
+  - GoldCard: コーナー装飾 + ゴールドボーダー + スペック数字
+  - RegularCard: 横並び3カラム（アイコン・情報・タグ+ボタン）
+- **ApplicationForm**: 5ステップ（種別選択→基本情報→種別固有→PR→プラン選択）、design.jsx移植
+- **定数**: `src/lib/partners-config.ts` に TIER_CONFIG, PARTNER_TYPE_CONFIG, TYPE_VISA_OPTIONS, REGION/INDUSTRY/COUNTRY_OPTIONS, FORM_FIELDS を集約
 
 ---
 
-## 2026-02-23（追記2）
+## 既知のギャップ（TODO）
 
-### キャリアラダー記事セクション `/business/existing-users/ladder`
-
-#### 概要
-外国人材のキャリアステージ（Stage 1〜4）に応じた企業向けコンテンツハブ。`blog_posts` テーブルから記事を取得し、動的 `[slug]` ルートで表示。
-
-#### ファイル構成
-- `src/components/business/LadderContentGrid.tsx` — ステージ別コンテンツカード（タブフィルタ付き）
-- `src/app/business/existing-users/ladder/[slug]/page.tsx` — 記事詳細ページ（Supabase `blog_posts` から取得）
-- `src/components/business/ArticleContent.tsx` — ReactMarkdown + remarkGfm でMarkdown本文をレンダリング
-- `scripts/seed-ladder-articles-2.sql` — 記事シードSQL（4記事INSERT + 1記事UPDATE）
-- `scripts/insert-article-svgs.sql` — 記事本文にSVG図解を挿入するSQL
-
-#### コンテンツカード一覧（LadderContentGrid.tsx）
-
-| ID | Stage | slug（DB） | 状態 |
-|---|---|---|---|
-| ojt | Stage 1 | `ojt-design-first-3months` | published（リダイレクト経由） |
-| arrival | Stage 1 | `arrival-checklist` | published |
-| roadmap | Stage 2 | `tokutei-roadmap-3years` | published（リダイレクト経由） |
-| exam | Stage 2 | `exam-support` | published |
-| tokutei1-exam | Stage 3 | `exam-support-1go` | published |
-| visa-change | Stage 3 | `documents-checklist` | published |
-| retention | Stage 4 | `core-talent-management` | published |
-
-#### 記事詳細ページ `[slug]/page.tsx`
-- 背景色: `#f8fafc`（白カードなし、直接表示）
-- ヒーロー: ネイビーグラデーション（`#1a2f5e` → `#0f1d3d`）
-- パンくず: 企業向けトップ / 外国人スタッフを活かす / 育てる / 記事タイトル
-- 本文: `.la-body` CSSクラスでスタイリング（h2金線、h3左ボーダー、テーブル、blockquote等）
-- フッターナビ: 「コンテンツ一覧に戻る」+「移行チェッカーを使う」
-
-#### SVG図解（`public/images/articles/`）
-
-| ファイル | 対象slug | 内容 |
-|---|---|---|
-| `article_ojt_steps.svg` | `ojt-design-first-3months` | OJT 3ステップ図 |
-| `article_arrival_timeline.svg` | `arrival-checklist` | 受入れ準備タイムライン |
-| `article_roadmap_3years.svg` | `tokutei-roadmap-3years` | 3年間ロードマップ |
-| `article_tokutei2_exam.svg` | `exam-support` | 特定技能2号試験 分野別概要 |
-| `article_tokutei1_exam.svg` | `exam-support-1go` | JFT-Basic vs JLPT 比較 |
-| `article_status_change_flow.svg` | `documents-checklist` | 在留資格変更申請フロー |
-| `article_career_ladder.svg` | （未使用） | キャリア・処遇ロードマップ |
-
-#### Next.js リダイレクト（`next.config.ts`）
-
-| source | destination | 用途 |
-|---|---|---|
-| `/business/existing-users/ladder/ojt-design-first-3months` | `/business/existing-users/ladder/ojt-checklist` | 旧slug→新slug |
-| `/business/existing-users/ladder/tokutei-roadmap-3years` | `/business/existing-users/ladder/roadmap-y2` | 旧slug→新slug |
-| `/business/existing-users/ladder/tokutei2-exam-company-support` | `/business/existing-users/ladder/exam-support` | 旧slug→新slug |
-
-#### シードSQL `scripts/seed-ladder-articles-2.sql`
-- `blog_categories` に `sodateru-stage3`, `sodateru-stage4` を追加
-- `blog_posts` の `tokutei2-exam-company-support` タイトル変更
-- 4記事INSERT（`ON CONFLICT (slug) DO UPDATE SET`）:
-  - `arrival-preparation-checklist` — 受入れ準備チェックリスト
-  - `tokutei1-exam-company-support` — 特定技能1号試験サポート
-  - `status-change-documents-checklist` — 在留資格変更申請書類
-  - `tokutei2-core-talent-management` — 中核人材の処遇設計
-- PostgreSQL `$body$...$body$` ドル引用符でMarkdown本文を格納
-
-#### SVG挿入SQL `scripts/insert-article-svgs.sql`
-- 6記事の `body` に `replace()` / `regexp_replace()` でSVG画像参照を挿入
-- 対象slug: `ojt-design-first-3months`, `arrival-checklist`, `tokutei-roadmap-3years`, `exam-support`, `exam-support-1go`, `documents-checklist`
-- 確認クエリ付き（SVG挿入済みかどうかチェック）
-- **Supabase SQL Editorで要実行**
+1. `editorial_articles` の作成・編集UIがない（NewsAdmin 3タブ目は読み取り専用）
+2. RSSスクレイパー未実装（`/api/news/scrape/route.ts` は TODOプレースホルダー）
+3. `/api/blog/generate-cover` が存在しない（BlogPostEditorが参照）
+4. `SimulationAdmin.tsx` がデッドコード（旧テーブル用、削除推奨）
+5. ニュース記事詳細ページがスタブ（`/business/news/[articleId]` は「開発中」）
+6. プライバシーポリシーがドラフト版（第3条〜第14条は「準備中」）
+7. 通知のメール送信未実装（`send_email` フラグは記録のみ）
+8. 旧コストシミュレーター未削除（`src/components/business/cost-simulator/CostSimulator.tsx` 84KB、参照なし。旧Navigator）
+9. コストシミュレーター: register/business の `returnUrl` リダイレクト未実装（GateModal から遷移後の復帰）
+10. コストシミュレーター: ゲストセッションのDB引き継ぎ未実装（`guest_token` + `claimed_by` カラム追加が必要）
+11. コストシミュレーター v2: M00037 未適用（`supabase db push` or Supabase Dashboard で実行が必要）
 
 ---
 
-## 2026-02-24
+## マイグレーション実行状況
 
-### 多言語現場指示書ビルダー v3 全面更新 `/business/existing-users/connect/templates`
+`00001` 〜 `00037` — **38ファイル全て定義済み**（49テーブル）
 
-#### 概要
-現場指示書ビルダーを全面刷新。8言語→5言語に絞り、業種フィルタ・選択上限5・フレーズ選択式・2カラムレイアウト・ひらがな欄を追加。
-
-#### 変更ファイル
-- `src/lib/templateData.ts` — **全面書き換え**（新データ構造）
-- `src/components/business/TemplateBuilder.tsx` — **全面書き換え**（2カラムUI）
-- `src/app/business/existing-users/connect/templates/page.tsx` — metadata更新（8言語→5言語）
-- `src/components/business/ConnectTemplateBanner.tsx` — テキスト更新（7言語→5言語）
-
-#### 対応言語（5言語、旧8言語から絞り込み）
-`ja`（日本語）, `vi`（ベトナム語）, `id`（インドネシア語）, `en`（英語）, `my`（ミャンマー語）
-
-- 削除した言語: `tl`（フィリピン語）, `zh`（中国語）, `ne`（ネパール語）
-
-#### データ構造 `src/lib/templateData.ts`
-
-**型定義**:
-```typescript
-type Language = 'ja' | 'vi' | 'id' | 'en' | 'my';
-type Industry = 'all' | 'manufacturing' | 'care' | 'food' | 'retail' | 'logistics' | 'construction';
-type RuleItem = {
-  id: string;
-  industries: Industry[];
-  ja: string; vi: string; id_lang: string; en: string; my: string;
-  params?: ParamDef[];
-  usesSupervisorName?: boolean;
-};
-```
-
-- `id_lang` キー: インドネシア語（`id` はアイテム識別子と衝突するため）
-- `industries[]`: 業種フィルタ用タグ
-- `params`: `__key__` プレースホルダー方式（旧 `paramTemplates` 関数を廃止）
-- `usesSupervisorName`: `__supervisor__` プレースホルダー
-
-**データ配列**:
-
-| 配列 | 件数 | ID範囲 | 備考 |
-|---|---|---|---|
-| `SAFETY_RULES` | 16 | S01–S16 | S15: 化学物質、S16: 足場（新規） |
-| `EMERGENCY_RULES` | 8 | E01–E08 | E08: 同僚不明（新規） |
-| `DAILY_RULES` | 12 | D01–D12 | D11: 道具確認、D12: タイムカード（新規） |
-| `PHRASES` | 12 | P01–P12 | 全12フレーズ選択式（旧: 固定4フレーズ） |
-| `LANGUAGES` | 5 | — | flag + label |
-| `INDUSTRIES` | 7 | — | all含む |
-| `UI` | 5言語 | — | 印刷用ラベル（title, section名, 会社欄等） |
-
-**パラメータ付き項目**:
-- S05: `__weight__`kg / `__people__`人
-- D01: `__minutes__`分
-- D02: `__hour__`時
-
-**担当者名付き項目**:
-- D07: `__supervisor__` → ふりがな優先、未入力時は「担当者」
-
-#### TemplateBuilder.tsx の構成
-
-**レイアウト**: 2カラム（デスクトップ1024px以上）
-- 左: コントロール（STEP 1〜4、no-print）
-- 右: ライブプレビュー（sticky、印刷対象）
-
-**STEP構成**:
-1. 言語を選ぶ — 5個のフラグボタン（active = navy背景 + 白文字）
-2. 業種を選ぶ — 7個のピルボタン（active = ゴールドハイライト）、★ソートに影響
-3. 項目を選ぶ — 安全/緊急/毎日（各最大5）+ よく使う言葉（上限なし）
-4. 会社情報を入力 — 会社名・担当者漢字・担当者ふりがな・電話番号・緊急連絡先
-
-**業種フィルタのソートロジック**:
-- ★ 業種マッチ項目 → 先頭表示
-- `'all'` 汎用項目 → 通常表示
-- 非マッチ項目 → `opacity: 0.4` で末尾表示
-
-**選択上限**:
-- 安全/緊急/毎日: 最大5（カウンター `2/5 選択中`、上限時ゴールド警告バナー）
-- フレーズ: 制限なし
-
-**バイリンガル表示**: 非ja選択時、チェックボックス横とプレビュー内に小さいグレーで日本語テキスト表示
-
-**ヘルパー関数**:
-- `getLangText(item, lang)` — `id` 言語の場合 `item.id_lang` を返す
-- `getItemText(item, lang, paramValues, companyInfo)` — `__key__`/`__supervisor__` を解決
-- `sortByIndustry(items, industry)` — ★ 先頭ソート
-- `getRelevance(item, industry)` — `'match'`/`'all'`/`'other'` 判定
-
-**印刷CSS**: `@media print` で左カラム非表示、A4 portrait、8mm margins
-
-#### v2 → v3 差分まとめ
-
-| 項目 | v2（旧） | v3（新） |
-|---|---|---|
-| 言語数 | 8 | 5 |
-| 業種フィルタ | なし | 7業種（★ソート） |
-| 選択上限 | 4/セクション | 5/セクション |
-| フレーズ | 固定4個 | 12個から選択（上限なし） |
-| レイアウト | 1カラム | 2カラム（左:操作 / 右:プレビュー） |
-| ふりがな欄 | なし | あり（担当者ふりがな） |
-| パラメータ方式 | `paramTemplates` 関数 | `__key__` プレースホルダー |
-| データ構造 | `translations` ネスト | フラット per-language キー |
-
----
-
-### ブログ記事システム `/business/blog/[slug]`
-
-#### 概要
-`blog_posts` テーブルから記事を取得し、slug ベースの動的ルートで表示。フルHTML記事とMarkdown記事の両方に対応。
-
-#### ファイル構成
-- `src/app/business/blog/[slug]/page.tsx` — 記事詳細ページ（レンダリング方式の自動判別）
-- `src/components/business/ArticleContent.tsx` — ReactMarkdown + remarkGfm + rehypeRaw でMarkdown/軽量HTML本文をレンダリング
-- `scripts/insert-3-articles.mjs` — Node.jsスクリプトでSupabaseにHTML記事を投入
-
-#### レンダリング方式の自動判別
-- bodyが `<style>` で始まる → **フルHTML記事**: `dangerouslySetInnerHTML` で直接レンダリング（自前のヘッダー・スタイル・レイアウトを持つ）
-- それ以外 → **Markdown/軽量HTML記事**: ブログページのヒーロー＋ `.blog-body` ラッパー内で `ArticleContent`（ReactMarkdown）を使用
-
-#### フルHTML記事（3記事）
-
-| slug | タイトル | HTMLソース | 内容 |
-|---|---|---|---|
-| `why-workers-leave` | 外国人材が辞める本当の理由——在留資格別に見る離職の構造 | `docs/article_why_workers_leave.html` | 離職率データ・ドーナツチャート・棒グラフ・サインカード |
-| `fair-wage-guide` | 外国人材の給与設定ガイド——同等待遇の義務と定着につながる昇給設計の実務 | `docs/article_fair_wage_guide.html` | 賃金比較バーチャート・法的義務タイムライン・昇給ステップフロー |
-| `career-ikusei-tokutei` | 育成就労から特定技能1号・2号、そして永住へ——企業が伴走するキャリア支援の全体像と実務 | `docs/article_career_ikusei.html` | キャリアフローSVG・カウントアップ・日本語レベルバー |
-
-#### HTML記事の構造（共通パターン）
-- `<style>` ブロック（CSS変数・コンポーネントスタイル・アニメーション定義）
-- `.article-header`（ヒーロー: ネイビーグラデーション + カテゴリタグ + タイトル + メタ）
-- `.content-wrap`（本文: max-width 820px）
-- `.summary-box`（まとめ: ネイビーグラデーション背景）
-- `<script>`（IntersectionObserver によるアニメーション: 棒グラフ、カウントアップ等）
-
-#### author_id
-- `7bb78a5a-da02-469f-b81c-5d9243b52397`
-
-#### 投入スクリプト `scripts/insert-3-articles.mjs`
-- HTMLファイルから `<style>` + `<body>` 内コンテンツを抽出
-- Supabase JS client（サービスロールキー）で upsert（`onConflict: 'slug'`）
-- 実行: `SUPABASE_SERVICE_ROLE_KEY=... node scripts/insert-3-articles.mjs`
-
-#### ミドルウェア
-- `/business/blog/*` はゲスト公開（`AUTH_REQUIRED_PATHS` に含まれない）
-
-#### 依存パッケージ
-- `rehype-raw` — HTMLタグをReactMarkdown内でレンダリング（package.json に追加済み）
-
----
-
-## 2026-02-25
-
-### 「続ける・判断する」記事ルート `/business/existing-users/continue/[slug]`
-
-#### 概要
-`/business/blog/[slug]` と同じフルHTML記事を `/business/existing-users/continue/[slug]` でも表示できるように対応。サイト内リンク（ContinueContentGrid等）が `/business/existing-users/continue/*` を向いているため、同一記事を両ルートからアクセス可能にした。
-
-#### 変更ファイル
-- `src/app/business/existing-users/continue/[slug]/page.tsx` — フルHTML記事の分岐を追加
-
-#### 変更内容
-- bodyが `<style>` で始まる場合、`dangerouslySetInnerHTML` で直接レンダリングする分岐を追加（`/business/blog/[slug]/page.tsx` と同じロジック）
-- それ以外のMarkdown記事は従来通り `.la-body` ラッパー + `ArticleContent` でレンダリング
-
-#### 対象記事（フルHTML、`blog_posts` テーブルから取得）
-
-| slug | タイトル | アクセスURL |
-|---|---|---|
-| `why-workers-leave` | 外国人材が辞める本当の理由 | `/business/existing-users/continue/why-workers-leave` |
-| `fair-wage-guide` | 外国人材の給与設定ガイド | `/business/existing-users/continue/fair-wage-guide` |
-| `career-ikusei-tokutei` | 育成就労から特定技能1号・2号、そして永住へ | `/business/existing-users/continue/career-ikusei-tokutei` |
-
-#### 記事の表示ルート一覧（同一記事が2ルートからアクセス可能）
-- `/business/blog/[slug]` — ブログ記事ルート（汎用）
-- `/business/existing-users/continue/[slug]` — 「続ける・判断する」セクションルート（パンくず・フッターナビが異なる）
-
----
-
-### 「もっと詳しく知りたい方へ」セクション カード型リニューアル
-
-#### 概要
-`/business` トップページの「もっと詳しく知りたい方へ」セクションを、テキストリンク3本からグラデーションヘッダー付きカード3枚に変更。
-
-#### 変更ファイル
-- `src/app/business/page.tsx` — 深掘り記事セクションをカード型UIに差し替え、不要な `articles` 配列を削除
-
-#### カード構成
-
-| カード | ヘッダー数字 | グラデーション | カテゴリラベル | リンク先 |
-|---|---|---|---|---|
-| 日本の労働力不足の現実 | 1,100万人 | navy→blue (`#1a2f5e`→`#2a4a8e`) | データで見る | `hiring-guide/labor-shortage` |
-| 外国人採用の最新動向 | 284,466人 | green (`#2a6e4e`→`#3a8e6e`) | トレンド | `hiring-guide/trends` |
-| 外国人雇用の正直ガイド | 離職率16.1% | brown→gold (`#7a3a1e`→`#c9a84c`) | 正直に書きます | `hiring-guide/honest-guide` |
-
-#### デザイン仕様
-- 背景: `#f8fafc`（サポートツールセクションと同系統）
-- カード: 白背景 + `border-gray-200` + `rounded-xl` + hover時shadow
-- ヘッダー部: h-36、グラデーション背景、中央に数字（白太字）+ サブテキスト
-- ボディ部: カテゴリラベル（ゴールド `#c9a84c`）+ タイトル（hover時underline）+ 説明文
-- 全カード `target="_blank"` 外部リンク（`first-foreign-hiring-guide.vercel.app`）
-
----
-
-### 正直ガイドにポジティブコンテンツ追記（外部プロジェクト）
-
-#### 概要
-`first-foreign-hiring-guide` プロジェクトの正直ガイドページに、定着成功パターンと企業の声セクションを追加。
-
-#### 変更ファイル（外部プロジェクト）
-- `/mnt/c/Users/takak/Claude_code_project/first-foreign-hiring-guide/src/app/business/hiring-guide/honest-guide/page.tsx`
-
-#### 追加位置
-「外国人は本当に"すぐ辞める"のか？」セクションの後、「締めセクション」の前
-
-#### 追加コンテンツ
-
-**「定着に成功している企業に共通すること」** — 3カラムカード
-1. 入国後3ヶ月に投資する
-2. キャリアパスを入社時に見せる
-3. 相談できる人を作る
-
-**「長期雇用した企業に起きた変化」** — 3つの企業事例カード
-- 製造業（従業員50名・特定技能1号3名）— マニュアル整備の副次効果
-- 農業（従業員12名・育成就労2名）— 5年目スタッフが教育側に
-- 介護施設（従業員35名・特定技能1号5名）— 利用者との信頼関係
-
-**まとめボックス** — amber背景、「準備した企業にとっては継続的な採用力の強化」
-
-#### デプロイ
-- j-glow: https://j-glow.vercel.app
-- first-foreign-hiring-guide: https://first-foreign-hiring-guide.vercel.app
-
----
-
-## 2026-02-26
-
-### 「続ける・判断する」セクション 5記事追加 `/business/existing-users/continue/[slug]`
-
-#### 概要
-`/business/existing-users/continue/` セクションにリッチHTML記事を5本追加。既存3記事と合わせて計8記事体制に。
-
-#### 追加ファイル
-- `docs/article_position_upgrade.html` — 昇格設計
-- `docs/article_career_gijinkoku.html` — 技人国への転換
-- `docs/article_career_student.html` — 進学・留学ビザへの転換
-- `docs/article_visa_renewal.html` — 在留資格更新と会社の義務
-- `docs/article_compliance_violations.html` — コンプライアンス違反の防止
-- `scripts/insert-5-continue-articles.mjs` — 投入スクリプト
-
-#### 記事一覧（全8記事）
-
-| slug | テーマ | アニメーション | 新規/既存 |
-|---|---|---|---|
-| `why-workers-leave` | 離職の構造 | ドーナツチャート・棒グラフ・サインカード | 既存 |
-| `fair-wage-guide` | 給与設定ガイド | 賃金比較バーチャート・法的義務タイムライン | 既存 |
-| `career-ikusei-tokutei` | キャリア支援の全体像 | カウントアップ・日本語レベルバー | 既存 |
-| `position-upgrade` | 職種・ポジション変更・昇格設計 | 5段階昇格フロー（段階点灯） | 新規 |
-| `career-gijinkoku` | 技人国への転換 | 3カード転換フロー（スライドイン） | 新規 |
-| `career-student` | 進学・留学ビザへの転換 | 5ステップ変更タイムライン | 新規 |
-| `visa-renewal-compliance` | 在留資格更新と会社の義務 | 6段階カウントダウン（色分け） | 新規 |
-| `compliance-violations` | コンプライアンス違反の防止 | 違反件数カウントアップ + リスクレベル分類 | 新規 |
-
-#### 共通仕様
-- フルHTML記事（`<style>`で開始）→ `dangerouslySetInnerHTML` でレンダリング
-- IntersectionObserver でスクロール時アニメーション発火
-- ブランドカラー: ネイビー `#1a2f5e`、ゴールド `#c9a84c`
-- 各記事に表1〜2個、チェックリスト、ハイライトボックス、まとめボックス
-- author_id: `7bb78a5a-da02-469f-b81c-5d9243b52397`
-
-#### 投入方法
-```bash
-SUPABASE_SERVICE_ROLE_KEY=... node scripts/insert-5-continue-articles.mjs
-```
-
----
-
-### 「こんなお悩み」セクション改修 `/business/existing-users`
-
-#### 変更ファイル
-- `src/components/business/BusinessHubPainCards.tsx` — 全面書き換え
-
-#### アイコン変更
-
-| お悩み | 旧アイコン | 新アイコン |
-|---|---|---|
-| 指示が伝わらない | `MessageCircleWarning` | `MessageSquareX` |
-| やる気が見えない | `Battery` | `TrendingDown` |
-| 在留資格の切替・更新が複雑 | `FileX2` | `FileQuestion` |
-| せっかく育てても定着しない | `RotateCcw` | `UserMinus` |
-| 管理体制が属人的で見えない | `EyeOff` | `EyeOff`（変更なし） |
-| 制度変更でコストが不安 | `CircleDollarSign` | `CircleDollarSign`（変更なし） |
-
-#### デザイン変更
-- カード背景: `bg-white` + `border` → `bg-slate-50`（ボーダーなし）
-- ホバー効果: `hover:border-[#c9a84c]/40 hover:shadow-lg` → **完全削除**（クリック不可を明示）
-- アイコン背景: 角丸四角 → **円形** `rounded-full` + `bg-[#eef2ff]`
-- タイトル色: `text-gray-900` → `#1a2f5e`（ネイビー）
-
-#### 感情的訴求の追加（各タイル末尾にゴールド太字 `emphasis` フィールド）
-
-| タイル | 追加フレーズ |
-|---|---|
-| 指示が伝わらない | 現場の生産性が30%低下するケースも |
-| やる気が見えない | 離職の兆候は半年前から現れています |
-| 在留資格の切替・更新が複雑 | 更新漏れは不法就労助長罪の対象に |
-| せっかく育てても定着しない | 1人あたりの育成コストは平均80〜120万円 |
-| 管理体制が属人的で見えない | 担当者の退職で全てが止まるリスク |
-| 制度変更でコストが不安 | 2027年の育成就労制度で大幅変更予定 |
-
----
-
-## 2026-02-27
-
-### 労働条件通知書生成ツール `/business/tools/labor-notice`
-
-#### 概要
-外国人労働者向けの労働条件通知書（バイリンガルPDF）を8言語対応で無料生成できるウィザード型ツール。5ステップで入力→プレビュー→PDF生成。ゲスト利用可。
-
-#### 対応言語（8言語）
-ja（日本語）, en（英語）, zh（中国語）, vi（ベトナム語）, id（インドネシア語）, tl（タガログ語）, km（クメール語）, my（ミャンマー語）
-
-#### ファイル構成
-
-| ファイル | 役割 |
-|---|---|
-| `src/app/business/tools/labor-notice/page.tsx` | サーバーコンポーネント（metadata + LaborNoticeWizard呼び出し） |
-| `src/app/business/tools/labor-notice/LaborNoticeWizard.tsx` | クライアントコンポーネント（ウィザード本体、ステップ管理） |
-| `src/app/business/tools/labor-notice/types.ts` | 型定義 + VISA_CONFIGS + デフォルト値 |
-| `src/app/business/tools/labor-notice/components/Step1Basic.tsx` | STEP1: 基本情報（氏名・会社名・住所・電話・使用者名） |
-| `src/app/business/tools/labor-notice/components/Step2Contract.tsx` | STEP2: 契約・業務（在留資格・契約期間・更新条件・就業場所・業務内容） |
-| `src/app/business/tools/labor-notice/components/Step3Hours.tsx` | STEP3: 勤務時間（始業終業・休憩・残業・休日・有給） |
-| `src/app/business/tools/labor-notice/components/Step4Wages.tsx` | STEP4: 賃金・退職（基本給・手当・控除・締日支払日・社会保険） |
-| `src/app/business/tools/labor-notice/components/Step5Review.tsx` | STEP5: 確認・PDF生成（全入力プレビュー + PDF生成ボタン） |
-| `src/app/business/tools/labor-notice/pdf/LaborNoticePDF.tsx` | PDF生成コンポーネント（@react-pdf/renderer） |
-| `src/lib/translations/labor-notice.json` | 翻訳辞書（8言語、全キー） |
-
-#### 在留資格タイプ（`VisaType`）
-
-| キー | ラベル | 契約デフォルト | 最大期間 | 転籍条項表示 |
-|---|---|---|---|---|
-| `ikusei` | 育成就労 | fixed | 3年 | ✅ |
-| `tokutei1` | 特定技能1号 | fixed | 通算5年 | ❌ |
-| `tokutei2` | 特定技能2号 | indefinite | 上限なし | ❌ |
-| `ginou_jisshu` | 技能実習（経過措置） | fixed | 3年（団体監理型） | ❌ |
-
-#### PDF構成（5条項、順次番号）
-
-| 条項 | タイトル | 内容 | 条件 |
-|---|---|---|---|
-| 第1条 | 賃金控除に関する協定 | 労使協定に基づく賃金控除の定め | 常に表示 |
-| 第2条 | 控除対象項目 | 家賃・食費等の具体的控除項目 | 常に表示 |
-| 第3条 | 安全衛生 | 安全配慮義務・健康診断等 | 常に表示 |
-| 第4条 | 転籍に関する条項 | 育成就労の転籍条件 | `transfer_clause === true` の場合のみ |
-| 第5条 | 準拠法・管轄 | 日本法準拠・管轄裁判所 | 常に表示 |
-
-#### フォントファイル（`public/fonts/`）
-
-| ファイル | サイズ | 対応言語 | ソース |
-|---|---|---|---|
-| `NotoSansJP-Regular.otf` | 4.5MB | ja, en, vi, tl, pt, id | notofonts/noto-cjk GitHub |
-| `NotoSansJP-Bold.otf` | 4.6MB | 同上（太字） | 同上 |
-| `NotoSansSC-Regular.otf` | 8.3MB | zh | notofonts/noto-cjk GitHub |
-| `NotoSansKhmer-Regular.ttf` | 102KB | km | Google Fonts gstatic |
-| `NotoSansKhmer-Bold.ttf` | 103KB | km（太字） | 同上 |
-| `NotoSansMyanmar-Regular.ttf` | 178KB | my | 同上 |
-| `NotoSansDevanagari-Regular.ttf` | 215KB | ne（将来用） | 同上 |
-
-#### フォント選択ロジック（`getFontFamily(lang)`）
-
-| 言語 | フォントファミリー |
-|---|---|
-| zh | NotoSansSC |
-| km | NotoSansKhmer |
-| my | NotoSansMyanmar |
-| ne | NotoSansDevanagari |
-| その他（ja, en, vi, id, tl） | NotoSansJP |
-
-#### 法的コンプライアンス対応
-
-**絶対的明示事項（労基法第15条）**:
-- 業務内容の変更の範囲（`job_description_change_range`）— Step2で入力
-- 契約更新条件（`renewal_type`, `renewal_criteria`）— Step2で入力（更新上限回数・年数含む）
-- 賃金控除項目（`deduction_rent`, `deduction_food`, `deduction_other`）— Step4で入力
-
-**外国人労働者特有事項**:
-- 賃金控除チェックボックス（家賃・食費・その他）— `deduction_agreement === 'yes'` 時に表示
-- 無期転換リスク警告バナー — `ginou_jisshu` または `tokutei1` で有期契約の場合に Step2 末尾に表示
-- 転籍条項（第4条）— 育成就労（`ikusei`）で `transfer_clause === true` の場合のみPDFに含む
-
-**PDF空値ハンドリング**:
-- 基本給が空/0: 「なし / None」表示
-- 締日・支払日が空: 「（要入力）/ (Required)」表示
-- 手当・控除が空配列: セクション非表示
-
-#### ナビゲーション統合
-
-- `src/components/business/BusinessHeader.tsx` — `featureHrefs` に `/business/tools/labor-notice` 追加
-- `supabase/migrations/00029_add_labor_notice_nav.sql` — navigation_items テーブルに追加（**Supabase SQL Editorで要実行**）
-
-#### 依存パッケージ
-- `@react-pdf/renderer` — クライアントサイドPDF生成（dynamic import）
-- `file-saver` — ブラウザ側blobダウンロード
-- PDFファイル名: `労働条件通知書_{氏名}_{発行日}.pdf`
-
-#### ミドルウェア
-- `/business/tools/*` はゲスト公開（`AUTH_REQUIRED_PATHS` に含まれない）
-
----
-
-### マイグレーション実行済み
-- `00027` 〜 `00029` — 実行済み
-
----
-
-## 2026-02-28
-
-### 労働条件通知書 Phase 2 — 入管庁様式準拠 全面アップデート
-
-#### 概要
-入管庁の公式雇用条件書（参考様式第１－６号）を基準に、約27個の新フィールド/フィールドグループを追加。types.ts・翻訳JSON・全ステップフォーム・レビュー画面・PDF出力を一括対応。
-
-#### types.ts 主要変更
-
-**新型定義**:
-- `SectorType` — 19分野（旧 `TokuteiSector` 12分野 → 拡張、後方互換エイリアス維持）
-- `PaymentMethod` — `'bank_transfer' | 'cash'`
-
-**新定数配列**:
-- `IKUSEI_SECTORS` (17分野) / `TOKUTEI_SECTORS` (19分野) — `tKey` 付き翻訳対応
-- `getSectorList(visaType)` — 在留資格に応じた分野リスト返却
-- `WORKPLACE_RANGE_OPTIONS` / `JOB_RANGE_OPTIONS` / `RENEWAL_TYPE_OPTIONS` / `RENEWAL_CRITERIA_ITEMS` / `WAGE_TYPE_OPTIONS` — tKey 付き
-- `WORK_HOUR_TYPE_OPTIONS` / `RAISE_TIMING_OPTIONS` / `BONUS_FREQUENCY_OPTIONS` — tKey 追加済み
-
-**ユーティリティ関数**:
-- `sanitizeName()` / `sanitizeAddress()` — XSS防止用入力サニタイズ
-- `resolveWorkplaceRangeTx()` / `resolveJobRangeTx()` — 翻訳対応の範囲表示
-
-**Step1Data 追加フィールド** (3):
-`consultation_department`, `consultation_contact_person`, `consultation_contact_info`
-
-**Step2Data 追加フィールド** (3):
-`entry_date`, `tokutei_sector: SectorType | ''`（全在留資格で必須）, `tokutei_job_category`
-
-**Step3Data 追加フィールド** (7):
-`prescribed_hours_weekly/monthly/yearly`, `prescribed_days_weekly/monthly/yearly`, `overtime_article_number`
-
-**Step4Data 追加フィールド** (18):
-`overtime_rate_normal/over60/holiday/night`, `payment_method`, `fixed_overtime_enabled/name/amount/hours`, `deduction_tax_estimate/social_estimate/employment_estimate`, `work_stoppage_enabled/rate`, `dismissal_article_from/to`, `health_check_hire_month/periodic_month`
-
-#### 翻訳JSON（`labor-notice.json`）
-- 約100+キー追加（v4-final）
-- 分野名19種、勤務時間タイプ5種、昇給タイミング4種、賞与頻度3種、範囲3種、支払方法2種、賃金タイプ3種、更新基準5種
-- 署名欄キー8種（`signature_section_title` 〜 `signature_preset_note`）
-
-#### PDF出力の改善
-
-**中国語フォント対応**:
-- `NotoSansSC-Regular.otf` (8.3MB) を追加
-- `LANG_FONT` に `zh: 'NotoSansSC'` をマッピング
-- 中国語PDF出力の文字化け解消
-
-**BiRow 日本語サブ一律表示**:
-- BiRow コンポーネントを `{valueJa ?? (value || '—')}` フォールバック方式に変更
-- `lang !== 'ja'` 時、全 BiRow の value 下に日本語テキストが必ず表示される
-- 翻訳値を持つ全 BiRow（yesNo、在留資格、分野、契約種別、割増率、支払方法、昇給、賞与、社保、組合 等）に明示的 `valueJa` 追加
-- ユーザー入力値（会社名、住所等）はフォールバックで自動処理
-
-**署名欄セクション追加**:
-- 全条項・免責事項の後、最終ページ末尾に配置
-- 使用者欄（会社名プリセット + 氏名線 + 印鑑丸枠 + 日付線）
-- 労働者欄（労働者名プリセット + 氏名線 + 印鑑丸枠 + 日付線）
-- 同意文・全ラベル8言語翻訳対応 + 日本語サブ表示
-- `wrap={false}` でページ分割防止
-
-**PDF条項構成（更新）**:
-
-| 条項 | タイトル | 条件 |
-|---|---|---|
-| 第1条 | 在留資格・雇用契約の効力 | 常に表示 |
-| 第2条 | 賃金控除 | 常に表示 |
-| 第3条 | 退職・転籍時の費用取扱い | 常に表示 |
-| 第4条 | 転籍に関する特約（育成就労）/ 転職・転籍事項（特定技能） | `transfer_clause === true` の場合のみ |
-| 第5条 | 言語の優先順位 | 常に表示 |
-| — | 署名欄 | 常に表示（条項外） |
-
-#### Step2Contract.tsx 分野選択の変更
-- 旧: tokutei1/tokutei2 の場合のみ分野選択を表示
-- 新: 全在留資格で分野選択を表示（`getSectorList(visaType)` で動的リスト）
-- `handleVisaChange` でビザ変更時に分野の有効性を検証
-
-#### バリデーション変更
-- `validateStep2`: `tokutei_sector` が全在留資格で必須に
-- `validateStep4`: `dismissal_article_from` を代替チェック（`dismissal_article_number` との OR）
-
-#### 入力サニタイズ
-- `Step1CompanyWorker.tsx`: worker_name, company_name, company_address, employer_name に `sanitizeName`/`sanitizeAddress` 適用
-- `<>&"'` 等の危険文字を除去
-
----
-
-### 現場指示書ビルダー v4 アップデート `/business/existing-users/connect/templates`
-
-#### 概要
-v3（5言語）に中国語を追加して6言語化。印刷レイアウトの最適化、絵文字アイコン追加、緊急連絡先大型表示、フォント自動スケールを実装。
-
-#### 対応言語（6言語、v3の5言語 + zh追加）
-`ja`（日本語）, `vi`（ベトナム語）, `id`（インドネシア語）, `en`（英語）, `my`（ミャンマー語）, `zh`（中国語）
-
-#### データ構造の変更 `src/lib/templateData.ts`
-
-**型定義**:
-```typescript
-type Language = 'ja' | 'vi' | 'id' | 'en' | 'my' | 'zh';
-type RuleItem = {
-  id: string;
-  icon?: string;          // v4で追加
-  industries: Industry[];
-  ja: string; vi: string; id_lang: string; en: string; my: string; zh: string;  // zhを追加
-  params?: ParamDef[];
-  usesSupervisorName?: boolean;
-  jaRuby?: string;
-  context?: Record<Language, string>;
-};
-```
-
-**中国語追加範囲**:
-- 全ルール（S01–S16, E01–E08, D01–D12）に `zh` 翻訳
-- 全フレーズ（P01–P12）に `zh` 翻訳 + `context` レコードに `zh` キー
-- `LANGUAGES` 配列に `{ code: 'zh', label: '中国語', flag: '🇨🇳' }`
-- `UI` レコードに `zh` セクション（全ラベル）
-
-**絵文字アイコン追加**:
-- 安全ルール16件: ⚙️🚫🩹🦺🏋️🚜🙌🔪⚠️📍🪝⚡📦🚶☣️🪜
-- 緊急ルール8件: 🩹🔧🔥🤒🫨💡☣️📢
-- 毎日ルール12件: ⏰📞🙋🧹📵👔📋🗑️🤝🔒✅🕐
-
-#### TemplateBuilder.tsx の変更
-
-**新定数**:
-- `FONT_MAP` / `FONT_URLS`: `zh` に `'Noto Sans SC'` + Google Fonts URL 追加
-- `SUPERVISOR_GENERIC`: `zh: '负责人'`
-- `TITLE_NO_COMPANY` / `TITLE_WITH_COMPANY`: `zh` 翻訳追加
-- `EMERGENCY_CONTACT_LABEL`: 6言語の緊急連絡先ラベル
-- `PHONE_LABEL`: 6言語の担当者直通ラベル
-- `EMERGENCY_PHONE_LABEL`: 6言語の緊急連絡先ラベル
-
-**選択上限の変更**:
-- 安全ルール: `MAX_SAFETY = 7`（他セクションは `MAX_PER_SECTION = 5` のまま）
-
-**絵文字アイコン表示**:
-- `SectionCheckboxes`: チェックボックス横にアイコン表示
-- `PreviewSection`: ナンバーバッジ/矢印の後にアイコン表示（`.rule-icon` クラス）
-
-**緊急連絡先大型表示セクション**:
-- 配置: 会社情報セクションの直下・フッター直上
-- 表示条件: `companyInfo.phone` または `companyInfo.emergency` が入力済みの場合のみ
-- デザイン: 赤枠（`#dc2626`）+ 赤背景（`#fef2f2`）
-- 電話番号: 画面 1.3rem / 印刷 16pt、赤色太字
-- 📞 / 🆘 アイコン付き
-
-**フォント自動スケール（`handlePrint`）**:
-- 選択済み総項目数に応じてフォント倍率を計算:
-
-| 総選択項目数 | フォント倍率 |
-|---|---|
-| 〜10項目 | 1.4倍（最大） |
-| 11〜15項目 | 1.2倍 |
-| 16〜20項目 | 1.0倍（基準） |
-| 21〜25項目 | 0.9倍 |
-| 26項目以上 | 0.85倍（最小） |
-
-- 別ウィンドウ印刷時に `.print-target { font-size: ${fontScale}em }` を動的注入
-
-**印刷CSSの最適化（v3→v4）**:
-
-| 項目 | v3 | v4 |
-|---|---|---|
-| `@page` margin | 10mm 12mm | 8mm 8mm |
-| タイトル | 18pt | 13pt |
-| セクション見出し | 10pt | 9pt |
-| ルール項目 | 10pt | 9pt |
-| 会社情報グリッド | 2列 | 3列 |
-| フレーズコンテキスト | 表示 | `display: none`（印刷時非表示） |
-| アイコン | — | 9pt |
-| 緊急連絡先 | — | 16pt赤字 |
-
-**別ウィンドウ印刷（`handlePrint`）**:
-- `window.open()` で別ウィンドウを開き、全CSS + フォント + HTML を注入
-- `document.fonts.ready.then()` でフォント読み込み後に `window.print()` → `window.close()`
-- ブラウザヘッダー/URL/日時を除去
-- ポップアップブロック時は `window.print()` にフォールバック
-
-#### v3 → v4 差分まとめ
-
-| 項目 | v3 | v4 |
-|---|---|---|
-| 言語数 | 5 | 6（+zh） |
-| 絵文字アイコン | なし | 全36ルールに追加 |
-| 安全ルール上限 | 5 | 7 |
-| 緊急連絡先表示 | 会社情報欄内のみ | 大型赤枠セクション追加 |
-| フォントスケール | 固定 | 項目数に応じて0.85〜1.4倍 |
-| 印刷CSS | 大きめ | コンパクト（A4 1枚に収まるよう最適化） |
-| 印刷方式 | `window.print()` | 別ウィンドウ（ヘッダー/URL除去） |
-| ルールレイアウト | 固定2列 | CSS `columns: 2`（自然なフロー） |
-
----
-
-## 2026-02-28（追記）
-
-### パートナーディレクトリ `/business/partners`
-
-#### 概要
-外国人雇用に精通した監理団体・行政書士・登録支援機関を検索できるディレクトリ機能。スポンサー/メンバーの2プラン制。
-
-#### DBテーブル（マイグレーション `00030_partners.sql`）
-- **partners**: パートナー情報（name, type, plan, prefecture, industries[], visas[], languages[], origin_countries[], description, contact_email, website_url, is_active, sort_order）
-- RLS: SELECT は `is_active=true` の全員、ALL は `is_admin()` のみ
-- インデックス: `plan`, `prefecture`
-- シードデータ: 3件（スポンサー2件 + メンバー1件）
-
-#### 型定義 `src/types/database.ts`
-- `PartnerType`: `'supervisory' | 'admin_scrivener' | 'support_org'`
-- `PartnerPlan`: `'sponsor' | 'member'`
-- `PARTNER_TYPE_LABELS`: 種別の日本語ラベル
-- `PARTNER_PLAN_LABELS`: プランの日本語ラベル
-- `Partner`: パートナー型
-
-#### 公開ページ `src/app/business/partners/page.tsx`
-- サーバーコンポーネント（partners全件取得 + theme）
-- `PartnerDirectory` クライアントコンポーネントでフィルタ処理
-
-#### PartnerDirectory `src/components/business/PartnerDirectory.tsx`
-- **フィルター**: 種別（すべて/監理団体/行政書士/登録支援機関）+ 都道府県
-- **スポンサーカード**: ゴールド `#c9a84c` の「SPONSOR」バッジ、大きめ2カラム、業種・ビザタグ付き
-- **メンバーカード**: ネイビー `#1a2f5e` の「MEMBER」バッジ、コンパクト3カラム
-- **問い合わせボタン**: `contact_email` あり → `mailto:`、なし → グレーアウト「準備中」
-- **CTA**: ページ下部に掲載お問い合わせセクション
-
-#### 管理画面 `src/app/admin/partners/page.tsx`
-- サーバーコンポーネント（partners全件取得）
-- `PartnersAdmin` クライアントコンポーネント
-
-#### PartnersAdmin `src/components/admin/PartnersAdmin.tsx`
-- パートナー一覧テーブル（法人名・種別・プラン・都道府県・順序・状態・操作）
-- 追加・編集モーダル（全フィールド対応、配列はカンマ区切り入力）
-- 削除（confirm付き）
-- プラン切替（sponsor/member）— テーブル行のバッジクリック
-- is_active切替 — テーブル行の状態バッジクリック
-- sort_order変更 — モーダル内で編集
-
-#### ナビゲーション
-- `BusinessHeader.tsx`: `resourceHrefs` に `/business/partners` 追加
-- `00030_partners.sql`: `navigation_items` に business_header + admin_sidebar 追加（**Supabase SQL Editorで要実行**）
-
-#### ミドルウェア
-- `/business/partners` はゲスト公開（`AUTH_REQUIRED_PATHS` に含まれない）
-
----
-
-### ビジネスマイページ・オンボーディング
-
-#### DBマイグレーション `00031_business_type.sql`
-- `business_profiles` に `business_type` カラム追加（`supervisory` / `support` / `accepting_existing` / `accepting_new`）
-- `business_profiles` に `industry` カラム追加（業種テキスト）
-
-#### 型定義 `src/types/database.ts`
-- `BusinessType`: `'supervisory' | 'support' | 'accepting_existing' | 'accepting_new'`
-- `BUSINESS_TYPE_LABELS`: 日本語ラベル定数
-- `BusinessProfile` に `business_type`, `industry` フィールド追加
-
-#### オンボーディング `/business/onboarding`
-
-**ファイル構成**:
-- `src/app/business/onboarding/page.tsx` — サーバーコンポーネント（認証チェック + 既存データ取得）
-- `src/app/business/onboarding/OnboardingWizard.tsx` — 2ステップウィザード
-
-**Step1**: 4択カード選択（business_type）
-- supervisory: 監理団体
-- support: 登録支援機関
-- accepting_existing: 受入れ企業（経験あり）
-- accepting_new: 採用検討中の企業
-- 選択中カードにゴールド `#c9a84c` ボーダー
-
-**Step2**: 会社名（必須）・担当者名（必須）・業種（任意）入力
-- `business_profiles` を upsert（`business_type` 同時保存）
-- 完了後 `/business/mypage` へリダイレクト
-
-#### /business/home のリダイレクトロジック
-- `src/app/business/home/page.tsx` — サーバーコンポーネント
-- 未ログイン → `/business` へリダイレクト
-- `business_type` 未設定 → `/business/onboarding` へリダイレクト
-- 設定済み → `/business/mypage` へリダイレクト
-
-#### マイページ `/business/mypage`
-
-**ファイル構成**:
-- `src/app/business/mypage/page.tsx` — サーバーコンポーネント（profiles + business_profiles + user_scores + bookmarks 取得）
-- `src/app/business/mypage/BusinessMypage.tsx` — クライアントコンポーネント
-
-**画面構成**:
-1. ヒーロー: 会社名 + business_typeバッジ + planバッジ（Premium=ゴールド / Free=半透明）+ 担当者名 + 業種
-2. 診断・シミュレーション結果: `user_scores` 新しい順5件をカード表示（カテゴリバッジ + スコア + 日付）
-3. 保存済み: `bookmarks` 新しい順5件をリスト表示
-4. 将来機能プレースホルダー:
-   - supervisory/support → 「加盟企業管理」「支援実績ダッシュボード」
-   - accepting系 → 「求人掲載」「雇用管理」
-
-#### ミドルウェア更新
-- `AUTH_REQUIRED_PATHS` に `/business/onboarding` 追加
-- `/business/onboarding` — businessロール必須チェック追加
-
----
-
-### お知らせ・通知機能
-
-#### DBテーブル（マイグレーション `00032_notifications.sql`）
-- **notifications**: お知らせ（user_id, title, body, link_url, is_read, send_email）
-- `user_id` NULL = 全員向け、UUID指定 = 個別送信
-- RLS: SELECT=本人+全員向け+admin、INSERT=admin、UPDATE=本人（既読更新）、DELETE=admin
-- インデックス: `user_id`, `created_at DESC`
-- `navigation_items` に admin_sidebar 追加（Bell アイコン）
-
-#### 型定義 `src/types/database.ts`
-- `Notification`: id, user_id, title, body, link_url, is_read, send_email, created_at
-
-#### マイページ通知セクション（/business/mypage）
-- `page.tsx`: `notifications` テーブルから本人宛+全員向けを新しい順20件取得
-- `BusinessMypage.tsx`:
-  - 未読件数を赤バッジで表示（見出し横）
-  - 未読は赤ドット + 太字タイトル、既読は通常表示
-  - クリックで `is_read = true` に更新 + `link_url` があれば遷移
-
-#### 管理画面 `/admin/notifications`
-- `src/app/admin/notifications/page.tsx` — サーバーコンポーネント（全件取得）
-- `src/components/admin/NotificationsAdmin.tsx` — 送信・一覧・削除
-  - 送信モーダル: タイトル・本文・リンクURL・送信先（全員/特定ユーザー）・メール送信フラグ
-  - 一覧テーブル: タイトル・送信先バッジ・メールバッジ・日時・削除ボタン
-  - `send_email` フラグは記録のみ（実際のメール送信は将来実装）
-
----
-
-### プライバシーポリシー・同意フロー
-
-#### DBマイグレーション `00033_privacy_consent.sql`
-- `profiles` に `privacy_agreed_at TIMESTAMPTZ` カラム追加
-- `profiles` に `privacy_policy_version TEXT` カラム追加
-
-#### プライバシーポリシーページ `/privacy-policy`
-- `src/app/privacy-policy/page.tsx` — BusinessHeader + Footer 付きの独立ページ
-- ヒーロー（ネイビーグラデーション）+ 白カード内にポリシー本文
-- **現在ドラフト版**（第1条・第2条のみ実コンテンツ、第3条〜第14条は「準備中」表示）
-- 末尾に「法務確認中」注記
-- 正式版は差し替え予定
-
-#### 登録フォーム同意チェックボックス
-- `BusinessRegisterForm.tsx`: PP同意チェックボックス追加、未チェック時ボタン非活性化
-- `WorkerRegisterForm.tsx`: 同上（バイリンガル表記）
-- 登録時に `privacy_agreed_at`（現在時刻ISO文字列）と `privacy_policy_version`（"draft"）を `auth.signUp` の `data` に含める
-
-#### フッター更新
-- `src/components/common/Footer.tsx`: コピーライト上部に「プライバシーポリシー」リンク追加
-
-#### ビルド修正
-- `tsconfig.json`: `exclude` に `_import` を追加（別プロジェクトの混入によるビルドエラー解消）
-
-#### マイグレーション実行状況
-- `00027` 〜 `00033` — **全て実行済み**
-
----
-
-## 2026-02-28（追記2）
-
-### 4モジュール統合（_import/ → j-glow本体）
-
-#### 概要
-外部プロジェクトとして開発していた4モジュールをj-glow本体に統合。`_import/` フォルダは統合完了後に削除済み。
-
-## サイト構成マップ（統合後）
-
-| パス | 説明 | 公開 | 旧URL |
-|---|---|---|---|
-| /business/cost-simulator | コストシミュレーター | ✅ | costsimulation.vercel.app |
-| /business/hiring-guide | 採用完全ガイド | ✅ | first-foreign-hiring-guide.vercel.app |
-| /business/hiring-guide/labor-shortage | 労働力不足サブページ | ✅ | first-foreign-hiring-guide.vercel.app/business/hiring-guide/labor-shortage |
-| /business/hiring-guide/trends | 採用動向サブページ | ✅ | first-foreign-hiring-guide.vercel.app/business/hiring-guide/trends |
-| /business/hiring-guide/honest-guide | 正直ガイドサブページ | ✅ | first-foreign-hiring-guide.vercel.app/business/hiring-guide/honest-guide |
-| /business/roadmap | ロードマップダッシュボード | ✅ | ローカルのみ（ikuseshuro-countdown） |
-| /business/articles | 記事一覧（blog_posts連動） | ✅ | ikuseshuro-content（HTML静的） |
-| /business/articles/[slug] | 記事詳細 | ✅ | ikuseshuro-content（HTML静的） |
-
-## 内部リンク変更履歴
-
-| 変更箇所 | 変更前 | 変更後 | 完了 |
-|---|---|---|---|
-| HeroSection.tsx CTA | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-| SimulatorCTA.tsx | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-| DoubleCTASection.tsx | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-| SubpageFooterCTA.tsx | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-| business/page.tsx コストシミュレーター | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-| business/page.tsx 採用ガイド | first-foreign-hiring-guide.vercel.app | /business/hiring-guide | ✅ |
-| business/page.tsx ロードマップ | html-lake-rho.vercel.app | /business/roadmap | ✅ |
-| business/page.tsx 分野解説 | html-lake-rho.vercel.app/industry | /business/articles | ✅ |
-| business/page.tsx 深掘り記事3本 | first-foreign-hiring-guide.vercel.app（target=_blank） | /business/hiring-guide/*（内部リンク） | ✅ |
-| Footer.tsx 採用ガイド | first-foreign-hiring-guide.vercel.app | /business/hiring-guide | ✅ |
-| Footer.tsx ロードマップ | html-lake-rho.vercel.app | /business/roadmap | ✅ |
-| Footer.tsx コストシミュレーター | costsimulation.vercel.app | /business/cost-simulator | ✅ |
-
-#### 作業1: コストシミュレーター統合
-
-**移設ファイル**:
-- `src/components/business/cost-simulator/CostSimulator.tsx` — メインコンポーネント（全UI・データ・ロジック内包、インラインスタイル）
-- `src/components/business/cost-simulator/CumulativeChart.tsx` — 36ヶ月累積コスト比較グラフ（recharts）
-- `src/app/business/cost-simulator/page.tsx` — サーバーコンポーネント（Supabase認証連携）
-
-**認証ゲート連携**:
-- `CostSimulator` に `isLoggedIn` props追加（サーバーコンポーネントで `supabase.auth.getUser()` から判定）
-- `REQUIRE_AUTH_FOR_STEP4` フラグ（現在 `false`）を `true` にすると STEP4 前に認証モーダル表示
-- 認証モーダルのボタンを `/register/business` と `/login` にリンク
-
-#### 作業2: 採用完全ガイド統合
-
-**移設ファイル**:
-- `src/components/business/hiring-guide/` — 全24コンポーネント + useInView.ts
-- `src/lib/hiring-guide-data.ts` — 型定義・ステップデータ・関連記事（元 `@/lib/data` → 衝突回避のためリネーム）
-- `src/app/business/hiring-guide/page.tsx` — メインページ（7ステップ）
-- `src/app/business/hiring-guide/labor-shortage/page.tsx` — 労働力不足サブページ
-- `src/app/business/hiring-guide/trends/page.tsx` — 採用動向サブページ
-- `src/app/business/hiring-guide/honest-guide/page.tsx` — 正直ガイドサブページ
-- `public/downloads/` — PDF・Excelダウンロードファイル
-
-**CSS変数追加** (`globals.css`):
-- `--surface`, `--surface-muted`, `--border`, `--primary`, `--accent` 等のCSS変数をグローバルに追加
-- `@theme inline` ブロックに対応する `--color-*` 変数も追加
-
-#### 作業3: ロードマップダッシュボード統合
-
-**移設ファイル**:
-- `src/components/business/roadmap/CountdownSection.tsx` — カウントダウン
-- `src/components/business/roadmap/TimelineSection.tsx` — 制度施行タイムライン
-- `src/components/business/roadmap/PracticalTimelineSection.tsx` — 実務スケジュール
-- `src/components/business/roadmap/ChecklistSection.tsx` — 準備チェックリスト
-- `src/components/business/roadmap/data.ts` — マイルストーン・チェックリストデータ
-- `src/app/business/roadmap/page.tsx` — ダッシュボードページ（use client）
-
-**CTAリンク修正**:
-- 受入企業向け3ステップの外部リンク（`https://j-glow.com/...`）を内部リンク（`/business/partners`, `/business/articles`）に変更
-
-#### 作業4: 記事コンテンツ移行
-
-**移行対象**（計36記事）:
-- 通常記事15本（`ikuseshuro-article-001` 〜 `ikuseshuro-article-015`）
-- 特別記事2本（`ikuseshuro-special-001`, `ikuseshuro-special-002`）
-- 分野別ガイド19本（`kaigo`, `kogyo`, `nogyo` ... `shigen`）
-
-**ファイル**:
-- `scripts/migrate-ikuseshuro-articles.mjs` — マイグレーションスクリプト
-  - `SUPABASE_SERVICE_ROLE_KEY=... node scripts/migrate-ikuseshuro-articles.mjs` で実行
-  - `blog_categories` に `ikuseshuro`・`industry-guide` をupsert
-  - 各MarkdownファイルのフロントマターとBodyを読み取って `blog_posts` にupsert
-- `src/app/business/articles/page.tsx` — 記事一覧ページ（カテゴリ別表示）
-- `src/app/business/articles/[slug]/page.tsx` — 記事詳細ページ（Markdown/HTML自動判別）
-
-**カテゴリ**:
-- `ikuseshuro`（育成就労制度）— 通常記事+特別記事
-- `industry-guide`（分野別ガイド）— 19分野
-
-#### 作業5: 依存関係統合
-- `recharts: ^3.7.0` を `package.json` の `dependencies` に追加（コストシミュレーター・採用ガイドのグラフで使用）
-
-#### 削除済み
-- `_import/` フォルダ — 統合完了後に削除
-
----
-
-### ロードマップ ランディングページ リニューアル `/business/roadmap`
-
-#### 概要
-`/business/roadmap` を client-only ダッシュボードから、Supabase記事一覧付きランディングページに変換。既存ダッシュボード（カウントダウン・タイムライン・実務スケジュール・チェックリスト）はページ下部に残す。
-
-#### ファイル構成
-- `src/app/business/roadmap/page.tsx` — サーバーコンポーネント（`"use client"` 削除、metadata + Supabaseクエリ）
-- `src/app/business/roadmap/RoadmapLanding.tsx` — クライアントコンポーネント（7セクション構成）
-
-#### アーキテクチャ
-- **page.tsx**: `blog_categories`（ikuseshuro / industry-guide）のID取得 → `blog_posts`（published、is_pinned DESC / created_at ASC）→ `blog_post_tags` + `blog_tags` でペルソナタグ取得 → `RoadmapLanding` に props で渡す
-- **RoadmapLanding.tsx**: `useState<PersonaFilter>` でペルソナフィルタ管理、既存ダッシュボードコンポーネントをそのまま配置
-
-#### セクション構成（7セクション）
-1. **トップナビバー**: sticky、記事一覧(#articles) / 運用要領 / 制度概要 / お問い合わせの4リンク
-2. **ヒーロー**: ネイビーグラデーション + CountdownSection 埋め込み
-3. **ピン留め記事**: `is_pinned=true` の記事を大きめカード（sm:grid-cols-2）、ゴールド「SPECIAL」バッジ、0件時非表示
-4. **ペルソナフィルタータブ**: すべて / 監理団体 / 既存受入れ企業 / 採用検討中の企業（active=navy）
-5. **まずはここから**: フィルタ適用後の記事を最大9件、3カラムグリッド
-6. **あわせて読みたい**: 残り記事を最大6件、0件時非表示
-7. **準備スケジュール**: TimelineSection + PracticalTimelineSection + ChecklistSection（ペルソナ連動）
-
-#### ペルソナマッピング（3段階フォールバック）
-1. `SLUG_PERSONA_MAP`: slug → PersonaFilter[] の直接マッピング（article-001〜015）
-2. `TAG_PERSONA_MAP`: blog_tags の「監理団体」「既存受入れ企業」「採用検討中」タグ → PersonaFilter
-3. デフォルト: `['kanri', 'existing', 'new']`（全タブに表示）
-
-#### ダッシュボード用ペルソナ切替（独立トグル）
-- 記事フィルタとは独立した `dashPersona` state（`'管理団体' | '受入企業'`）
-- デフォルト: `'管理団体'`
-- 準備スケジュールセクション上部に2択トグルボタン
-  - 選択中: ネイビー(`#1a2f5e`)背景 / 白テキスト
-  - 未選択: 白背景 / ネイビーボーダー / ネイビーテキスト
-- 管理団体選択時: TimelineSection + PracticalTimelineSection + ChecklistSection 表示
-- 受入企業選択時: PracticalTimelineSection のみ表示
-
-#### ペルソナバッジの色
-- 監理団体: bg `#1a2f5e` / 白文字
-- 既存受入れ企業: bg `#2d5a9e` / 白文字
-- 採用検討中の企業: bg `#4a7ec7` / 白文字
-
-#### special-001 カードの強調表示
-- ゴールド太ボーダー（3px `#c9a84c`）
-- 薄いゴールド背景（`#fdf8ee`）
-- 「★ 最重要」バッジ（右上、ゴールド背景）
-- 「SPECIAL」バッジ（大きめ、text-xs → px-3 py-1）
-- タイトル: `text-xl sm:text-2xl`（他カードより大きく）
-- 「記事を読む →」ボタン（ゴールド背景・ネイビーテキスト）
-- `sm:col-span-2` でグリッド全幅
-
-#### special-002 の配置変更
-- ピン留めセクションから除外（`slug !== 'ikuseshuro-special-002'` フィルタ）
-- 「まずはここから読んでください」セクションの3番目（index 2）に固定挿入
-- DBの `is_pinned` は変更なし（フロントエンドの配列操作のみ）
-
-#### 背景色パターン
-ヒーロー(navy) → ピン留め(`#f8fafc`) → フィルタ+メイン記事(`#ffffff`) → あわせて読みたい(`#f8fafc`) → ダッシュボード(`#ffffff`)
-
----
-
-### /business/articles 全面リニューアル — 分野別外国人採用ガイド
-
-#### 概要
-育成就労制度の記事一覧ページを「分野別 外国人採用ガイド」に特化。`blog_posts` から `category='industry-guide'` の19分野のみを取得し、カードグリッドで表示。
-
-#### 変更ファイル
-- `src/app/business/articles/page.tsx` — 全面書き換え
-
-#### ページ構成
-1. **ヒーロー**: ネイビーグラデーション、タイトル「分野別 外国人採用ガイド」
-2. **カードグリッド**: 19分野、3列/2列/1列レスポンシブ
-3. **CTA**: ネイビーグラデーション背景、「分野が決まったら、採用コストを試算しましょう」→ `/business/cost-simulator`
-
-#### Supabase クエリ
-- `blog_categories` から `slug='industry-guide'` のIDを取得（`.single()`）
-- `blog_posts` から `status='published'` かつ該当カテゴリ、`ORDER BY title ASC`
-
-#### カードデザイン
-
-**通常カード（育成就労対象17分野）**:
-- 「育成就労」ネイビー(`#1a2f5e`)バッジ + 「特定技能」スカイブルーバッジ
-- アイコン（text-3xl）+ 分野名（text-lg）
-- 説明文（text-xs gray）+ ゴールドボタン「詳しく見る →」
-- hover: `shadow-lg`
-
-**特定技能のみカード（koku, jidosha-unso）**:
-- 「特定技能のみ」グレーバッジ
-- カード `opacity: 0.85`
-- 右上に「育成就労対象外」グレーラベル
-
-#### 分野アイコン対応（`INDUSTRY_ICONS`）
-kaigo=🏥 kogyo=🏭 nogyo=🌾 inshoku=🍱 kensetsu=🏗️ biru=🧹 zosen=⚓ jidosha-seib=🔧 koku=✈️ shukuhaku=🏨 gyogyo=🎣 gaishoku=🍽️ jidosha-unso=🚛 tetsudo=🚃 ringyo=🌲 mokuzai=🪵 linen=👕 butsuryu=📦 shigen=♻️
-
-#### 削除したコンテンツ
-- 育成就労制度の記事セクション（ikuseshuro カテゴリ）→ `/business/roadmap` に移管済み
-- 特別記事セクション → `/business/roadmap` のピン留めセクションに移管済み
-- フィルタータブ → 不要（全19分野を常時表示）
-
----
-
-## 2026-02-28（追記3）
-
-### 採用計画コストシミュレーター（DB駆動・新版） `/business/cost-simulator`
-
-#### 概要
-旧コストシミュレーター（CostSimulator.tsx、ハードコード84KB）を全面刷新。コスト項目をDBマスタ化し、3ペルソナ対応の4ステップウィザード＋結果画面＋PDF提案書出力。
-
-#### アクセス条件（ゲスト公開 + ログイン機能分離）
-- **ゲスト公開**（`AUTH_REQUIRED_PATHS` に含まない）— 未ログインでも全4ステップ＋結果画面＋PDF出力が使える
-- **ログインユーザー限定機能**: プリセット保存/読み込み、コスト項目カスタマイズ、URL共有（DB保存）
-- **ゲスト向けCTA**: STEP4 に「変数をカスタマイズしたい方は無料会員登録へ」、結果画面に「結果の保存・カスタマイズをしたい方へ」バナー表示
-- `isLoggedIn` prop で全コンポーネントがゲスト/ログイン状態を判定
-- `userId` は `string | null`（ゲスト時 null）
-- `page.tsx` で `redirect('/login')` は使用しない（ゲスト公開のため）
-
-#### 3つのペルソナ
-- **Persona A**（監理団体・登録支援機関）: 提案書モード、プリセット保存、カスタマイズ（要ログイン）
-- **Persona B**（外国人雇用経験あり企業）: コスト確認・在留資格比較
-- **Persona C**（外国人雇用未経験企業）: コスト感・緊迫感の体感（ゲストでも利用可）
-
-#### DBテーブル（マイグレーション `00034_cost_simulator.sql`）
-- **simulator_cost_items**: コスト項目マスタ（category, visa_type, item_key, label, amount_min/max, variable_factor, is_active, sort_order）
-- **simulator_org_presets**: Persona A プリセット保存（user_id, preset_name, org_name, org_contact, management_fee, enrollment_fee, logo_url, brand_color, custom_items JSONB, removed_item_keys）
-- **simulator_sessions**: 試算結果セッション（input_params JSONB, result_snapshot JSONB, share_token TEXT UNIQUE, expires_at）
-- RLS: cost_items=全員SELECT+admin管理、presets=本人全操作、sessions=本人管理+share_token公開SELECT
-- シードデータ: 初期費用19項目 + 月次費用8項目 + リスクコスト2項目
-
-#### 型定義 `src/types/database.ts`
-- `CostItemCategory`: `'initial' | 'monthly' | 'risk'`
-- `SimulatorVisaType`: `'ikusei' | 'tokutei_kaigai' | 'tokutei_kokunai' | 'all'`
-- `SimulatorCostItem`, `SimulatorOrgPreset`, `SimulatorCustomItem`, `SimulatorSession`
-
-#### ファイル構成 `src/app/business/cost-simulator/`
-
-| ファイル | 役割 |
-|---|---|
-| `page.tsx` | サーバーコンポーネント（cost_items・presets（ログイン時のみ）・shared session取得、`isLoggedIn`/`userId` を props で渡す） |
-| `components/CostSimulatorShell.tsx` | クライアント全体ラッパー（全ステート管理・コスト計算ロジック、`userId: string | null`・`isLoggedIn: boolean`） |
-| `components/StepNavigation.tsx` | STEP 1〜4 ナビゲーションバー |
-| `components/Step1Company.tsx` | STEP 1: 企業情報（企業名・業種・外国人雇用状況・常勤職員数） |
-| `components/Step2Plan.tsx` | STEP 2: 採用計画（在留資格・対象者区分・人数・時期・送出国・職種） |
-| `components/Step3Environment.tsx` | STEP 3: 自社環境（住居・研修・支援） |
-| `components/Step4Organization.tsx` | STEP 4: 団体情報（団体名・担当者・監理費・ブランドカラー） |
-| `components/ResultView.tsx` | 結果表示画面（ヒーロー数字・テーブル・タイムライン・アクションボタン） |
-| `components/CostTable.tsx` | コスト内訳テーブル（単一/比較表示） |
-| `components/ScheduleTimeline.tsx` | 逆算スケジュール（育成就労/特定技能海外/国内の3パターン） |
-| `components/CustomizePanel.tsx` | Persona A カスタマイズパネル（金額上書き・項目追加/削除・ラベル変更） |
-| `components/PresetManager.tsx` | プリセット保存・読み込み・削除 |
-| `components/PdfDocument.tsx` | PDF提案書（@react-pdf/renderer、4ページ構成） |
-
-#### STEP構成（16入力項目）
-
-| STEP | 項目数 | 内容 |
-|---|---|---|
-| 1 | 4 | 企業名（任意）・業種（19分野）・外国人雇用状況（3択）・常勤職員数（スライダー） |
-| 2 | 6 | 在留資格（3択）・対象者区分（3択・条件付き）・人数（1-30スライダー）・開始時期（月選択）・送出国（5択）・職種（任意） |
-| 3 | 3 | 住居（3択）・研修（3択）・支援（2択） |
-| 4 | 5+ | 団体名・担当者名・監理費・入会金・送出機関手数料上書き・ブランドカラー |
-
-#### コスト計算ロジック（クライアントサイド）
-- `calculateCosts()`: マスタ項目 → プリセットカスタマイズ適用 → 在留資格別フィルタ → 条件分岐で金額解決
-- 送出国別デフォルト手数料: ベトナム15-20万、インドネシア10-15万、フィリピン12-18万、ミャンマー15-22万
-- 住居: full=max / partial=中間 / none=0
-- 研修: outsource=max / inhouse=0 / pre_only=入国前のみ
-- 支援: outsource=計上 / inhouse=0
-- 社会保険: 200,000円 × 15%
-- 3年間総コスト = (初期 + 月次×36) × 人数 + リスク
-- リスクコスト = 欠員コスト + 採用やり直し（初期費用×50%×離職率10%）
-- 受入上限 = 常勤職員数 ÷ 20（超過時に警告バナー）
-
-#### 逆算スケジュール（3パターン）
-- 育成就労: T-8〜9ヶ月起点、7ステップ
-- 特定技能（海外）: T-5〜6ヶ月起点、6ステップ
-- 特定技能（国内）: T-3ヶ月起点、4ステップ
-- 現在月ステップ: 赤ハイライト + ⚠️
-- 経過ステップ: グレーアウト + 取り消し線
-- 間に合わない場合: オレンジ警告 + 最短開始月表示
-
-#### PDF提案書（4ページ）
-- P1: 表紙（団体名/J-GLOW・ブランドカラー・企業名・担当者・作成日）
-- P2: 採用計画サマリー（ヒーロー数字・入力条件テーブル）
-- P3: 逆算スケジュール（タイムライン形式）
-- P4: コスト詳細内訳（初期/月次テーブル）
-- フォント: NotoSansJP-Regular/Bold
-- ファイル名: `採用コスト試算_{企業名}_{日付}.pdf`
-
-#### URL共有機能
-- **ログインユーザー**: nanoid 8文字のshare_token生成 → `simulator_sessions` にDB保存 → `/business/cost-simulator?token=XXXXXXXX` でアクセス時に入力値自動復元
-- **ゲスト**: 現在のURL（`window.location.href`）をクリップボードにコピーのみ（DB保存なし）
-- どちらも「✓ コピーしました」を3秒間表示
-
-#### Persona A カスタマイズ（ログインユーザー限定）
-- STEP 4 下部の折りたたみセクション（`isLoggedIn && activePreset` の場合のみ表示）
-- 金額の上書き・項目の表示/非表示・ラベル変更・項目追加
-- プリセットとして `simulator_org_presets` に保存
-- `custom_items` JSONB にカスタマイズ差分、`removed_item_keys` に削除キー
-- ゲスト: 「変数をカスタマイズしたい方は無料会員登録へ」CTAを表示
-
-#### 管理画面 `/admin/simulator`
-- `src/app/admin/simulator/page.tsx` — サーバーコンポーネント
-- `src/components/admin/SimulatorCostAdmin.tsx` — コスト項目CRUD（カテゴリ別テーブル・インライン編集・追加・削除・アクティブ切替）
-
-#### CTAコンポーネント
-- `src/components/business/CostSimulatorCTA.tsx` — 他ページからの誘導リンク（ネイビーグラデーション背景・ゴールドボタン）
-
-#### ナビゲーション統合
-- `BusinessHeader.tsx`: `featureHrefs` に `/business/cost-simulator` 追加
-- `00034_cost_simulator.sql`: `navigation_items` に business_header + admin_sidebar 追加
-
-#### ミドルウェア
-- `/business/cost-simulator` はゲスト公開（`AUTH_REQUIRED_PATHS` に含まれない）
-- 認証状態は `page.tsx` で `supabase.auth.getUser()` → `isLoggedIn` prop としてクライアントに渡す
-
-#### 依存パッケージ
-- `nanoid` — URL共有トークン生成（新規追加）
-- `@react-pdf/renderer`・`file-saver` — 既存（PDF出力）
-
-#### 旧コストシミュレーター
-- `src/components/business/cost-simulator/CostSimulator.tsx` — 旧版（84KB、ハードコード）、参照なし
-- `src/components/business/cost-simulator/CumulativeChart.tsx` — 旧版チャート、参照なし
-
----
-
-## 2026-02-28（追記3）
-
-### コストシミュレーター ゲストアクセス対応
-
-#### 概要
-`/business/cost-simulator` をログイン不要（ゲスト公開）に変更。ゲストは全5ステップの試算・PDF出力が可能。ログインユーザーのみプリセット保存・カスタマイズ・URL共有が使える。
-
-#### 変更ファイル
-
-| ファイル | 変更内容 |
-|---|---|
-| `src/lib/supabase/middleware.ts` | AUTH_REQUIRED_PATHS から `/business/cost-simulator` を削除、ロールチェックブロック削除 |
-| `src/app/business/cost-simulator/page.tsx` | 未ログイン時のリダイレクト削除、条件付きプリセット取得、`isLoggedIn` props追加 |
-| `src/app/business/cost-simulator/components/CostSimulatorShell.tsx` | `userId` を `string \| null` に変更、`isLoggedIn` prop追加、ゲスト時の共有・保存ガード |
-| `src/app/business/cost-simulator/components/Step4Organization.tsx` | `isLoggedIn` prop追加、ゲスト時はPresetManager・CustomizePanel非表示、CTA表示 |
-| `src/app/business/cost-simulator/components/ResultView.tsx` | `isLoggedIn` prop追加、ゲスト時はプリセット保存ボタン非表示、登録CTAバナー表示 |
-
-#### ゲスト vs ログインユーザーの機能差
-
-| 機能 | ゲスト | ログインユーザー |
-|---|---|---|
-| STEP 1〜3 入力 | ○ | ○ |
-| STEP 4 団体情報入力 | ○ | ○ |
-| コスト試算結果表示 | ○ | ○ |
-| PDF出力 | ○ | ○ |
-| URLコピー | ○（現在のURL） | ○（共有トークン付きURL） |
-| プリセット保存 | ✕ | ○ |
-| プリセット読み込み | ✕ | ○ |
-| コスト項目カスタマイズ | ✕ | ○ |
-
-#### ゲスト向けCTA
-- **STEP 4**: 「変数をカスタマイズしたい方は無料会員登録へ」（slate背景カード）
-- **結果画面**: 「結果の保存・カスタマイズをしたい方へ」（ネイビーグラデーション + ゴールドボタン）
-- リンク先: `/register/business`
-
-### Admin ログイン修正
-- `taka.k.yama@gmail.com` のパスワードを `AdminJglow2026!` に更新（Auth Admin API経由）
-- `profiles` テーブルの `is_active` を `true` に設定
-
----
-
-### 育成就労制度 記事コンテンツ更新（DB直接編集）
-
-#### 概要
-運用要領の正式公開内容に基づき、`blog_posts` テーブルの2記事の本文（`body`）を更新。スクリプト `scripts/update_articles.mjs` で実行。バックアップは `/tmp/backup_articles.json` に保存。
-
-#### 更新対象
-
-| slug | id | タイトル |
-|---|---|---|
-| `ikuseshuro-article-005` | 52 | 転籍制限期間（1〜2年）の分野別一覧表 |
-| `ikuseshuro-special-001` | 63 | 育成就労制度 運用要領 全文公開｜実務担当者が今すぐ確認すべき重要ポイント |
-
-#### article-005 変更内容
-- **分野別一覧表を17分野に更新**: 旧テーブル（紙器・段ボール箱製造等を含む）→ 新テーブル（廃棄物処理（資源循環）追加、9分野1年・8分野2年）
-- **介護の転籍制限期間を2年に変更**（企業判断で1年短縮可能の備考付き）
-- **リード文修正**: 「大半の分野では1年」→「分野によって異なり、9分野が1年・8分野が2年」
-
-#### special-001 変更内容
-- **ポイント③ 派遣先数の表現修正**: 「最大3者まで」→「1者または複数（上限は分野別運用方針で詳細が定められる予定）」
-- **用語統一**: 「監理団体」→「**監理支援機関（旧・監理団体）**」
-- **ポイント⑦ 新規挿入**: 「日本語能力の目標達成を支援する義務」（100時間以上の講習機会提供・費用負担・自学環境整備）
-- **旧ポイント⑦→⑧に繰り下げ**: 「監理支援機関の許可に『中立性の確保』要件」
-- **振込注記追加**: 認定手数料の支払方式が収入印紙→銀行振込に変更
-
-#### 実行スクリプト
-- `scripts/fetch_articles.mjs` — バックアップ取得用
-- `scripts/update_articles.mjs` — 更新実行用（全チェック通過時のみDB更新）
-- 実行方法: `node --env-file=.env.local scripts/update_articles.mjs`
+- `00035` — activity_logs（行動ログ）
+- `00036` — contact_inquiries（お問い合わせ）+ partners 拡張（5種別×3ティア）
+- `00037` — simulator_v2（visa_type CHECK拡張、tokutei→tokutei1リネーム、新ビザコスト項目12件INSERT、sessions/presets カラム追加）

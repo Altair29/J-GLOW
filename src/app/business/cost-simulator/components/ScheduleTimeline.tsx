@@ -1,11 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { VisaChoice, TargetChoice } from './CostSimulatorShell';
+import type { VisaChoice, TargetChoice } from '../lib/types';
 
 type TimelineStep = {
   label: string;
-  monthOffset: number; // T-X
+  monthOffset: number;
   durationText: string;
 };
 
@@ -35,10 +35,31 @@ const TOKUTEI_KOKUNAI_TIMELINE: TimelineStep[] = [
   { label: '就労開始（最短ここまで3ヶ月）', monthOffset: 0, durationText: 'T（就労開始）' },
 ];
 
+const TOKUTEI2_TIMELINE: TimelineStep[] = [
+  { label: '1号での3年以上の経験確認', monthOffset: -4, durationText: 'T-4ヶ月' },
+  { label: '2号技能試験の受験・合格', monthOffset: -3, durationText: 'T-3ヶ月' },
+  { label: '在留資格変更申請', monthOffset: -2, durationText: 'T-2ヶ月' },
+  { label: '変更許可', monthOffset: -1, durationText: 'T-1ヶ月' },
+  { label: '2号での就労開始', monthOffset: 0, durationText: 'T（就労開始）' },
+];
+
+const GINOU_TIMELINE: TimelineStep[] = [
+  { label: '候補者探し・書類選考', monthOffset: -3, durationText: 'T-3ヶ月' },
+  { label: '面接・内定・行政書士依頼', monthOffset: -2, durationText: 'T-2ヶ月' },
+  { label: '在留資格申請・許可', monthOffset: -1, durationText: 'T-1ヶ月' },
+  { label: '就労開始', monthOffset: 0, durationText: 'T（就労開始）' },
+];
+
+const STUDENT_TIMELINE: TimelineStep[] = [
+  { label: '候補者選定・アルバイト開始', monthOffset: -2, durationText: 'T-2ヶ月' },
+  { label: '卒業後ビザ変更申請', monthOffset: -1, durationText: 'T-1ヶ月' },
+  { label: '正規就労開始', monthOffset: 0, durationText: 'T（就労開始）' },
+];
+
 type Props = {
   visaChoice: VisaChoice;
   targetChoice: TargetChoice;
-  startDate: string; // YYYY-MM
+  startDate: string;
 };
 
 function getMonthDiff(startYM: string): number {
@@ -69,7 +90,6 @@ function TimelineView({
   const firstStepOffset = steps[0].monthOffset;
   const isFeasible = monthsUntilStart >= Math.abs(firstStepOffset);
 
-  // 最短開始可能月
   const earliestDate = useMemo(() => {
     const now = new Date();
     const earliest = new Date(now.getFullYear(), now.getMonth() + Math.abs(firstStepOffset), 1);
@@ -80,7 +100,6 @@ function TimelineView({
     <div className="space-y-3">
       <h4 className="font-bold text-[#1a2f5e] text-sm">{title}</h4>
 
-      {/* 間に合うか判定 */}
       {isFeasible ? (
         <div className="p-3 bg-green-50 rounded-lg border border-green-200">
           <p className="text-sm text-green-700">
@@ -95,7 +114,6 @@ function TimelineView({
         </div>
       )}
 
-      {/* タイムライン */}
       <div className="relative pl-6">
         <div className="absolute left-2.5 top-0 bottom-0 w-0.5 bg-gray-200" />
         {steps.map((step, i) => {
@@ -157,16 +175,25 @@ function TimelineView({
 export function ScheduleTimeline({ visaChoice, targetChoice, startDate }: Props) {
   const timelines: { title: string; steps: TimelineStep[] }[] = [];
 
-  if (visaChoice === 'ikusei' || visaChoice === 'both') {
+  if (visaChoice === 'ikusei' || visaChoice === 'both' || visaChoice === 'compare') {
     timelines.push({ title: '育成就労', steps: IKUSEI_TIMELINE });
   }
-  if (visaChoice === 'tokutei' || visaChoice === 'both') {
+  if (visaChoice === 'tokutei' || visaChoice === 'both' || visaChoice === 'compare') {
     if (targetChoice === 'kaigai' || targetChoice === 'both') {
       timelines.push({ title: '特定技能1号（海外在住）', steps: TOKUTEI_KAIGAI_TIMELINE });
     }
     if (targetChoice === 'kokunai' || targetChoice === 'both') {
       timelines.push({ title: '特定技能1号（国内在籍）', steps: TOKUTEI_KOKUNAI_TIMELINE });
     }
+  }
+  if (visaChoice === 'tokutei2' || visaChoice === 'compare') {
+    timelines.push({ title: '特定技能2号（1号からの移行）', steps: TOKUTEI2_TIMELINE });
+  }
+  if (visaChoice === 'ginou' || visaChoice === 'compare') {
+    timelines.push({ title: '技術・人文知識・国際業務', steps: GINOU_TIMELINE });
+  }
+  if (visaChoice === 'student' || visaChoice === 'compare') {
+    timelines.push({ title: '留学→就労', steps: STUDENT_TIMELINE });
   }
 
   return (

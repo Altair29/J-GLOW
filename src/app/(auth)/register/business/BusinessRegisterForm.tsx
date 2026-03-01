@@ -10,6 +10,13 @@ type Props = {
   theme: Record<string, string>;
 };
 
+const BLOCKED_DOMAINS = new Set([
+  'gmail.com', 'yahoo.co.jp', 'yahoo.com', 'hotmail.com', 'outlook.com',
+  'outlook.jp', 'icloud.com', 'me.com', 'mac.com', 'aol.com', 'mail.com',
+  'live.com', 'msn.com', 'googlemail.com', 'ymail.com', 'protonmail.com',
+  'proton.me', 'zoho.com', 'gmx.com', 'gmx.net',
+]);
+
 export function BusinessRegisterForm({ texts, theme }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,60 +28,64 @@ export function BusinessRegisterForm({ texts, theme }: Props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const validateEmailDomain = async (email: string): Promise<boolean> => {
-    const domain = email.split('@')[1]?.toLowerCase();
-    if (!domain) return false;
-
-    const supabase = createClient();
-    const { data: blocked } = await supabase
-      .from('blocked_email_domains')
-      .select('domain')
-      .eq('domain', domain)
-      .single();
-
-    if (blocked) {
-      setError(texts.error_freemail || 'フリーメールアドレスでは企業登録できません。');
-      return false;
-    }
-    return true;
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (password !== confirmPassword) {
-      setError(texts.error_password_mismatch || 'パスワードが一致しません');
-      setLoading(false);
-      return;
-    }
-    if (password.length < 8) {
-      setError(texts.error_password_short || 'パスワードは8文字以上で設定してください');
-      setLoading(false);
-      return;
-    }
+    try {
+      if (password !== confirmPassword) {
+        setError(texts.error_password_mismatch || 'パスワードが一致しません');
+        return;
+      }
+      if (password.length < 8) {
+        setError(texts.error_password_short || 'パスワードは8文字以上で設定してください');
+        return;
+      }
 
-    const isValid = await validateEmailDomain(email);
-    if (!isValid) { setLoading(false); return; }
+      // クライアント側フリーメール判定（即座にエラー表示）
+      const domain = email.split('@')[1]?.toLowerCase();
+      if (!domain || BLOCKED_DOMAINS.has(domain)) {
+        setError(texts.error_freemail || 'フリーメールアドレスでは企業登録できません。会社のメールアドレスをご利用ください。');
+        return;
+      }
 
-    const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          role: 'business',
-          display_name: displayName,
-          organization,
-          privacy_agreed_at: new Date().toISOString(),
-          privacy_policy_version: 'draft',
+      const supabase = createClient();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            role: 'business',
+            display_name: displayName,
+            organization,
+            privacy_agreed_at: new Date().toISOString(),
+            privacy_policy_version: '2026-03-01',
+          },
         },
-      },
-    });
+      });
 
-    if (signUpError) { setError(signUpError.message); setLoading(false); return; }
-    setSuccess(true);
+      if (signUpError) {
+        const msg = signUpError.message;
+        if (msg.includes('already registered')) {
+          setError('このメールアドレスは既に登録されています。ログインページからお試しください。');
+        } else if (msg.includes('rate limit') || msg.includes('too many')) {
+          setError('リクエストが多すぎます。しばらく時間をおいてから再度お試しください。');
+        } else if (msg.includes('invalid') && msg.includes('email')) {
+          setError('メールアドレスの形式が正しくありません。');
+        } else {
+          setError(`登録に失敗しました: ${msg}`);
+        }
+        return;
+      }
+
+      setSuccess(true);
+    } catch (err) {
+      console.error('[BusinessRegisterForm] unexpected error:', err);
+      setError('予期しないエラーが発生しました。ネットワーク接続を確認の上、再度お試しください。');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (success) {

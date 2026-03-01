@@ -2,9 +2,14 @@
 
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import type { AllInputs, CostBreakdown, Step4Data } from './CostSimulatorShell';
+import type { CostBreakdown, Step4Data, AllInputs } from '../lib/types';
+import type { AllInputsV1 } from '../lib/types';
 import { CostTable } from './CostTable';
 import { ScheduleTimeline } from './ScheduleTimeline';
+import { RiskAnalysis } from './RiskAnalysis';
+import { ConsultationPanel } from './ConsultationPanel';
+import { useAuth } from '@/hooks/useAuth';
+import GateModal from './GateModal';
 
 const PdfDocument = dynamic(() => import('./PdfDocument').then((m) => m.PdfDownloadButton), {
   ssr: false,
@@ -16,7 +21,8 @@ const PdfDocument = dynamic(() => import('./PdfDocument').then((m) => m.PdfDownl
 });
 
 type Props = {
-  inputs: AllInputs;
+  inputs: AllInputsV1;
+  allInputs?: AllInputs;
   breakdowns: CostBreakdown[];
   isOverCapacity: boolean;
   capacityLimit: number;
@@ -36,6 +42,7 @@ function formatYen(n: number): string {
 
 export function ResultView({
   inputs,
+  allInputs,
   breakdowns,
   isOverCapacity,
   capacityLimit,
@@ -48,6 +55,9 @@ export function ResultView({
   step4,
   isLoggedIn,
 }: Props) {
+  const { user, loading: authLoading } = useAuth();
+  const isGuest = !authLoading && !user;
+  const [showGate, setShowGate] = useState(false);
   const [presetName, setPresetName] = useState('');
   const [showPresetForm, setShowPresetForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -70,7 +80,6 @@ export function ResultView({
     }
   }, [presetName, onSavePreset]);
 
-  // 最大の3年間コストを見つける
   const maxBreakdown = breakdowns.reduce(
     (a, b) => (b.threeYearTotal.max > a.threeYearTotal.max ? b : a),
     breakdowns[0],
@@ -90,7 +99,7 @@ export function ResultView({
         </div>
       )}
 
-      {/* ヒーロー数字エリア */}
+      {/* KPI Hero Section */}
       <div className="bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl p-6 md:p-8 text-white">
         <div className="text-center space-y-4">
           <p className="text-sm opacity-80">
@@ -102,7 +111,7 @@ export function ResultView({
               <span> 〜 {formatYen(maxBreakdown.threeYearTotal.max)}</span>
             )}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div className="bg-white/10 rounded-lg p-4">
               <p className="text-xs opacity-80">1人あたり初期費用</p>
               <p className="text-lg font-bold mt-1">
@@ -113,6 +122,15 @@ export function ResultView({
               <p className="text-xs opacity-80">1人あたり月次費用</p>
               <p className="text-lg font-bold mt-1">
                 {formatYen(maxBreakdown.monthlyTotal.min)} 〜 {formatYen(maxBreakdown.monthlyTotal.max)} / 月
+              </p>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4">
+              <p className="text-xs opacity-80">リスクコスト</p>
+              <p className="text-lg font-bold mt-1">
+                {formatYen(maxBreakdown.riskTotal.min)}
+                {maxBreakdown.riskTotal.min !== maxBreakdown.riskTotal.max && (
+                  <span> 〜 {formatYen(maxBreakdown.riskTotal.max)}</span>
+                )}
               </p>
             </div>
           </div>
@@ -129,27 +147,53 @@ export function ResultView({
         startDate={inputs.step2.startDate}
       />
 
+      {/* リスク分析 */}
+      <RiskAnalysis
+        headcount={inputs.step2.headcount}
+        initialCostPerPerson={maxBreakdown.initialTotal}
+      />
+
+      {/* 自動診断 */}
+      {allInputs && (
+        <ConsultationPanel inputs={allInputs} />
+      )}
+
       {/* アクションボタンエリア */}
       <div className="border-t pt-6 space-y-4">
         <div className="flex flex-wrap gap-3">
           {/* URL共有 */}
           <button
-            onClick={handleShare}
-            disabled={sharing}
+            onClick={isGuest ? () => setShowGate(true) : handleShare}
+            disabled={!isGuest && sharing}
             className="px-6 py-3 bg-white border-2 border-[#1a2f5e] text-[#1a2f5e] rounded-lg text-sm font-medium hover:bg-[#1a2f5e]/5 transition-colors disabled:opacity-50"
           >
-            {shareUrl ? '✓ コピーしました' : sharing ? '共有URL作成中...' : '🔗 URLをコピー'}
+            {isGuest
+              ? '🔗 URLで共有（無料登録が必要）'
+              : shareUrl
+                ? '✓ コピーしました'
+                : sharing
+                  ? '共有URL作成中...'
+                  : '🔗 URLをコピー'}
           </button>
 
           {/* PDF出力 */}
-          <PdfDocument
-            inputs={inputs}
-            breakdowns={breakdowns}
-            step4={step4}
-            isProposalMode={isProposalMode}
-          />
+          {isGuest ? (
+            <button
+              onClick={() => setShowGate(true)}
+              className="px-6 py-3 bg-[#c9a84c] text-white rounded-lg text-sm font-medium hover:bg-[#c9a84c]/90 transition-colors"
+            >
+              📄 PDF提案書を作成（無料登録が必要）
+            </button>
+          ) : (
+            <PdfDocument
+              inputs={inputs}
+              breakdowns={breakdowns}
+              step4={step4}
+              isProposalMode={isProposalMode}
+            />
+          )}
 
-          {/* プリセット保存（ログインユーザーのみ） */}
+          {/* プリセット保存 */}
           {isLoggedIn && (
             <>
               {!showPresetForm ? (
@@ -202,7 +246,7 @@ export function ResultView({
               className="inline-block text-sm font-bold px-6 py-2 rounded-lg transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
             >
-              無料会員登録へ →
+              無料会員登録へ &rarr;
             </a>
           </div>
         )}
@@ -214,7 +258,7 @@ export function ResultView({
           onClick={onBack}
           className="px-6 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors"
         >
-          ← 入力に戻る
+          &larr; 入力に戻る
         </button>
         <button
           onClick={onRestart}
@@ -228,6 +272,8 @@ export function ResultView({
       <p className="text-xs text-gray-400 text-center">
         ※ 表示金額はあくまでも目安です。実際の費用は監理団体・登録支援機関にご確認ください。
       </p>
+
+      {showGate && <GateModal onClose={() => setShowGate(false)} />}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { getHomePath } from '@/lib/utils/routing';
 const AUTH_REQUIRED_PATHS = [
   '/business/mypage',
   '/business/onboarding',
+  '/business/tools/labor-notice',
   '/worker/mypage',
   '/admin',
 ];

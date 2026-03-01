@@ -79,9 +79,13 @@ export function Footer({
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm" style={{ color: theme['--color-footer-text'] || '#6b7280' }}>
-          <div className="mb-3">
+          <div className="mb-3 flex items-center justify-center gap-4">
             <Link href="/privacy-policy" className="hover:text-white transition-colors">
               プライバシーポリシー
+            </Link>
+            <span style={{ color: '#4b5563' }}>|</span>
+            <Link href="/contact" className="hover:text-white transition-colors">
+              お問い合わせ
             </Link>
           </div>
           <p>{texts.copyright || '© 2026 J-GLOW All Rights Reserved.'}</p>

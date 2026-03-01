@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Input, Textarea, Select, Alert, Badge, Modal, ModalFooter } from '@/components/shared';
 import { PARTNER_TYPE_LABELS } from '@/types/database';
-import type { Partner, PartnerType, PartnerPlan } from '@/types/database';
+import type { Partner, PartnerTypeLegacy, PartnerPlanLegacy } from '@/types/database';
 
 type Props = {
   partners: Partner[];
@@ -21,13 +21,13 @@ const planOptions = [
   { label: 'メンバー', value: 'member' },
 ];
 
-const typeColors: Record<PartnerType, { bg: string; text: string }> = {
+const typeColors: Record<PartnerTypeLegacy, { bg: string; text: string }> = {
   supervisory: { bg: '#dcfce7', text: '#166534' },
   admin_scrivener: { bg: '#dbeafe', text: '#1e40af' },
   support_org: { bg: '#fef3c7', text: '#92400e' },
 };
 
-const planColors: Record<PartnerPlan, { bg: string; text: string }> = {
+const planColors: Record<PartnerPlanLegacy, { bg: string; text: string }> = {
   sponsor: { bg: '#fdf5e0', text: '#8a7530' },
   member: { bg: '#e5e7eb', text: '#374151' },
 };
@@ -70,8 +70,8 @@ export function PartnersAdmin({ partners: initPartners }: Props) {
     if (p) {
       setEditing(p);
       setName(p.name);
-      setType(p.type);
-      setPlan(p.plan);
+      setType(p.type ?? p.partner_type ?? 'supervisory');
+      setPlan(p.plan ?? 'member');
       setPrefecture(p.prefecture || '');
       setIndustries(arrayToCsv(p.industries));
       setVisas(arrayToCsv(p.visas));
@@ -136,7 +136,7 @@ export function PartnersAdmin({ partners: initPartners }: Props) {
   };
 
   const togglePlan = async (p: Partner) => {
-    const newPlan: PartnerPlan = p.plan === 'sponsor' ? 'member' : 'sponsor';
+    const newPlan: PartnerPlanLegacy = p.plan === 'sponsor' ? 'member' : 'sponsor';
     const supabase = createClient();
     await supabase.from('partners').update({ plan: newPlan }).eq('id', p.id);
     await refresh();
@@ -175,8 +175,8 @@ export function PartnersAdmin({ partners: initPartners }: Props) {
           </thead>
           <tbody className="divide-y">
             {partners.map((p) => {
-              const tc = typeColors[p.type];
-              const pc = planColors[p.plan];
+              const tc = p.type ? typeColors[p.type] : { bg: '#e5e7eb', text: '#374151' };
+              const pc = p.plan ? planColors[p.plan] : { bg: '#e5e7eb', text: '#374151' };
               return (
                 <tr key={p.id} className={`hover:bg-gray-50 ${!p.is_active ? 'opacity-50' : ''}`}>
                   <td className="px-4 py-3">
@@ -184,7 +184,7 @@ export function PartnersAdmin({ partners: initPartners }: Props) {
                   </td>
                   <td className="px-4 py-3">
                     <Badge style={{ backgroundColor: tc.bg, color: tc.text }}>
-                      {PARTNER_TYPE_LABELS[p.type]}
+                      {(p.type && PARTNER_TYPE_LABELS[p.type]) || (p.partner_type && PARTNER_TYPE_LABELS[p.partner_type]) || '—'}
                     </Badge>
                   </td>
                   <td className="px-4 py-3">

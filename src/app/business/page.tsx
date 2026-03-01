@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getContentBlocks, getThemeVars } from '@/lib/data';
+import ToolsSection from './ToolsSection';
 
 export default async function BusinessPage() {
   const supabase = await createClient();
@@ -33,45 +34,6 @@ export default async function BusinessPage() {
       href: '/business/roadmap',
       image: '/images/card-roadmap.png',
       external: false,
-    },
-  ];
-
-  const tools = [
-    {
-      name: '外国人採用ナビゲーター',
-      desc: '業種・条件から最適な在留資格を提案',
-      href: '/business/cost-simulator',
-      icon: '🧭',
-    },
-    {
-      name: '採用計画コストシミュレーター',
-      desc: '在留資格別の採用コストを詳細試算',
-      href: '/business/hiring-guide/cost-simulator',
-      icon: '💴',
-    },
-    {
-      name: '労働条件通知書 生成ツール',
-      desc: 'ビザ別に対応した労働条件通知書を自動生成',
-      href: '/business/tools/labor-notice',
-      icon: '📄',
-    },
-    {
-      name: '現場指示書ビルダー',
-      desc: '7言語対応の現場ルールを自社用にカスタマイズ',
-      href: '/business/existing-users/connect/templates',
-      icon: '🏭',
-    },
-    {
-      name: '特定技能移行チェッカー',
-      desc: '育成就労から特定技能への移行可否を診断',
-      href: '/business/existing-users/ladder/checker',
-      icon: '✅',
-    },
-    {
-      name: '全19分野 解説',
-      desc: '育成就労・特定技能が使える分野を網羅解説',
-      href: '/business/articles',
-      icon: '📋',
     },
   ];
 
@@ -199,43 +161,7 @@ export default async function BusinessPage() {
       {/* ========================================
           [3] 現場で使えるツール（6ツール）
           ======================================== */}
-      <section className="py-16 md:py-20" style={{ backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-        <div className="max-w-5xl mx-auto px-4">
-          <h2
-            className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-3"
-            style={{ color: primaryColor }}
-          >
-            現場で使えるツール
-          </h2>
-          <p className="text-sm text-slate-500 text-center max-w-xl mx-auto mb-10 leading-relaxed">
-            コストシミュレーター・適正診断など、実務に直結するツールを無料で提供しています。
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tools.map((t) => (
-              <Link key={t.href} href={t.href} className="group">
-                <div
-                  className="p-5 rounded-xl border border-white/10 hover:border-[#c9a84c]/30 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col"
-                  style={{ background: 'linear-gradient(145deg, #1a2f5e 0%, #142548 100%)' }}
-                >
-                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 text-xl mb-3">
-                    {t.icon}
-                  </span>
-                  <h3 className="text-white font-[family-name:var(--font-heading)] text-sm font-bold mb-1.5">
-                    {t.name}
-                  </h3>
-                  <p className="text-slate-300/70 text-xs leading-relaxed mb-3 flex-1">{t.desc}</p>
-                  <span
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold group-hover:gap-2.5 transition-all duration-200"
-                    style={{ color: '#c9a84c' }}
-                  >
-                    使ってみる <ArrowRight size={12} />
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ToolsSection />
 
       {/* ========================================
           [4] 制度の今を知る（統計 + 記事）
@@ -306,6 +232,98 @@ export default async function BusinessPage() {
                   メリットだけでなくリアルな課題も含めて解説。準備した企業ほど定着率が高い理由がわかります。
                 </p>
               </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================
+          [5] 監理団体・士業の方へ
+          ======================================== */}
+      <section
+        className="py-16 md:py-20"
+        style={{ backgroundColor: '#1a2f5e', borderTop: '1px solid #2a4a8e' }}
+      >
+        <div className="max-w-5xl mx-auto px-4">
+          <p
+            className="text-xs font-semibold tracking-widest uppercase text-center mb-3"
+            style={{ color: '#c9a84c' }}
+          >
+            For Professionals
+          </p>
+          <h2
+            className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-3 text-white"
+          >
+            監理団体・登録支援機関・士業の方へ
+          </h2>
+          <p className="text-sm text-center max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            加盟企業・顧問先への提案に使えるツールを揃えています。<br />
+            J-GLOWのツールで、外国人雇用支援の業務効率を上げてください。
+          </p>
+          <style>{`
+            .pro-card {
+              background: rgba(255,255,255,0.07);
+              border: 1px solid rgba(255,255,255,0.15);
+            }
+            .pro-card:hover {
+              background: rgba(255,255,255,0.12);
+              border-color: #c9a84c;
+            }
+          `}</style>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              {
+                icon: '\u{1F4C4}',
+                title: '労働条件通知書 生成ツール',
+                desc: '8言語バイリンガルPDF。顧問先企業に即日提供できます。',
+                href: '/business/tools/labor-notice',
+                badge: '会員登録必要',
+              },
+              {
+                icon: '\u{1F4CB}',
+                title: '現場指示書ビルダー',
+                desc: '6言語対応の現場ルール・安全指示書を作成。印刷して即日使用できます。',
+                href: '/business/existing-users/connect/templates',
+                badge: '無料',
+              },
+              {
+                icon: '\u{2705}',
+                title: '育成就労・特定技能 移行チェッカー',
+                desc: '5問の質問に答えるだけで移行可否と企業のToDoを確認。監理団体の企業訪問に最適。',
+                href: '/business/roadmap?from=professionals&type=kanri',
+                badge: '無料',
+              },
+            ].map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className="pro-card block rounded-xl p-5 transition-all duration-200 no-underline"
+              >
+                <div className="text-2xl mb-2">{card.icon}</div>
+                <span
+                  className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2"
+                  style={{ backgroundColor: 'rgba(201,168,76,0.2)', color: '#c9a84c' }}
+                >
+                  {card.badge}
+                </span>
+                <h3 className="text-white text-sm font-bold mb-2 leading-snug">
+                  {card.title}
+                </h3>
+                <p className="text-xs leading-relaxed m-0" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                  {card.desc}
+                </p>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              href="/business/partners"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
+              style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
+            >
+              パートナー登録について
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>

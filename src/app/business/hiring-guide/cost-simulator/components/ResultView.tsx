@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useActivityLog } from '@/lib/analytics/useActivityLog';
 import dynamic from 'next/dynamic';
 import type { AllInputs, CostBreakdown, Step4Data } from './CostSimulatorShell';
 import { CostTable } from './CostTable';
@@ -48,10 +49,24 @@ export function ResultView({
   step4,
   isLoggedIn,
 }: Props) {
+  const { log } = useActivityLog();
   const [presetName, setPresetName] = useState('');
   const [showPresetForm, setShowPresetForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sharing, setSharing] = useState(false);
+
+  useEffect(() => {
+    log({
+      eventType: 'tool_complete',
+      eventName: 'cost_simulator_run',
+      metadata: {
+        visa_type: inputs.step2.visaChoice,
+        industry: inputs.step1.industry,
+        worker_count: inputs.step2.headcount,
+        result_total: breakdowns[0]?.threeYearTotal?.max ?? 0,
+      },
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleShare = useCallback(async () => {
     setSharing(true);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Step4Data } from './CostSimulatorShell';
+import type { Step4Data } from '../lib/types';
 import type { SimulatorCostItem, SimulatorOrgPreset } from '@/types/database';
 import { CustomizePanel } from './CustomizePanel';
 import { PresetManager } from './PresetManager';

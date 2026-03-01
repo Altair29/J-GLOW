@@ -11,7 +11,7 @@ import {
   pdf,
 } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
-import type { AllInputs, CostBreakdown, Step4Data } from './CostSimulatorShell';
+import type { AllInputsV1 as AllInputs, CostBreakdown, Step4Data } from '../lib/types';
 
 /* ========================================
    フォント登録
@@ -180,32 +180,63 @@ function CostSimulatorPdf({ inputs, breakdowns, step4, isProposalMode }: PdfProp
         <Text style={s.sectionTitle}>逆算スケジュール</Text>
 
         {breakdowns.map((b) => {
-          const steps =
-            b.visaType === 'ikusei'
-              ? [
-                  { label: 'T-8〜9ヶ月', text: '監理団体との契約・加入手続き' },
-                  { label: 'T-7〜8ヶ月', text: '受入要請' },
-                  { label: 'T-6〜7ヶ月', text: '送出機関との契約・求人票作成' },
-                  { label: 'T-5〜6ヶ月', text: '現地面接・内定' },
-                  { label: 'T-3〜4ヶ月', text: '育成就労計画 認定申請' },
-                  { label: 'T-1〜2ヶ月', text: '在留資格認定証明書 交付・査証取得' },
-                  { label: 'T', text: '就労開始' },
-                ]
-              : b.visaType === 'tokutei_kaigai'
-                ? [
-                    { label: 'T-5〜6ヶ月', text: '候補者探し' },
-                    { label: 'T-4〜5ヶ月', text: '現地面接・内定' },
-                    { label: 'T-3〜4ヶ月', text: '雇用契約・試験確認' },
-                    { label: 'T-2〜3ヶ月', text: '在留資格認定証明書申請' },
-                    { label: 'T-1〜2ヶ月', text: '交付・査証申請・渡航' },
-                    { label: 'T', text: '就労開始' },
-                  ]
-                : [
-                    { label: 'T-3ヶ月', text: '候補者探し・面接' },
-                    { label: 'T-2ヶ月', text: '雇用契約・変更申請' },
-                    { label: 'T-1ヶ月', text: '変更許可・オリエンテーション' },
-                    { label: 'T', text: '就労開始（最短3ヶ月）' },
-                  ];
+          const stepsMap: Record<string, { label: string; text: string }[]> = {
+            ikusei: [
+              { label: 'T-8〜9ヶ月', text: '監理団体との契約・加入手続き' },
+              { label: 'T-7〜8ヶ月', text: '受入要請' },
+              { label: 'T-6〜7ヶ月', text: '送出機関との契約・求人票作成' },
+              { label: 'T-5〜6ヶ月', text: '現地面接・内定' },
+              { label: 'T-3〜4ヶ月', text: '育成就労計画 認定申請' },
+              { label: 'T-1〜2ヶ月', text: '在留資格認定証明書 交付・査証取得' },
+              { label: 'T', text: '就労開始' },
+            ],
+            tokutei_kaigai: [
+              { label: 'T-5〜6ヶ月', text: '候補者探し' },
+              { label: 'T-4〜5ヶ月', text: '現地面接・内定' },
+              { label: 'T-3〜4ヶ月', text: '雇用契約・試験確認' },
+              { label: 'T-2〜3ヶ月', text: '在留資格認定証明書申請' },
+              { label: 'T-1〜2ヶ月', text: '交付・査証申請・渡航' },
+              { label: 'T', text: '就労開始' },
+            ],
+            tokutei1_kaigai: [
+              { label: 'T-5〜6ヶ月', text: '候補者探し' },
+              { label: 'T-4〜5ヶ月', text: '現地面接・内定' },
+              { label: 'T-3〜4ヶ月', text: '雇用契約・試験確認' },
+              { label: 'T-2〜3ヶ月', text: '在留資格認定証明書申請' },
+              { label: 'T-1〜2ヶ月', text: '交付・査証申請・渡航' },
+              { label: 'T', text: '就労開始' },
+            ],
+            tokutei_kokunai: [
+              { label: 'T-3ヶ月', text: '候補者探し・面接' },
+              { label: 'T-2ヶ月', text: '雇用契約・変更申請' },
+              { label: 'T-1ヶ月', text: '変更許可・オリエンテーション' },
+              { label: 'T', text: '就労開始（最短3ヶ月）' },
+            ],
+            tokutei1_kokunai: [
+              { label: 'T-3ヶ月', text: '候補者探し・面接' },
+              { label: 'T-2ヶ月', text: '雇用契約・変更申請' },
+              { label: 'T-1ヶ月', text: '変更許可・オリエンテーション' },
+              { label: 'T', text: '就労開始（最短3ヶ月）' },
+            ],
+            tokutei2: [
+              { label: 'T-4ヶ月', text: '1号での経験確認' },
+              { label: 'T-3ヶ月', text: '2号技能試験受験・合格' },
+              { label: 'T-2ヶ月', text: '在留資格変更申請' },
+              { label: 'T', text: '2号での就労開始' },
+            ],
+            ginou: [
+              { label: 'T-3ヶ月', text: '候補者探し・書類選考' },
+              { label: 'T-2ヶ月', text: '面接・行政書士依頼' },
+              { label: 'T-1ヶ月', text: '在留資格申請・許可' },
+              { label: 'T', text: '就労開始' },
+            ],
+            student: [
+              { label: 'T-2ヶ月', text: '候補者選定・アルバイト開始' },
+              { label: 'T-1ヶ月', text: '卒業後ビザ変更申請' },
+              { label: 'T', text: '正規就労開始' },
+            ],
+          };
+          const steps = stepsMap[b.visaType] ?? stepsMap['tokutei_kokunai'];
 
           return (
             <View key={b.visaType} style={{ marginBottom: 20 }}>

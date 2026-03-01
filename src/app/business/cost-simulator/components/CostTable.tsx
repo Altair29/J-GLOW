@@ -1,6 +1,6 @@
 'use client';
 
-import type { CostBreakdown } from './CostSimulatorShell';
+import type { CostBreakdown } from '../lib/types';
 
 type Props = {
   breakdowns: CostBreakdown[];

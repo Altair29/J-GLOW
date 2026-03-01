@@ -572,35 +572,89 @@ export type BlogPostTag = {
 // パートナーディレクトリ
 // ========================================
 
-export type PartnerType = 'supervisory' | 'admin_scrivener' | 'support_org';
-export type PartnerPlan = 'sponsor' | 'member';
+// 旧型（後方互換 — PartnersAdmin.tsx で使用）
+export type PartnerTypeLegacy = 'supervisory' | 'admin_scrivener' | 'support_org';
+export type PartnerPlanLegacy = 'sponsor' | 'member';
+/** @deprecated use PlanTier */
+export type PartnerPlan = PartnerPlanLegacy;
 
-export const PARTNER_TYPE_LABELS: Record<PartnerType, string> = {
+// 新型（5種別 × 3ティア）
+export type PartnerType = 'kanri' | 'support' | 'gyosei' | 'bengoshi' | 'sharoshi';
+export type PlanTier = 'platinum' | 'gold' | 'regular';
+export type PartnerStatus = 'pending' | 'active' | 'suspended';
+
+export const PARTNER_TYPE_LABELS: Record<string, string> = {
+  // 新キー
+  kanri: '監理団体',
+  support: '登録支援機関',
+  gyosei: '行政書士',
+  bengoshi: '弁護士',
+  sharoshi: '社労士',
+  // 旧キー（PartnersAdmin互換）
   supervisory: '監理団体',
   admin_scrivener: '行政書士',
   support_org: '登録支援機関',
 };
 
-export const PARTNER_PLAN_LABELS: Record<PartnerPlan, string> = {
-  sponsor: 'スポンサー',
-  member: 'メンバー',
+export const PLAN_TIER_LABELS: Record<PlanTier, string> = {
+  platinum: 'プラチナ',
+  gold: 'ゴールド',
+  regular: 'レギュラー',
 };
 
 export type Partner = {
   id: string;
   name: string;
-  type: PartnerType;
-  plan: PartnerPlan;
+  partner_type: PartnerType;
+  plan_tier: PlanTier;
+  plan_expires_at: string | null;
+  display_order: number;
+  status: PartnerStatus;
+
+  // 旧フィールド（互換用）
+  type: PartnerTypeLegacy | null;
+  plan: PartnerPlanLegacy | null;
   prefecture: string | null;
   industries: string[];
   visas: string[];
   languages: string[];
   origin_countries: string[];
-  description: string | null;
-  contact_email: string | null;
-  website_url: string | null;
   is_active: boolean;
   sort_order: number;
+
+  // エリア
+  regions: string[];
+  prefectures: string[];
+
+  // 強み
+  specialty_visas: string[];
+  specialty_industries: string[];
+  specialty_countries: string[];
+  specialty_tags: string[];
+
+  // 表示
+  catch_copy: string | null;
+  description: string | null;
+  logo_url: string | null;
+  founded_year: number | null;
+  permit_type: string | null;
+  permit_no: string | null;
+  employee_count: string | null;
+  specialties: Record<string, string>;
+
+  // 種別固有
+  type_specific: Record<string, unknown>;
+
+  // 計測
+  monthly_inquiry_count: number;
+  total_inquiry_count: number;
+  rating: number;
+  review_count: number;
+
+  // 連絡先
+  contact_email: string | null;
+  website_url: string | null;
+
   created_at: string;
 };
 
@@ -620,11 +674,36 @@ export type Notification = {
 };
 
 // ========================================
+// 問い合わせ
+// ========================================
+
+export type ContactInquiryStatus = 'new' | 'in_progress' | 'done';
+
+export type ContactInquiry = {
+  id: string;
+  inquiry_type: string;
+  company_name: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  company_size: string | null;
+  experience: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+};
+
+// ========================================
 // 採用計画コストシミュレーター
 // ========================================
 
 export type CostItemCategory = 'initial' | 'monthly' | 'risk';
-export type SimulatorVisaType = 'ikusei' | 'tokutei_kaigai' | 'tokutei_kokunai' | 'all';
+export type SimulatorVisaType =
+  | 'ikusei'
+  | 'tokutei_kaigai' | 'tokutei_kokunai'       // v1互換
+  | 'tokutei1_kaigai' | 'tokutei1_kokunai'      // v2リネーム
+  | 'tokutei2' | 'ginou' | 'student'            // v2追加
+  | 'all';
 
 export type SimulatorCostItem = {
   id: string;
@@ -676,4 +755,7 @@ export type SimulatorSession = {
   share_token: string | null;
   expires_at: string | null;
   created_at: string;
+  user_type: string | null;
+  sim_mode: string | null;
+  visa_type_detail: string | null;
 };

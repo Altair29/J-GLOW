@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Input, Button, Alert } from '@/components/shared';
+import { getHomePath } from '@/lib/utils/routing';
 
 type Props = {
   texts: Record<string, string>;
@@ -17,6 +18,7 @@ export function LoginForm({ texts, bizTheme, wkrTheme }: Props) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -24,17 +26,51 @@ export function LoginForm({ texts, bizTheme, wkrTheme }: Props) {
     setError('');
     setLoading(true);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError(texts.error_invalid || 'メールアドレスまたはパスワードが正しくありません');
+      if (error) {
+        setError(texts.error_invalid || 'メールアドレスまたはパスワードが正しくありません');
+        return;
+      }
+
+      // セッション確立を確認（クッキー書き込み完了待ち）
+      await supabase.auth.getSession();
+
+      // redirectTo パラメータがあればそこへ飛ばす
+      const redirectTo = searchParams.get('redirectTo');
+      if (redirectTo && redirectTo.startsWith('/')) {
+        router.push(redirectTo);
+        router.refresh();
+        return;
+      }
+
+      // ロール別にリダイレクト先を決定
+      let role = data.user?.user_metadata?.role || '';
+
+      if (!role) {
+        try {
+          const { data: p } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.user!.id)
+            .single();
+          role = p?.role || '';
+        } catch (err) {
+          console.error('[LoginForm] profile fetch error:', err);
+        }
+      }
+
+      const destination = role ? getHomePath(role) : '/';
+      router.push(destination);
+      router.refresh();
+    } catch (err) {
+      console.error('[LoginForm] unexpected error:', err);
+      setError('予期しないエラーが発生しました。');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push('/');
-    router.refresh();
   };
 
   return (

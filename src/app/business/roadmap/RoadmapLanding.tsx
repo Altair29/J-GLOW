@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import CountdownSection from '@/components/business/roadmap/CountdownSection';
 import TimelineSection from '@/components/business/roadmap/TimelineSection';
@@ -113,7 +114,12 @@ export default function RoadmapLanding({
 }: {
   posts: ArticlePost[];
 }) {
-  const [persona, setPersona] = useState<PersonaFilter>('all');
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get('type');
+
+  const [persona, setPersona] = useState<PersonaFilter>(
+    typeParam === 'kanri' ? 'kanri' : 'all'
+  );
   const [dashPersona, setDashPersona] = useState<DashboardPersona>('管理団体');
 
   // 修正3: special-002 をピン留めセクションから除外

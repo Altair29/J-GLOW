@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { PARTNER_TYPE_LABELS } from '@/types/database';
-import type { Partner, PartnerType } from '@/types/database';
+import type { Partner, PartnerTypeLegacy } from '@/types/database';
 import { Mail, Globe, Building2, MapPin, Briefcase, FileCheck } from 'lucide-react';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
   theme: Record<string, string>;
 };
 
-const ALL_TYPES: { value: '' | PartnerType; label: string }[] = [
+const ALL_TYPES: { value: '' | PartnerTypeLegacy; label: string }[] = [
   { value: '', label: 'すべて' },
   { value: 'supervisory', label: '監理団体' },
   { value: 'admin_scrivener', label: '行政書士' },
@@ -18,7 +18,7 @@ const ALL_TYPES: { value: '' | PartnerType; label: string }[] = [
 ];
 
 export function PartnerDirectory({ partners, theme }: Props) {
-  const [filterType, setFilterType] = useState<'' | PartnerType>('');
+  const [filterType, setFilterType] = useState<'' | PartnerTypeLegacy>('');
   const [filterPref, setFilterPref] = useState('');
 
   /* 都道府県一覧（データから抽出） */
@@ -172,7 +172,7 @@ function SponsorCard({ partner: p, primary }: { partner: Partner; primary: strin
           SPONSOR
         </span>
         <span className="text-xs font-medium text-gray-500">
-          {PARTNER_TYPE_LABELS[p.type]}
+          {p.type ? PARTNER_TYPE_LABELS[p.type] : '—'}
         </span>
       </div>
 
@@ -269,7 +269,7 @@ function MemberCard({ partner: p, primary }: { partner: Partner; primary: string
         >
           MEMBER
         </span>
-        <span className="text-xs text-gray-500">{PARTNER_TYPE_LABELS[p.type]}</span>
+        <span className="text-xs text-gray-500">{p.type ? PARTNER_TYPE_LABELS[p.type] : '—'}</span>
       </div>
 
       {/* 法人名 */}

@@ -1,22 +1,21 @@
 'use client';
 
-const STEPS = [
-  { num: 1, label: '企業情報' },
-  { num: 2, label: '採用計画' },
-  { num: 3, label: '自社環境' },
-  { num: 4, label: '団体情報' },
-];
-
 type Props = {
   currentStep: number;
   onGoToStep: (step: number) => void;
-  canProceed: boolean[]; // index 0=always true, 1=step1 valid, 2=step2 valid, 3=step3 valid
+  canProceed: boolean[];
+  labels?: string[];
 };
 
-export function StepNavigation({ currentStep, onGoToStep, canProceed }: Props) {
+const DEFAULT_LABELS = ['企業情報', '採用計画', '自社環境', '団体情報'];
+
+export function StepNavigation({ currentStep, onGoToStep, canProceed, labels }: Props) {
+  const stepLabels = labels ?? DEFAULT_LABELS;
+  const steps = stepLabels.map((label, i) => ({ num: i + 1, label }));
+
   return (
     <div className="flex items-center justify-center mb-6 gap-1 md:gap-2">
-      {STEPS.map(({ num, label }, i) => {
+      {steps.map(({ num, label }, i) => {
         const isActive = num === currentStep;
         const isDone = num < currentStep;
         const canGo = isDone || (num <= currentStep && canProceed.slice(0, num).every(Boolean));

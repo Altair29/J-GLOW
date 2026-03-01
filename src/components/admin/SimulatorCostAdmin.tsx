@@ -16,8 +16,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const VISA_LABELS: Record<string, string> = {
   ikusei: '育成就労',
-  tokutei_kaigai: '特定技能（海外）',
-  tokutei_kokunai: '特定技能（国内）',
+  tokutei_kaigai: '特定技能（海外）[旧]',
+  tokutei_kokunai: '特定技能（国内）[旧]',
+  tokutei1_kaigai: '特定技能1号（海外）',
+  tokutei1_kokunai: '特定技能1号（国内）',
+  tokutei2: '特定技能2号',
+  ginou: '技術・人文知識・国際業務',
+  student: '留学→就労',
   all: '共通',
 };
 
@@ -163,8 +168,11 @@ export function SimulatorAdmin({ initialItems }: Props) {
             >
               <option value="all">共通</option>
               <option value="ikusei">育成就労</option>
-              <option value="tokutei_kaigai">特定技能（海外）</option>
-              <option value="tokutei_kokunai">特定技能（国内）</option>
+              <option value="tokutei1_kaigai">特定技能1号（海外）</option>
+              <option value="tokutei1_kokunai">特定技能1号（国内）</option>
+              <option value="tokutei2">特定技能2号</option>
+              <option value="ginou">技術・人文知識・国際業務</option>
+              <option value="student">留学→就労</option>
             </select>
             <input
               type="number"

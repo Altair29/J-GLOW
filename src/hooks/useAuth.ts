@@ -15,47 +15,83 @@ export function useAuth() {
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+    let mounted = true;
 
-      if (user) {
+    const fetchProfile = async (userId: string) => {
+      try {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', user.id)
+          .eq('id', userId)
           .single();
         if (error) console.error('[useAuth] profile fetch error:', error);
-        setProfile(data);
+        if (mounted && data) setProfile(data);
+      } catch (err) {
+        console.error('[useAuth] profile fetch exception:', err);
       }
-      setLoading(false);
     };
 
-    getUser();
+    // 1. マウント時に getSession() で初期セッションを即座に取得
+    const initSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('[useAuth] getSession error:', error);
+          return;
+        }
+        if (!mounted) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchProfile(currentUser.id);
+        }
+      } catch (err) {
+        console.error('[useAuth] initSession exception:', err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
 
+    initSession();
+
+    // 2. onAuthStateChange で後続の状態変更を監視
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          const { data } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          setProfile(data);
+        if (!mounted) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        setLoading(false);
+        if (currentUser) {
+          await fetchProfile(currentUser.id);
         } else {
           setProfile(null);
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    // 安全策：3秒後も loading なら強制解除
+    const timer = setTimeout(() => {
+      if (mounted) setLoading(false);
+    }, 3000);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const signOut = async () => {
-    await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    try {
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise(resolve => setTimeout(resolve, 3000)),
+      ]);
+    } catch {
+      // エラーでもUI側はすでにクリア済みなので続行
+    }
   };
 
   const redirectToHome = () => {

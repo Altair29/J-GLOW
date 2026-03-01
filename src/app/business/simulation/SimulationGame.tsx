@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import type { SimulationCardWithEffects, GaugeType } from '@/types/database';
+import { useActivityLog } from '@/lib/analytics/useActivityLog';
 
 type Gauges = Record<GaugeType, number>;
 
@@ -220,9 +221,45 @@ export function SimulationGame({ cards, config, isGuest }: Props) {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [gameOver, setGameOver] = useState<GaugeType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { log } = useActivityLog();
+  const loggedRef = useRef(false);
 
   const currentCard = activeCards[currentIndex];
   const isFinished = currentIndex >= activeCards.length;
+
+  useEffect(() => {
+    if (loggedRef.current) return;
+    if (gameOver) {
+      loggedRef.current = true;
+      log({
+        eventType: 'tool_complete',
+        eventName: 'simulation_game_over',
+        metadata: {
+          zero_gauge: gameOver,
+          operation: gauges.operation,
+          morale: gauges.morale,
+          compliance: gauges.compliance,
+          turns_completed: currentIndex,
+        },
+      });
+    } else if (isFinished) {
+      loggedRef.current = true;
+      const total = gauges.operation + gauges.morale + gauges.compliance;
+      const grade = total >= 250 ? 'S' : total >= 200 ? 'A' : total >= 150 ? 'B' : 'C';
+      log({
+        eventType: 'tool_complete',
+        eventName: 'simulation_clear',
+        metadata: {
+          grade,
+          total_score: total,
+          operation: gauges.operation,
+          morale: gauges.morale,
+          compliance: gauges.compliance,
+          total_turns: activeCards.length,
+        },
+      });
+    }
+  }, [gameOver, isFinished]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChoice = (choice: 'yes' | 'no') => {
     if (isProcessing || !currentCard || gameOver) return;
