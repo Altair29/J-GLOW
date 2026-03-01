@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -163,17 +163,43 @@ function StepTabs({
   );
 }
 
+/* ── sessionStorage 永続化 ── */
+const LN_STORAGE_KEY = 'labor_notice_state';
+
+type LnSavedState = { lang: Lang; step: number; form: FormData };
+
+function saveLnState(s: LnSavedState): void {
+  try { sessionStorage.setItem(LN_STORAGE_KEY, JSON.stringify(s)); } catch { /* ignore */ }
+}
+
+function loadLnState(): LnSavedState | null {
+  try {
+    const raw = sessionStorage.getItem(LN_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as LnSavedState;
+    if (!parsed.form?.step1) return null;
+    return parsed;
+  } catch { return null; }
+}
+
 /* ── Main Wizard ── */
 export default function LaborNoticeWizard() {
-  const [lang, setLang] = useState<Lang>('ja');
-  const [step, setStep] = useState(0);
+  const [lang, setLang] = useState<Lang>(() => loadLnState()?.lang ?? 'ja');
+  const [step, setStep] = useState(() => loadLnState()?.step ?? 0);
   const [showErrors, setShowErrors] = useState(false);
-  const [form, setForm] = useState<FormData>(() => ({
-    step1: { ...DEFAULT_STEP1, issue_date: new Date().toISOString().slice(0, 10) },
-    step2: { ...DEFAULT_STEP2 },
-    step3: { ...DEFAULT_STEP3 },
-    step4: { ...DEFAULT_STEP4 },
-  }));
+  const [form, setForm] = useState<FormData>(() =>
+    loadLnState()?.form ?? {
+      step1: { ...DEFAULT_STEP1, issue_date: new Date().toISOString().slice(0, 10) },
+      step2: { ...DEFAULT_STEP2 },
+      step3: { ...DEFAULT_STEP3 },
+      step4: { ...DEFAULT_STEP4 },
+    },
+  );
+
+  // state変更時にsessionStorageへ保存
+  useEffect(() => {
+    saveLnState({ lang, step, form });
+  }, [lang, step, form]);
 
   const updateStep1 = useCallback(
     (data: Step1Data) => setForm((prev) => ({ ...prev, step1: data })),

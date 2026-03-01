@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, RotateCcw, Check, AlertTriangle, ChevronDown } from 'lucide-react';
@@ -1027,11 +1027,35 @@ function StandardResultScreen({ result, onReset }: { result: CheckerResult; onRe
    Main component
    ============================================================ */
 
+// ── sessionStorage 永続化 ──
+const MC_STORAGE_KEY = 'migration_checker_state';
+type McSavedState = { step: number; answers: string[]; pattern: Step5Pattern };
+function saveMcState(s: McSavedState): void {
+  try { sessionStorage.setItem(MC_STORAGE_KEY, JSON.stringify(s)); } catch { /* ignore */ }
+}
+function loadMcState(): McSavedState | null {
+  try {
+    const raw = sessionStorage.getItem(MC_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as McSavedState;
+  } catch { return null; }
+}
+function clearMcState(): void {
+  try { sessionStorage.removeItem(MC_STORAGE_KEY); } catch { /* ignore */ }
+}
+
 export function MigrationChecker() {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [step, setStep] = useState(() => loadMcState()?.step ?? 0);
+  const [answers, setAnswers] = useState<string[]>(() => loadMcState()?.answers ?? []);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
-  const [step5Pattern, setStep5Pattern] = useState<Step5Pattern>('ikusei');
+  const [step5Pattern, setStep5Pattern] = useState<Step5Pattern>(() => loadMcState()?.pattern ?? 'ikusei');
+
+  // state変更時にsessionStorageへ保存
+  useEffect(() => {
+    if (step > 0 || answers.length > 0) {
+      saveMcState({ step, answers, pattern: step5Pattern });
+    }
+  }, [step, answers, step5Pattern]);
 
   const totalSteps = step5Pattern === 'skip' ? 4 : 5;
   const currentQ = step < 4 ? STEPS[step] : getStep5Question(step5Pattern);
@@ -1065,7 +1089,7 @@ export function MigrationChecker() {
   };
 
   const handleBack = () => { if (step > 0) setStep(step - 1); };
-  const handleReset = () => { setStep(0); setAnswers([]); setResult(null); setStep5Pattern('ikusei'); };
+  const handleReset = () => { clearMcState(); setStep(0); setAnswers([]); setResult(null); setStep5Pattern('ikusei'); };
 
   if (result) {
     if (result.kind === 'other') return <OtherVisaResultScreen data={result.data} onReset={handleReset} />;

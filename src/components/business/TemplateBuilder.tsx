@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Printer, FileText, Star } from 'lucide-react';
 import {
@@ -164,41 +164,53 @@ const EMERGENCY_PHONE_LABEL: Record<Language, string> = {
 
 // ─── Main Component ──────────────────────────────────────────────
 
+// ── sessionStorage 永続化 ──
+const TB_STORAGE_KEY = 'template_builder_state';
+type TbSavedState = {
+  lang: Language; industry: Industry;
+  safety: string[]; emergency: string[]; daily: string[]; phrases: string[];
+  params: Record<string, number>;
+  company: { name: string; supervisor: string; supervisorKana: string; phone: string; emergency: string };
+};
+function saveTbState(s: TbSavedState): void {
+  try { sessionStorage.setItem(TB_STORAGE_KEY, JSON.stringify(s)); } catch { /* ignore */ }
+}
+function loadTbState(): TbSavedState | null {
+  try {
+    const raw = sessionStorage.getItem(TB_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as TbSavedState;
+  } catch { return null; }
+}
+
 export default function TemplateBuilder() {
-  const [selectedLang, setSelectedLang] = useState<Language>('ja');
-  const [selectedIndustry, setSelectedIndustry] = useState<Industry>('all');
-  const [selectedSafety, setSelectedSafety] = useState<string[]>([
-    'S01',
-    'S02',
-    'S03',
-    'S04',
-  ]);
-  const [selectedEmergency, setSelectedEmergency] = useState<string[]>([
-    'E01',
-    'E02',
-    'E03',
-    'E04',
-  ]);
-  const [selectedDaily, setSelectedDaily] = useState<string[]>([
-    'D01',
-    'D02',
-    'D03',
-    'D04',
-  ]);
-  const [selectedPhrases, setSelectedPhrases] = useState<string[]>([]);
-  const [paramValues, setParamValues] = useState<Record<string, number>>({
-    'S05-weight': 20,
-    'S05-people': 2,
-    'D01-minutes': 15,
-    'D02-hour': 8,
-  });
-  const [companyInfo, setCompanyInfo] = useState({
-    name: '',
-    supervisor: '',
-    supervisorKana: '',
-    phone: '',
-    emergency: '',
-  });
+  const [selectedLang, setSelectedLang] = useState<Language>(() => loadTbState()?.lang ?? 'ja');
+  const [selectedIndustry, setSelectedIndustry] = useState<Industry>(() => loadTbState()?.industry ?? 'all');
+  const [selectedSafety, setSelectedSafety] = useState<string[]>(
+    () => loadTbState()?.safety ?? ['S01', 'S02', 'S03', 'S04'],
+  );
+  const [selectedEmergency, setSelectedEmergency] = useState<string[]>(
+    () => loadTbState()?.emergency ?? ['E01', 'E02', 'E03', 'E04'],
+  );
+  const [selectedDaily, setSelectedDaily] = useState<string[]>(
+    () => loadTbState()?.daily ?? ['D01', 'D02', 'D03', 'D04'],
+  );
+  const [selectedPhrases, setSelectedPhrases] = useState<string[]>(() => loadTbState()?.phrases ?? []);
+  const [paramValues, setParamValues] = useState<Record<string, number>>(
+    () => loadTbState()?.params ?? { 'S05-weight': 20, 'S05-people': 2, 'D01-minutes': 15, 'D02-hour': 8 },
+  );
+  const [companyInfo, setCompanyInfo] = useState(
+    () => loadTbState()?.company ?? { name: '', supervisor: '', supervisorKana: '', phone: '', emergency: '' },
+  );
+
+  // state変更時にsessionStorageへ保存
+  useEffect(() => {
+    saveTbState({
+      lang: selectedLang, industry: selectedIndustry,
+      safety: selectedSafety, emergency: selectedEmergency, daily: selectedDaily, phrases: selectedPhrases,
+      params: paramValues, company: companyInfo,
+    });
+  }, [selectedLang, selectedIndustry, selectedSafety, selectedEmergency, selectedDaily, selectedPhrases, paramValues, companyInfo]);
 
   const labels = UI[selectedLang];
 

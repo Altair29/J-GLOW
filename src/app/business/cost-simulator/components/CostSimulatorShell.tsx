@@ -39,6 +39,44 @@ import {
   getCapacityLimit,
 } from '../lib/calculate';
 
+// ==========================================
+// sessionStorage 永続化（ログイン/登録リダイレクト対応）
+// ==========================================
+const SIM_STORAGE_KEY = 'costsim_state';
+
+type SimSavedState = {
+  phase: ShellPhase;
+  userType: SimulatorUserType;
+  mode: SimulatorMode;
+  step0: Step0Data;
+  step1: Step1Data;
+  step2: Step2Data;
+  step3: Step3Data;
+  quickInputs: QuickInputs;
+};
+
+function saveSimState(s: SimSavedState): void {
+  try {
+    sessionStorage.setItem(SIM_STORAGE_KEY, JSON.stringify(s));
+  } catch { /* ignore */ }
+}
+
+function loadSimState(): SimSavedState | null {
+  try {
+    const raw = sessionStorage.getItem(SIM_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as SimSavedState;
+    if (!parsed.phase || !parsed.step1) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function clearSimState(): void {
+  try { sessionStorage.removeItem(SIM_STORAGE_KEY); } catch { /* ignore */ }
+}
+
 // コンポーネント
 import { StepNavigation } from './StepNavigation';
 import { LandingGate } from './LandingGate';
@@ -82,26 +120,28 @@ type Props = {
 
 export function CostSimulatorShell({ costItems, presets: initialPresets, userId, isLoggedIn, sharedSession }: Props) {
   // v2: フェーズベースの状態管理
-  const [phase, setPhase] = useState<ShellPhase>(sharedSession ? 'result' : 'landing');
-  const [userType, setUserType] = useState<SimulatorUserType>('company');
-  const [mode, setMode] = useState<SimulatorMode>('detail');
+  const [phase, setPhase] = useState<ShellPhase>(() =>
+    sharedSession ? 'result' : loadSimState()?.phase ?? 'landing',
+  );
+  const [userType, setUserType] = useState<SimulatorUserType>(() => loadSimState()?.userType ?? 'company');
+  const [mode, setMode] = useState<SimulatorMode>(() => loadSimState()?.mode ?? 'detail');
 
   // Step状態
-  const [step0, setStep0] = useState<Step0Data>(defaultStep0);
-  const [step1, setStep1] = useState<Step1Data>(
+  const [step0, setStep0] = useState<Step0Data>(() => loadSimState()?.step0 ?? defaultStep0);
+  const [step1, setStep1] = useState<Step1Data>(() =>
     sharedSession
       ? { ...defaultStep1, ...(sharedSession.input_params as Record<string, unknown>).step1 as Partial<Step1Data> }
-      : defaultStep1,
+      : loadSimState()?.step1 ?? defaultStep1,
   );
-  const [step2, setStep2] = useState<Step2Data>(
+  const [step2, setStep2] = useState<Step2Data>(() =>
     sharedSession
       ? { ...defaultStep2, ...(sharedSession.input_params as Record<string, unknown>).step2 as Partial<Step2Data> }
-      : defaultStep2,
+      : loadSimState()?.step2 ?? defaultStep2,
   );
-  const [step3, setStep3] = useState<Step3Data>(
+  const [step3, setStep3] = useState<Step3Data>(() =>
     sharedSession
       ? { ...defaultStep3, ...(sharedSession.input_params as Record<string, unknown>).step3 as Partial<Step3Data> }
-      : defaultStep3,
+      : loadSimState()?.step3 ?? defaultStep3,
   );
 
   // v1互換: step4 → step0マッピング
@@ -133,13 +173,21 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   // Quick mode inputs
-  const [quickInputs, setQuickInputs] = useState<QuickInputs>({
-    industry: '',
-    visaChoice: 'ikusei',
-    headcount: 3,
-    startDate: defaultStep2.startDate,
-    fullTimeStaff: null,
-  });
+  const [quickInputs, setQuickInputs] = useState<QuickInputs>(() =>
+    loadSimState()?.quickInputs ?? {
+      industry: '',
+      visaChoice: 'ikusei',
+      headcount: 3,
+      startDate: defaultStep2.startDate,
+      fullTimeStaff: null,
+    },
+  );
+
+  // state変更時にsessionStorageへ保存（landing以外）
+  useEffect(() => {
+    if (phase === 'landing') return;
+    saveSimState({ phase, userType, mode, step0, step1, step2, step3, quickInputs });
+  }, [phase, userType, mode, step0, step1, step2, step3, quickInputs]);
 
   const supabase = useMemo(
     () =>
@@ -220,6 +268,12 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
   const canProceedStep2 = step2.headcount > 0 && step2.startDate !== '';
   const canProceedStep3 = true;
 
+  // ランディングに戻る（セッション状態クリア）
+  const handleRestart = useCallback(() => {
+    clearSimState();
+    setPhase('landing');
+  }, []);
+
   // --- LandingGate ハンドラ ---
   const handleStart = useCallback((ut: SimulatorUserType, m: SimulatorMode) => {
     setUserType(ut);
@@ -251,8 +305,8 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
     const phases = getDetailPhases();
     const idx = phases.indexOf(phase);
     if (idx > 0) setPhase(phases[idx - 1]);
-    else setPhase('landing');
-  }, [phase, getDetailPhases]);
+    else handleRestart();
+  }, [phase, getDetailPhases, handleRestart]);
 
   // 現在のステップ番号（StepNavigation用）
   const currentStepNum = useMemo(() => {
@@ -432,7 +486,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
               data={quickInputs}
               onChange={setQuickInputs}
               onComplete={() => setPhase('quickResult')}
-              onBack={() => setPhase('landing')}
+              onBack={handleRestart}
             />
           </div>
         </>
@@ -451,7 +505,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
               inputs={quickInputs}
               breakdowns={quickBreakdowns}
               onDetailMode={handleQuickToDetail}
-              onRestart={() => setPhase('landing')}
+              onRestart={handleRestart}
             />
           </div>
         </>
@@ -553,7 +607,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
               onShare={handleShare}
               shareUrl={shareUrl}
               onSavePreset={handleSavePreset}
-              onRestart={() => setPhase('landing')}
+              onRestart={handleRestart}
               step4={step4Compat}
               isLoggedIn={isLoggedIn}
             />

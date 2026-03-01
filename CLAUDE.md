@@ -560,6 +560,26 @@ New（partners/ 検索UI・申請フォームで使用）:
 
 ---
 
+## sessionStorage 状態永続化
+
+ログイン/会員登録リダイレクト時にユーザーの入力データが消失しないよう、全ツールで`sessionStorage`による状態永続化を実装済み。
+
+| ツール | Storage Key | 保存対象 | 復元方式 |
+|---|---|---|---|
+| 経営シミュレーション | `msim_game_state` | ゲーム全状態（ゲージ・月数・判断ログ等） | useEffect + dispatch RESTORE_SESSION |
+| 採用計画コストシミュレーター | `costsim_state` | phase・userType・mode・step0-3・quickInputs | useState lazy initializer |
+| 雇用条件書 | `labor_notice_state` | lang・step・form全データ | useState lazy initializer |
+| 現場指示書ビルダー | `template_builder_state` | 言語・業種・選択ルール・会社情報 | useState lazy initializer |
+| 移行チェッカー | `migration_checker_state` | step・answers・ビザパターン | useState lazy initializer |
+
+### 共通パターン
+- **保存**: `useEffect` でstate変更時に自動保存（setup/landing画面は除外）
+- **復元**: `useState(() => loadState()?.field ?? default)` のlazy initializer（SSR安全）
+- **クリア**: リスタート/リセット時に `sessionStorage.removeItem()` を呼ぶ
+- **エラーハンドリング**: try-catch で Private Browsing等のsessionStorage使用不可を無視
+
+---
+
 ## 既知のギャップ（TODO）
 
 1. `editorial_articles` の作成・編集UIがない（NewsAdmin 3タブ目は読み取り専用）
@@ -570,7 +590,7 @@ New（partners/ 検索UI・申請フォームで使用）:
 6. プライバシーポリシーがドラフト版（第3条〜第14条は「準備中」）
 7. 通知のメール送信未実装（`send_email` フラグは記録のみ）
 8. ~~旧コストシミュレーター~~ → `/business/navigator` として復活済み（`src/components/business/cost-simulator/CostSimulator.tsx`）
-9. コストシミュレーター: register/business の `returnUrl` リダイレクト未実装（GateModal から遷移後の復帰）
+9. ~~コストシミュレーター: returnUrl リダイレクト未実装~~ → sessionStorage永続化で解決済み（登録/ログイン後に状態復元）
 10. コストシミュレーター: ゲストセッションのDB引き継ぎ未実装（`guest_token` + `claimed_by` カラム追加が必要）
 11. コストシミュレーター v2: M00037 未適用（`supabase db push` or Supabase Dashboard で実行が必要）
 
