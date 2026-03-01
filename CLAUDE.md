@@ -45,9 +45,10 @@ src/
 │  │  │  ├─ ladder/{checker,[slug]}  # キャリアラダー + 移行チェッカー
 │  │  │  ├─ continue/[slug]          # 続ける・判断する記事
 │  │  │  └─ connect/templates        # 現場指示書ビルダー
-│  │  ├─ tools/labor-notice/         # 労働条件通知書生成
-│  │  │  ├─ components/Step1-5       # ウィザードステップ
-│  │  │  └─ pdf/                     # PDF生成コンポーネント
+│  │  ├─ tools/labor-notice/         # 雇用条件書（入管庁様式）/ 労働条件通知書 生成
+│  │  │  ├─ types.ts                 # 型定義・バリデーション・ビザ別様式設定
+│  │  │  ├─ components/Step1-5       # ウィザードステップ（5段階）
+│  │  │  └─ pdf/                     # PDF生成コンポーネント（別紙1対応）
 │  │  ├─ simulation/                 # シミュレーションゲーム
 │  │  ├─ diagnosis/                  # 適正診断 + [sessionId] + report/[reportId]
 │  │  ├─ blog/[slug]                 # ブログ記事
@@ -172,7 +173,7 @@ scripts/                             # DB投入スクリプト
 | `/business` | 企業向けランディング（ヒーロー→3本柱→ツール→制度記事→監理団体/士業セクション、FadeUpアニメーション適用） |
 | `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
 | `/business/diagnosis` | 外国人雇用 適正診断 |
-| `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・3ユーザー種別・PDF提案書） |
+| `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・4ユーザー種別・ゲストblur制御・発注デッドライン・PDF提案書） |
 | `/business/hiring-guide` | 採用完全ガイド（7ステップ、FadeUp適用） |
 | `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
 | `/business/hiring-guide/trends` | 採用動向サブページ |
@@ -189,7 +190,7 @@ scripts/                             # DB投入スクリプト
 | `/business/existing-users/continue` | 続ける・判断するハブ（FadeUp適用） |
 | `/business/existing-users/continue/[slug]` | 「続ける・判断する」記事（フルHTML対応、FadeUp適用） |
 | `/business/blog/[slug]` | ブログ記事詳細（同一記事が複数ルートからアクセス可能） |
-| `/business/tools/labor-notice` | 労働条件通知書生成ツール（8言語・5ステップ・PDF出力） |
+| `/business/tools/labor-notice` | 雇用条件書/労働条件通知書 生成ツール（8言語・5ステップ・入管庁様式準拠・PDF出力） |
 | `/business/subsidies` | 助成金情報 |
 | `/business/partners` | パートナーディレクトリ（5種別×3ティア） |
 | `/business/partners/apply` | パートナー掲載申請フォーム |
@@ -420,24 +421,42 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 - DB駆動（simulator_cost_items）、2モード構成 + PDF提案書
 - **アーキテクチャ**: ロジック分離済み
   - `lib/types.ts` — 全型定義（Step0-3Data, AllInputs, CostBreakdown, ShellPhase等）
-  - `lib/constants.ts` — 20業種、ビザリードタイム、送出国手数料、デフォルト値
-  - `lib/calculate.ts` — コスト計算、リスク分析、診断ロジック
+  - `lib/constants.ts` — 20業種、ビザリードタイム、送出国手数料、デフォルト値、育成就労施行日定数
+  - `lib/calculate.ts` — コスト計算、リスク分析、診断ロジック、発注デッドライン算出
 - **入口**: LandingGate（UserType→Mode 2段階選択）
-  - UserType: kanri（監理団体）/ company（受入企業）/ guest
+  - UserType: kanri（監理団体）/ support（登録支援機関）/ company（受入企業）/ guest
   - Mode: quick（5問概算）/ detail（多ステップ詳細）、guest→自動quick
 - **Detailモード**: phase制御（landing→step0→step1→step2→step3→result）
-  - kanri: Step0（団体情報）→Step1→Step2→Step3→Result（4ステップ）
+  - kanri/support: Step0（団体/機関情報）→Step1→Step2→Step3→Result（4ステップ）
   - company/guest: Step1→Step2→Step3→Result（3ステップ）
-- **Quickモード**: 5問カード → QuickResultView → 詳細モード引き継ぎ可
+- **Quickモード**: 5問カード（業種→ビザ→人数→開始月→常勤職員数） → QuickResultView → 詳細モード引き継ぎ可
 - **6ビザ種別**: ikusei / tokutei1_kaigai / tokutei1_kokunai / tokutei2 / ginou / student（+ compare比較モード）
-- **結果画面**: KPIカード + コスト内訳 + VisaTimelineChart + RiskAnalysis + ConsultationPanel（6診断パターン）+ ScheduleTimeline + PDF
-- **ゲーティング**: ゲストは結果閲覧可、PDF出力・URL共有はGateModalで会員登録誘導
+- **育成就労制度制限**: 2027年4月施行のため、受入開始日は2027-04以降のみ選択可（Quick/Detail両対応、施行前の日付は自動補正）
+  - 定数: `IKUSEI_START_YEAR=2027`, `IKUSEI_START_MONTH=4`, `IKUSEI_EARLIEST_DATE="2027-04"`
+  - `generateMonthOptions()`: visaChoice引数で育成就労時に2027-04未満をフィルタ
+  - `isBeforeIkuseiStart()`: 施行前判定ヘルパー
+- **発注デッドライン**: `getOrderDeadline()` で受入開始月からリードタイム逆算し、発注期限を表示
+  - ResultView/QuickResultView: ビザ種別ごとの青バナー「○○：△年△月までに発注が必要です」
+  - ScheduleTimeline: 間に合う場合に発注期限注記
+- **結果画面**: KPIカード + コスト内訳 + 業界ベンチマーク比較 + 日本人採用比較 + VisaTimelineChart + RiskAnalysis + ConsultationPanel（12診断パターン）+ ScheduleTimeline + アクションプラン + PDF（8ページ）
+- **ゲーティング**: ゲストは概算KPIのみ表示、詳細セクションはblur+登録CTAオーバーレイ（ResultView/QuickResultView共通）、PDF出力・URL共有はGateModalで会員登録誘導
+- **Step1（企業情報）**: foreignStatus は複数選択（チェックボックス）、留学生ビザ時は雇用形態を正社員に固定
 - **旧パス**: `/business/hiring-guide/cost-simulator` → リダイレクト済み
 
-### 労働条件通知書 (`/business/tools/labor-notice`)
-- 8言語対応、5ステップウィザード、入管庁様式準拠
-- @react-pdf/renderer でクライアントサイドPDF生成
+### 雇用条件書 / 労働条件通知書 (`/business/tools/labor-notice`)
+- **書類種別動的切替**: 特定技能/育成就労→「参考様式第１－６号 雇用条件書」、技能実習→「労働条件通知書」
+- 8言語対応（ja/en/zh/vi/tl/pt/id/th）、5ステップウィザード、入管庁様式準拠
+- @react-pdf/renderer でクライアントサイドPDF生成（別紙1: 賃金の支払）
 - 在留資格: ikusei / tokutei1 / tokutei2 / ginou_jisshu
+- **主要機能**:
+  - 雇用形態（直接/派遣）・就業場所構造化（事業所名・住所・電話）
+  - 育成就労転籍制限条項（制限期間・条件・自発的転籍条件、標準文挿入）
+  - 割増賃金6区分（所定超・法定超60h以内/超・法定休日・法定外休日・深夜）
+  - 就業規則なし対応（10人未満企業）・自己都合退職手続
+  - 社会保険6項目（雇用・健康・厚生年金・労災・国民年金・国民健康）
+  - 年間休日日数・6か月未満有給休暇・健診年月形式
+  - 日付クロスバリデーション（交付日≤契約開始、入国日≤契約開始、開始<終了）
+- **型定義・定数**: `types.ts` に集約（`getDocumentTitle()`, `validateDates()`, `VISA_CONFIGS`, `DISPATCH_ALLOWED_SECTORS`）
 
 ### 現場指示書ビルダー (`/business/existing-users/connect/templates`)
 - 6言語 (ja, vi, id, en, my, zh)、7業種フィルタ
