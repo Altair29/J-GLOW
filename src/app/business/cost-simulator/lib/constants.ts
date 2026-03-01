@@ -64,6 +64,12 @@ export const COUNTRY_FEE_DEFAULTS: Record<SendingCountry, { min: number; max: nu
   other:       { min: 100000, max: 200000 },
 };
 
+// --- 育成就労 制度施行日 ---
+/** 育成就労制度は2027年4月施行予定。受入開始はこの月以降のみ可能 */
+export const IKUSEI_START_YEAR = 2027;
+export const IKUSEI_START_MONTH = 4; // 4月
+export const IKUSEI_EARLIEST_DATE = `${IKUSEI_START_YEAR}-${String(IKUSEI_START_MONTH).padStart(2, '0')}`; // "2027-04"
+
 // --- ビザ別リードタイム（月数） ---
 // 基本値（送出国未指定時のフォールバック）
 export const VISA_LEAD_TIMES: Record<VisaTypeV2, { months: number; label: string }> = {

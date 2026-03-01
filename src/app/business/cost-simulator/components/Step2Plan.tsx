@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import type { Step2Data, VisaChoice, SendingCountry } from '../lib/types';
 import { SENDING_COUNTRIES } from '../lib/constants';
-import { generateMonthOptions } from '../lib/calculate';
+import { generateMonthOptions, isBeforeIkuseiStart } from '../lib/calculate';
+import { IKUSEI_EARLIEST_DATE } from '../lib/constants';
 
 type Props = {
   data: Step2Data;
@@ -32,7 +33,16 @@ export function Step2Plan({
   const update = <K extends keyof Step2Data>(key: K, value: Step2Data[K]) =>
     onChange({ ...data, [key]: value });
 
-  const monthOptions = generateMonthOptions();
+  const isIkusei = data.visaChoice === 'ikusei' || data.visaChoice === 'both';
+  const monthOptions = generateMonthOptions(24, data.visaChoice);
+
+  // 育成就労選択時に現在の開始日が2027-04未満なら自動補正
+  if (isIkusei && isBeforeIkuseiStart(data.startDate) && monthOptions.length > 0) {
+    // 次のレンダーで反映されるようにスケジュール
+    if (data.startDate < IKUSEI_EARLIEST_DATE) {
+      onChange({ ...data, startDate: monthOptions[0].value });
+    }
+  }
 
   // ビザ選択ガイドのロジック
   const guideQuestions = [
@@ -275,6 +285,11 @@ export function Step2Plan({
             <option key={value} value={value}>{label}</option>
           ))}
         </select>
+        {isIkusei && (
+          <p className="text-xs text-amber-600 mt-1">
+            育成就労制度は2027年4月施行予定のため、受入開始は2027年4月以降のみ選択できます
+          </p>
+        )}
       </div>
 
       {/* 送出国 */}

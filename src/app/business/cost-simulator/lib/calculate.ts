@@ -14,6 +14,7 @@ import type {
   ActionStep,
   SendingCountry,
 } from './types';
+import type { VisaChoice } from './types';
 import {
   COUNTRY_FEE_DEFAULTS,
   VISA_LEAD_TIMES,
@@ -23,6 +24,9 @@ import {
   JP_HIRING_BENCHMARKS,
   INDUSTRY_COST_BENCHMARKS,
   INDUSTRIES_V2,
+  IKUSEI_EARLIEST_DATE,
+  IKUSEI_START_YEAR,
+  IKUSEI_START_MONTH,
 } from './constants';
 
 // ========================================
@@ -701,14 +705,47 @@ export function getIndustryBenchmarkComparison(
 // 月候補生成（共通ユーティリティ）
 // ========================================
 
-export function generateMonthOptions(monthsAhead = 24): { value: string; label: string }[] {
+/**
+ * 月候補を生成。育成就労の場合は2027年4月以降のみ。
+ */
+export function generateMonthOptions(monthsAhead = 24, visaChoice?: VisaChoice): { value: string; label: string }[] {
   const options: { value: string; label: string }[] = [];
   const now = new Date();
+  const needIkuseiFilter = visaChoice === 'ikusei' || visaChoice === 'both';
+
   for (let i = 0; i <= monthsAhead; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
     const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    // 育成就労の場合、2027年4月未満はスキップ
+    if (needIkuseiFilter && val < IKUSEI_EARLIEST_DATE) continue;
     const label = `${d.getFullYear()}年${d.getMonth() + 1}月`;
     options.push({ value: val, label });
   }
+  // 育成就労で範囲内に候補がない場合、2027-04〜を追加
+  if (needIkuseiFilter && options.length === 0) {
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(IKUSEI_START_YEAR, IKUSEI_START_MONTH - 1 + i, 1);
+      const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const label = `${d.getFullYear()}年${d.getMonth() + 1}月`;
+      options.push({ value: val, label });
+    }
+  }
   return options;
+}
+
+/**
+ * 育成就労の場合に startDate が制度施行前（2027-04未満）かどうか
+ */
+export function isBeforeIkuseiStart(startDate: string): boolean {
+  return startDate < IKUSEI_EARLIEST_DATE;
+}
+
+/**
+ * 受入開始日から逆算して「いつまでに発注（監理団体との契約）が必要か」を算出
+ */
+export function getOrderDeadline(startDate: string, visaType: VisaTypeV2, country?: SendingCountry): string {
+  const leadMonths = getLeadTimeMonths(visaType, country);
+  const [y, m] = startDate.split('-').map(Number);
+  const deadline = new Date(y, m - 1 - leadMonths, 1);
+  return `${deadline.getFullYear()}年${deadline.getMonth() + 1}月`;
 }

@@ -11,7 +11,8 @@ import { ConsultationPanel } from './ConsultationPanel';
 import { useAuth } from '@/hooks/useAuth';
 import GateModal from './GateModal';
 import { JP_HIRING_BENCHMARKS, INDUSTRY_COST_BENCHMARKS } from '../lib/constants';
-import { generateActionPlan, getIndustryBenchmarkComparison } from '../lib/calculate';
+import { generateActionPlan, getIndustryBenchmarkComparison, getOrderDeadline } from '../lib/calculate';
+import type { VisaTypeV2 } from '../lib/types';
 
 const PdfDocument = dynamic(() => import('./PdfDocument').then((m) => m.PdfDownloadButton), {
   ssr: false,
@@ -99,6 +100,18 @@ export function ResultView({
   // 育成就労かどうかの判定
   const hasIkusei = breakdowns.some((b) => b.visaType === 'ikusei');
 
+  // 発注デッドライン算出
+  const orderDeadlines = useMemo(() => {
+    const startDate = allInputs?.step2.startDate ?? inputs.step2.startDate;
+    const country = allInputs?.step2.sendingCountry ?? inputs.step2.sendingCountry;
+    if (!startDate) return [];
+    return breakdowns.map((b) => {
+      const visaType = b.visaType as VisaTypeV2;
+      const deadline = getOrderDeadline(startDate, visaType, country);
+      return { visaLabel: b.visaLabel, deadline, visaType };
+    });
+  }, [breakdowns, allInputs, inputs]);
+
   // 日本人採用比較データ
   const industry = allInputs?.step1.industry ?? inputs.step1.industry;
   const jpBenchmark = JP_HIRING_BENCHMARKS[industry];
@@ -135,6 +148,28 @@ export function ResultView({
           >
             最新情報は出入国在留管理庁のサイトでご確認ください
           </a>
+        </div>
+      )}
+
+      {/* 発注デッドラインバナー */}
+      {orderDeadlines.length > 0 && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <h4 className="text-sm font-bold text-blue-800 mb-2">
+            発注・契約のタイムリミット
+          </h4>
+          <div className="space-y-1.5">
+            {orderDeadlines.map((d) => (
+              <div key={d.visaType} className="flex items-center gap-2 text-sm">
+                <span className="text-blue-600 shrink-0">&#9200;</span>
+                <span className="text-blue-800">
+                  <strong>{d.visaLabel}</strong>：<strong>{d.deadline}</strong>までに発注が必要です
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-blue-500 mt-2">
+            ※ 希望就労開始月から逆算したリードタイムに基づく目安です
+          </p>
         </div>
       )}
 

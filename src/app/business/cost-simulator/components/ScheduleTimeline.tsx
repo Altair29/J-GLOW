@@ -105,6 +105,9 @@ function TimelineView({
           <p className="text-sm text-green-700">
             ✓ {formatMonth(startDate, 0)}に就労開始できます
           </p>
+          <p className="text-xs text-green-600 mt-1">
+            &#9200; <strong>{formatMonth(startDate, firstStepOffset)}</strong>までに発注・契約が必要です
+          </p>
         </div>
       ) : (
         <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import type { QuickInputs, VisaChoice } from '../lib/types';
 import { IndustryButtonGrid } from './IndustryButtonGrid';
-import { generateMonthOptions } from '../lib/calculate';
+import { generateMonthOptions, isBeforeIkuseiStart } from '../lib/calculate';
+import { IKUSEI_EARLIEST_DATE } from '../lib/constants';
 
 type Props = {
   data: QuickInputs;
@@ -19,7 +20,13 @@ export function QuickMode({ data, onChange, onComplete, onBack }: Props) {
   const update = <K extends keyof QuickInputs>(key: K, value: QuickInputs[K]) =>
     onChange({ ...data, [key]: value });
 
-  const monthOptions = generateMonthOptions();
+  const isIkusei = data.visaChoice === 'ikusei' || data.visaChoice === 'both';
+  const monthOptions = generateMonthOptions(24, data.visaChoice);
+
+  // 育成就労選択時に開始日が2027-04未満なら補正
+  if (isIkusei && isBeforeIkuseiStart(data.startDate) && monthOptions.length > 0 && data.startDate < IKUSEI_EARLIEST_DATE) {
+    onChange({ ...data, startDate: monthOptions[0].value });
+  }
 
   const visaOptions: { value: VisaChoice; label: string }[] = [
     { value: 'ikusei', label: '育成就労' },
@@ -157,6 +164,11 @@ export function QuickMode({ data, onChange, onComplete, onBack }: Props) {
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>
+            {isIkusei && (
+              <p className="text-xs text-amber-600 mt-2 text-center">
+                育成就労制度は2027年4月施行予定のため、受入開始は2027年4月以降のみ選択できます
+              </p>
+            )}
           </div>
         </div>
       )}

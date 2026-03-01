@@ -2,7 +2,7 @@
 
 import type { QuickInputs, CostBreakdown } from '../lib/types';
 import { VISA_LEAD_TIMES } from '../lib/constants';
-import { getMonthsUntilStart, getEarliestStartMonth, isFeasible } from '../lib/calculate';
+import { getMonthsUntilStart, getEarliestStartMonth, isFeasible, getOrderDeadline } from '../lib/calculate';
 import type { VisaTypeV2 } from '../lib/types';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -47,6 +47,13 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
   const earliestMonth = visaType ? getEarliestStartMonth(visaType) : '';
   const hasIkusei = breakdowns.some((b) => b.visaType === 'ikusei');
 
+  // 発注デッドライン算出
+  const orderDeadlines = breakdowns.map((b) => {
+    const vt = getVisaTypeV2FromKey(b.visaType);
+    const deadline = vt ? getOrderDeadline(inputs.startDate, vt) : null;
+    return { visaLabel: b.visaLabel, deadline, visaType: b.visaType };
+  }).filter((d) => d.deadline !== null);
+
   return (
     <div className="space-y-8">
       {/* 育成就労の制度注記 */}
@@ -54,6 +61,28 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
         <div className="p-3 bg-amber-50 border border-amber-300 rounded-lg">
           <p className="text-amber-800 text-xs">
             育成就労制度は2027年施行予定の新制度です。本試算は概算であり、施行時に費用体系が変更される可能性があります。
+          </p>
+        </div>
+      )}
+
+      {/* 発注デッドラインバナー */}
+      {orderDeadlines.length > 0 && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <h4 className="text-sm font-bold text-blue-800 mb-2">
+            発注・契約のタイムリミット
+          </h4>
+          <div className="space-y-1.5">
+            {orderDeadlines.map((d) => (
+              <div key={d.visaType} className="flex items-center gap-2 text-sm">
+                <span className="text-blue-600 shrink-0">&#9200;</span>
+                <span className="text-blue-800">
+                  <strong>{d.visaLabel}</strong>：<strong>{d.deadline}</strong>までに発注が必要です
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-blue-500 mt-2">
+            ※ 希望就労開始月から逆算したリードタイムに基づく目安です
           </p>
         </div>
       )}
