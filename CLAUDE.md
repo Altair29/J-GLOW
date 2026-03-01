@@ -31,7 +31,8 @@ src/
 │  │  └─ register/{business,worker}/
 │  ├─ contact/                       # お問い合わせ（スタンドアロン、Header/Footer なし）
 │  ├─ business/                      # 企業向け [LAYOUT: BusinessHeader + Footer]
-│  │  ├─ cost-simulator/             # コストシミュレーター v2（DB駆動・2モード）
+│  │  ├─ navigator/                  # 外国人採用ナビゲーター（ステップ式ビザ提案+概算コスト）
+│  │  ├─ cost-simulator/             # 採用計画コストシミュレーター v2（DB駆動・2モード）
 │  │  │  ├─ lib/                     # types.ts, constants.ts, calculate.ts
 │  │  │  └─ components/              # Shell, LandingGate, Step0-4, Quick*, Result*, PDF等（20+）
 │  │  ├─ hiring-guide/               # 採用完全ガイド + サブ3本
@@ -79,7 +80,7 @@ src/
 ├─ components/
 │  ├─ business/                      # 企業向けUI
 │  │  ├─ BusinessHeader.tsx          # ソリッドネイビーヘッダー + UserArea
-│  │  ├─ cost-simulator/             # 旧コストシミュレーター（デッドコード）
+│  │  ├─ cost-simulator/             # 外国人採用ナビゲーター本体（CostSimulator.tsx + CumulativeChart.tsx）
 │  │  ├─ hiring-guide/               # 採用ガイド24コンポーネント
 │  │  ├─ roadmap/                    # ロードマップ4コンポーネント
 │  │  ├─ partners/                   # パートナー検索UI（Phase 3）
@@ -173,7 +174,8 @@ scripts/                             # DB投入スクリプト
 | `/business` | 企業向けランディング（ヒーロー→3本柱→ツール→制度記事→監理団体/士業セクション、FadeUpアニメーション適用） |
 | `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
 | `/business/diagnosis` | 外国人雇用 適正診断 |
-| `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・4ユーザー種別・ゲストblur制御・発注デッドライン・PDF提案書） |
+| `/business/navigator` | 外国人採用ナビゲーター（ステップ式ビザ提案・業種/条件→最適在留資格自動提案・概算コスト表示） |
+| `/business/cost-simulator` | 採用計画コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・4ユーザー種別・ゲストblur制御・発注デッドライン・PDF提案書） |
 | `/business/hiring-guide` | 採用完全ガイド（7ステップ、FadeUp適用） |
 | `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
 | `/business/hiring-guide/trends` | 採用動向サブページ |
@@ -311,7 +313,7 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 ### ツールメニュー (`toolItems`)
 | ラベル | パス |
 |---|---|
-| 外国人採用ナビゲーター | `/business/cost-simulator` |
+| 外国人採用ナビゲーター | `/business/navigator` |
 | 採用計画コストシミュレーター | `/business/hiring-guide/cost-simulator` |
 | 労働条件通知書 生成ツール | `/business/tools/labor-notice` |
 | 現場指示書ビルダー | `/business/existing-users/connect/templates` |
@@ -361,9 +363,9 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 
 ## 企業向けランディング (`/business`) セクション構成
 
-1. **ヒーロー** — CTA: コストシミュレーター / 採用ガイド
+1. **ヒーロー** — CTA: ナビゲーター / 採用ガイド
 2. **状況別3本柱カード** — 採用ガイド / スタッフ活用ハブ / 育成就労ロードマップ
-3. **現場で使えるツール** — `ToolsSection` コンポーネント（6ツール: ナビゲーター/コストシミュレーター/労働条件通知書/現場指示書/移行チェッカー/19分野解説）
+3. **現場で使えるツール** — `ToolsSection` コンポーネント（7ツール: ナビゲーター/コストシミュレーター/労働条件通知書/現場指示書/移行チェッカー/19分野解説/経営シミュレーション）
 4. **制度の今を知る** — 統計記事3本（労働力不足 / 採用動向 / 正直ガイド）
 5. **監理団体・登録支援機関・士業の方へ**（FOR PROFESSIONALS）
    - ツールカード3枚:
@@ -417,7 +419,16 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 
 ## 主要ツール仕様概要
 
-### コストシミュレーター v2 (`/business/cost-simulator`)
+### 外国人採用ナビゲーター (`/business/navigator`)
+- **コンポーネント**: `src/components/business/cost-simulator/CostSimulator.tsx`（1248行・自己完結型）
+- **機能**: 業種・条件をステップ入力 → スコアリングで最適在留資格を自動提案 → 概算コスト表示
+- **対応ビザ**: ikusei（育成就労）/ tokutei（特定技能）/ gijinkoku（技人国）/ ryugaku（留学生）
+- **ステップ**: 業種→雇用形態→雇用期間→スキルレベル→採用スピード→渡日経験→人数・国籍
+- **結果表示**: ビザ適合スコアランキング + 制度詳細 + 採用タイムライン + コスト概算 + 累積コストチャート + 計画ポイント
+- **依存**: `CumulativeChart.tsx`（recharts、dynamic import）
+- **リンク元**: ヒーローCTA、ToolsSection、Header、Footer、hiring-guide各CTA
+
+### 採用計画コストシミュレーター v2 (`/business/cost-simulator`)
 - DB駆動（simulator_cost_items）、2モード構成 + PDF提案書
 - **アーキテクチャ**: ロジック分離済み
   - `lib/types.ts` — 全型定義（Step0-3Data, AllInputs, CostBreakdown, ShellPhase等）
@@ -520,7 +531,7 @@ New（partners/ 検索UI・申請フォームで使用）:
 5. ニュース記事詳細ページがスタブ（`/business/news/[articleId]` は「開発中」）
 6. プライバシーポリシーがドラフト版（第3条〜第14条は「準備中」）
 7. 通知のメール送信未実装（`send_email` フラグは記録のみ）
-8. 旧コストシミュレーター未削除（`src/components/business/cost-simulator/CostSimulator.tsx` 84KB、参照なし。旧Navigator）
+8. ~~旧コストシミュレーター~~ → `/business/navigator` として復活済み（`src/components/business/cost-simulator/CostSimulator.tsx`）
 9. コストシミュレーター: register/business の `returnUrl` リダイレクト未実装（GateModal から遷移後の復帰）
 10. コストシミュレーター: ゲストセッションのDB引き継ぎ未実装（`guest_token` + `claimed_by` カラム追加が必要）
 11. コストシミュレーター v2: M00037 未適用（`supabase db push` or Supabase Dashboard で実行が必要）

@@ -4,7 +4,7 @@ export default function SubpageFooterCTA() {
       <p className="mb-6 text-sm text-gray-300">次のステップ</p>
       <div className="flex flex-col items-center justify-center gap-6">
         <a
-          href="/business/cost-simulator"
+          href="/business/navigator"
           className="inline-flex items-center justify-center rounded-xl bg-[var(--accent)] px-12 py-5 text-xl font-bold text-white transition-all duration-200 hover:opacity-90 hover:shadow-xl"
           aria-label="無料コストシミュレーターで試算する"
         >

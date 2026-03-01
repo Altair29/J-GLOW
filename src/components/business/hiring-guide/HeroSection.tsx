@@ -22,9 +22,9 @@ export default function HeroSection() {
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <a
-            href="/business/cost-simulator"
+            href="/business/navigator"
             className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-8 py-3.5 text-sm font-bold text-[var(--primary)] transition-colors hover:bg-[var(--accent-light)]"
-            aria-label="最適な在留資格×費用を確認する - コストシミュレーターページへ"
+            aria-label="最適な在留資格×費用を確認する - ナビゲーターページへ"
           >
             最適な在留資格×費用を確認する
             <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

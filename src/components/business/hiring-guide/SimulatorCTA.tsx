@@ -12,7 +12,7 @@ export default function SimulatorCTA() {
         業種・人数・国籍を入力して試算してみましょう
       </p>
       <a
-        href="/business/cost-simulator"
+        href="/business/navigator"
         className="mt-8 inline-flex items-center justify-center rounded-xl bg-[var(--accent)] px-12 py-5 text-xl font-bold text-white transition-all duration-200 hover:opacity-90 hover:shadow-xl"
         aria-label="無料コストシミュレーターで試算する"
       >

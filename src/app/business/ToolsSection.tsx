@@ -27,7 +27,7 @@ const tools = [
     title: '外国人採用ナビゲーター',
     subtitle: '業種・条件から在留資格を自動提案',
     features: ['業種・規模を入力するだけ', '育成就労・特定技能など最適ビザを表示', 'コスト目安もその場で確認'],
-    link: '/business/cost-simulator',
+    link: '/business/navigator',
   },
   {
     id: 'simulator',
@@ -99,7 +99,7 @@ const tools = [
     badge: '7言語出力',
     title: '現場指示書ビルダー',
     subtitle: '現場ルールを7言語で即プリントアウト',
-    features: ['安全・緊急・日常ルールを組み合わせ自在', '日・越・尼・英・緬・比・中の7言語', 'QRコード付き印刷で現場すぐに使える'],
+    features: ['安全・緊急・日常ルールを組み合わせ自在', '日・越・尼・英・緬・比・中の7言語', '印刷して現場ですぐに使える'],
     link: '/business/existing-users/connect/templates',
   },
   {
@@ -154,6 +154,30 @@ const tools = [
     subtitle: '育成就労・特定技能が使える分野を網羅解説',
     features: ['各分野の制度・職種・要件を詳細解説', '受入見込数など最新統計データ付き', '2027年開始の新3分野も先行掲載'],
     link: '/business/articles',
+  },
+  {
+    id: 'msim',
+    icon: (
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="12" width="64" height="48" rx="6" fill="#EEF3FB" stroke="#1a2f5e" strokeWidth="2.5"/>
+        <rect x="8" y="12" width="64" height="12" rx="6" fill="#1a2f5e"/>
+        <rect x="8" y="18" width="64" height="6" fill="#1a2f5e"/>
+        <text x="40" y="22" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="Arial">経営SIM</text>
+        <rect x="14" y="30" width="22" height="6" rx="3" fill="#c9a84c"/>
+        <rect x="14" y="38" width="18" height="6" rx="3" fill="#2563eb" opacity="0.6"/>
+        <rect x="14" y="46" width="20" height="6" rx="3" fill="#059669" opacity="0.6"/>
+        <circle cx="54" cy="42" r="12" fill="white" stroke="#1a2f5e" strokeWidth="1.5"/>
+        <path d="M49 42 L53 46 L59 38" stroke="#c9a84c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="26" cy="66" r="4" fill="#c9a84c"/>
+        <circle cx="40" cy="66" r="4" fill="#1a2f5e"/>
+        <circle cx="54" cy="66" r="4" fill="#dc2626" opacity="0.7"/>
+      </svg>
+    ),
+    badge: 'ターン制',
+    title: '経営シミュレーション',
+    subtitle: '外国人雇用のリアルを体験して学ぶ',
+    features: ['業種別のリアルなシナリオで経営判断', '法令遵守・コスト・定着率を同時に管理', '学びのポイントで実務知識も習得'],
+    link: '/business/management-sim',
   },
 ];
 

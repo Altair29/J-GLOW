@@ -17,7 +17,7 @@ const footerBizLinks = [
 ];
 
 const footerToolLinks = [
-  { label: '外国人採用ナビゲーター', href: '/business/cost-simulator' },
+  { label: '外国人採用ナビゲーター', href: '/business/navigator' },
   { label: '採用計画コストシミュレーター', href: '/business/hiring-guide/cost-simulator' },
   { label: '労働条件通知書 生成ツール', href: '/business/tools/labor-notice' },
   { label: '現場指示書ビルダー', href: '/business/existing-users/connect/templates' },

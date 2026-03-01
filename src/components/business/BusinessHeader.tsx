@@ -16,8 +16,9 @@ type Props = {
 type NavLinkItem = { label: string; href: string };
 
 const toolItems: NavLinkItem[] = [
-  { label: '外国人採用ナビゲーター', href: '/business/cost-simulator' },
+  { label: '外国人採用ナビゲーター', href: '/business/navigator' },
   { label: '採用計画コストシミュレーター', href: '/business/hiring-guide/cost-simulator' },
+  { label: '経営シミュレーション', href: '/business/management-sim' },
   { label: '労働条件通知書 生成ツール', href: '/business/tools/labor-notice' },
   { label: '現場指示書ビルダー', href: '/business/existing-users/connect/templates' },
   { label: '特定技能移行チェッカー', href: '/business/existing-users/ladder/checker' },

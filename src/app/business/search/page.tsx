@@ -19,7 +19,7 @@ type SearchItem = {
 // 静的データ（ツール・パートナー）
 const STATIC_ITEMS: SearchItem[] = [
   // ツール
-  { id: 'tool-1', category: 'ツール', title: '外国人採用ナビゲーター', description: 'ビザ種別・業種・コストを一括シミュレーション。採用計画の第一歩に。', path: '/business/cost-simulator', icon: '🧮', tags: ['コスト', 'シミュレーター', '計画'] },
+  { id: 'tool-1', category: 'ツール', title: '外国人採用ナビゲーター', description: 'ビザ種別・業種・コストを一括シミュレーション。採用計画の第一歩に。', path: '/business/navigator', icon: '🧮', tags: ['コスト', 'シミュレーター', '計画'] },
   { id: 'tool-2', category: 'ツール', title: '労働条件通知書 生成ツール', description: '8言語対応。入管庁様式準拠の通知書をウィザード形式で作成・PDF出力。', path: '/business/tools/labor-notice', icon: '📄', tags: ['労働条件', 'PDF', '8言語', '育成就労', '特定技能'] },
   { id: 'tool-3', category: 'ツール', title: '現場指示書ビルダー', description: '安全・緊急・日常ルールを6言語で作成。印刷対応2カラムレイアウト。', path: '/business/existing-users/connect/templates', icon: '📋', tags: ['現場', '多言語', '安全', '指示書'] },
   { id: 'tool-4', category: 'ツール', title: '特定技能移行チェッカー', description: '5問のウィザードで技能実習生→特定技能への移行可否を診断。', path: '/business/existing-users/ladder/checker', icon: '✅', tags: ['特定技能', '移行', 'チェック', '技能実習'] },

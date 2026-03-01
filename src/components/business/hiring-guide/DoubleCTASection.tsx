@@ -16,9 +16,9 @@ export default function DoubleCTASection() {
             業種・人数・国籍から概算費用を無料で試算
           </p>
           <a
-            href="/business/cost-simulator"
+            href="/business/navigator"
             className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-8 py-3.5 text-sm font-bold text-[var(--primary)] transition-colors hover:bg-[var(--accent-light)]"
-            aria-label="無料コストシミュレーターへ"
+            aria-label="外国人採用ナビゲーターへ"
           >
             無料で試算する
             <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
