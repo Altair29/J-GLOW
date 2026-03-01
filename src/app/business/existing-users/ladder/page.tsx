@@ -4,6 +4,7 @@ import { LadderStageOverview } from '@/components/business/LadderStageOverview';
 import { LadderDiagnosticBanner } from '@/components/business/LadderDiagnosticBanner';
 import { LadderContentGrid } from '@/components/business/LadderContentGrid';
 import { LadderFooterCTA } from '@/components/business/LadderFooterCTA';
+import { FadeUp } from '@/components/common/FadeUp';
 
 export const metadata: Metadata = {
   title: '外国人材を育てる | J-GLOW',
@@ -15,10 +16,18 @@ export default function LadderHubPage() {
   return (
     <div>
       <LadderHeroSection />
-      <LadderStageOverview />
-      <LadderDiagnosticBanner />
-      <LadderContentGrid />
-      <LadderFooterCTA />
+      <FadeUp>
+        <LadderStageOverview />
+      </FadeUp>
+      <FadeUp>
+        <LadderDiagnosticBanner />
+      </FadeUp>
+      <FadeUp>
+        <LadderContentGrid />
+      </FadeUp>
+      <FadeUp>
+        <LadderFooterCTA />
+      </FadeUp>
     </div>
   );
 }

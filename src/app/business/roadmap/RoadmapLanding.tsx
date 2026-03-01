@@ -7,6 +7,7 @@ import CountdownSection from '@/components/business/roadmap/CountdownSection';
 import TimelineSection from '@/components/business/roadmap/TimelineSection';
 import PracticalTimelineSection from '@/components/business/roadmap/PracticalTimelineSection';
 import ChecklistSection from '@/components/business/roadmap/ChecklistSection';
+import { FadeUp, FadeUpGroup } from '@/components/common/FadeUp';
 import {
   TARGET_DATE,
   TARGET_LABEL,
@@ -203,6 +204,7 @@ export default function RoadmapLanding({
 
       {/* 3. ピン留め記事セクション */}
       {pinnedPosts.length > 0 && (
+        <FadeUp>
         <section style={{ backgroundColor: '#f8fafc' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
             <div
@@ -211,7 +213,7 @@ export default function RoadmapLanding({
             >
               制度開始前に必読
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <FadeUpGroup stagger={0.1} className="grid gap-4 sm:grid-cols-2">
               {pinnedPosts.map((post) => {
                 const isSpecial001 = post.slug === 'ikuseshuro-special-001';
 
@@ -270,12 +272,14 @@ export default function RoadmapLanding({
                   </Link>
                 );
               })}
-            </div>
+            </FadeUpGroup>
           </div>
         </section>
+        </FadeUp>
       )}
 
       {/* 4. ペルソナフィルタータブ */}
+      <FadeUp>
       <section id="articles" className="border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-2">
           <h2 className="text-lg font-bold text-[#1a2f5e] mb-6">
@@ -298,8 +302,10 @@ export default function RoadmapLanding({
           </div>
         </div>
       </section>
+      </FadeUp>
 
       {/* 5. まずはここから読んでください */}
+      <FadeUp>
       <section>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-12 pt-6">
           <div
@@ -316,17 +322,19 @@ export default function RoadmapLanding({
               該当する記事がありません。「すべて」タブをお試しください。
             </p>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <FadeUpGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {mainPosts.map((post) => (
                 <ArticleCard key={post.slug} post={post} />
               ))}
-            </div>
+            </FadeUpGroup>
           )}
         </div>
       </section>
+      </FadeUp>
 
       {/* 6. あわせて読みたい記事 */}
       {extraPosts.length > 0 && (
+        <FadeUp>
         <section
           className="border-t border-gray-200"
           style={{ backgroundColor: '#f8fafc' }}
@@ -335,16 +343,18 @@ export default function RoadmapLanding({
             <h3 className="text-lg font-bold text-[#1a2f5e] mb-6">
               あわせて読みたい記事
             </h3>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <FadeUpGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {extraPosts.map((post) => (
                 <ArticleCard key={post.slug} post={post} />
               ))}
-            </div>
+            </FadeUpGroup>
           </div>
         </section>
+        </FadeUp>
       )}
 
       {/* 7. 育成就労制度 準備スケジュール */}
+      <FadeUp>
       <section className="border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
           <h2 className="text-xl font-bold text-[#1a2f5e] mb-1 pb-2 border-b-2 border-[#c9a84c] inline-block">
@@ -390,6 +400,7 @@ export default function RoadmapLanding({
           </div>
         </div>
       </section>
+      </FadeUp>
     </div>
   );
 }

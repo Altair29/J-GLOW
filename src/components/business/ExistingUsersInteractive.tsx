@@ -15,6 +15,7 @@ import {
   CircleDollarSign,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { FadeUp, FadeUpGroup } from '@/components/common/FadeUp';
 
 /* ========================================
    マッピング定義
@@ -203,22 +204,24 @@ export function ExistingUsersInteractive() {
           ======================================== */}
       <section className="py-16 md:py-20">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span
-              className="inline-block text-xs font-semibold tracking-widest uppercase mb-4"
-              style={{ color: '#c9a84c' }}
-            >
-              Common Pain Points
-            </span>
-            <h2 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              こんなお悩み、ありませんか？
-            </h2>
-            <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto">
-              外国人材を受け入れている企業が共通して抱える課題です
-            </p>
-          </div>
+          <FadeUp>
+            <div className="text-center mb-12">
+              <span
+                className="inline-block text-xs font-semibold tracking-widest uppercase mb-4"
+                style={{ color: '#c9a84c' }}
+              >
+                Common Pain Points
+              </span>
+              <h2 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                こんなお悩み、ありませんか？
+              </h2>
+              <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto">
+                外国人材を受け入れている企業が共通して抱える課題です
+              </p>
+            </div>
+          </FadeUp>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <FadeUpGroup stagger={0.08} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {painCards.map((card) => {
               const Icon = card.icon;
               const mapping = CARD_AXIS_MAP[card.num];
@@ -271,7 +274,7 @@ export function ExistingUsersInteractive() {
                 </div>
               );
             })}
-          </div>
+          </FadeUpGroup>
         </div>
       </section>
 
@@ -283,22 +286,24 @@ export function ExistingUsersInteractive() {
         style={{ backgroundColor: '#f7f8fb' }}
       >
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span
-              className="inline-block text-xs font-semibold tracking-widest uppercase mb-4"
-              style={{ color: '#c9a84c' }}
-            >
-              Solution Map
-            </span>
-            <h2 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              3つの軸で課題を解決
-            </h2>
-            <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto">
-              育てる・つなぐ・続ける。それぞれの課題に最適なアプローチを提供します。
-            </p>
-          </div>
+          <FadeUp>
+            <div className="text-center mb-12">
+              <span
+                className="inline-block text-xs font-semibold tracking-widest uppercase mb-4"
+                style={{ color: '#c9a84c' }}
+              >
+                Solution Map
+              </span>
+              <h2 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                3つの軸で課題を解決
+              </h2>
+              <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto">
+                育てる・つなぐ・続ける。それぞれの課題に最適なアプローチを提供します。
+              </p>
+            </div>
+          </FadeUp>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <FadeUpGroup stagger={0.12} className="grid md:grid-cols-3 gap-6">
             {axes.map((axis) => {
               const Icon = axis.icon;
               const style = accentStyles[axis.accent];
@@ -387,7 +392,7 @@ export function ExistingUsersInteractive() {
                 </Link>
               );
             })}
-          </div>
+          </FadeUpGroup>
         </div>
       </section>
     </>

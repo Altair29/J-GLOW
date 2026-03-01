@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getContentBlocks, getThemeVars } from '@/lib/data';
 import ToolsSection from './ToolsSection';
+import { FadeUp, FadeUpGroup } from '@/components/common/FadeUp';
 
 export default async function BusinessPage() {
   const supabase = await createClient();
@@ -54,7 +55,7 @@ export default async function BusinessPage() {
         />
         <div className="absolute inset-0 hero-overlay" />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 py-16 md:py-20 text-center">
+        <FadeUp duration={0.8} distance={40} className="relative z-10 max-w-5xl mx-auto px-4 py-16 md:py-20 text-center">
           <h1
             className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl lg:text-5xl font-bold leading-tight max-w-2xl mx-auto mb-4"
             style={{ color: theme['--biz-hero-text-dark'] || '#1a2f5e' }}
@@ -92,7 +93,7 @@ export default async function BusinessPage() {
               <ArrowRight size={14} />
             </Link>
           </div>
-        </div>
+        </FadeUp>
       </section>
 
       {/* ========================================
@@ -100,13 +101,15 @@ export default async function BusinessPage() {
           ======================================== */}
       <section className="py-16 md:py-20" style={{ backgroundColor: '#ffffff', borderTop: '1px solid #e2e8f0' }}>
         <div className="max-w-5xl mx-auto px-4">
-          <h2
-            className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-12"
-            style={{ color: primaryColor }}
-          >
-            あなたの状況に合わせてお選びください
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <FadeUp>
+            <h2
+              className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-12"
+              style={{ color: primaryColor }}
+            >
+              あなたの状況に合わせてお選びください
+            </h2>
+          </FadeUp>
+          <FadeUpGroup stagger={0.12} className="grid md:grid-cols-3 gap-6">
             {pillars.map((p) => {
               const cardContent = (
                 <>
@@ -154,29 +157,33 @@ export default async function BusinessPage() {
                 </Link>
               );
             })}
-          </div>
+          </FadeUpGroup>
         </div>
       </section>
 
       {/* ========================================
           [3] 現場で使えるツール（6ツール）
           ======================================== */}
-      <ToolsSection />
+      <FadeUp>
+        <ToolsSection />
+      </FadeUp>
 
       {/* ========================================
           [4] 制度の今を知る（統計 + 記事）
           ======================================== */}
       <section className="py-16 md:py-20" style={{ backgroundColor: '#ffffff', borderTop: '1px solid #e2e8f0' }}>
         <div className="max-w-5xl mx-auto px-4">
-          <h2
-            className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-12"
-            style={{ color: primaryColor }}
-          >
-            制度の今を知る
-          </h2>
+          <FadeUp>
+            <h2
+              className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-12"
+              style={{ color: primaryColor }}
+            >
+              制度の今を知る
+            </h2>
+          </FadeUp>
 
           {/* 記事3本 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <FadeUpGroup stagger={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link href="/business/hiring-guide/labor-shortage"
               className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-36 bg-gradient-to-br from-[#1a2f5e] to-[#2a4a8e] flex items-center justify-center p-6">
@@ -233,7 +240,7 @@ export default async function BusinessPage() {
                 </p>
               </div>
             </Link>
-          </div>
+          </FadeUpGroup>
         </div>
       </section>
 
@@ -245,21 +252,23 @@ export default async function BusinessPage() {
         style={{ backgroundColor: '#1a2f5e', borderTop: '1px solid #2a4a8e' }}
       >
         <div className="max-w-5xl mx-auto px-4">
-          <p
-            className="text-xs font-semibold tracking-widest uppercase text-center mb-3"
-            style={{ color: '#c9a84c' }}
-          >
-            For Professionals
-          </p>
-          <h2
-            className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-3 text-white"
-          >
-            監理団体・登録支援機関・士業の方へ
-          </h2>
-          <p className="text-sm text-center max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            加盟企業・顧問先への提案に使えるツールを揃えています。<br />
-            J-GLOWのツールで、外国人雇用支援の業務効率を上げてください。
-          </p>
+          <FadeUp>
+            <p
+              className="text-xs font-semibold tracking-widest uppercase text-center mb-3"
+              style={{ color: '#c9a84c' }}
+            >
+              For Professionals
+            </p>
+            <h2
+              className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl font-bold text-center mb-3 text-white"
+            >
+              監理団体・登録支援機関・士業の方へ
+            </h2>
+            <p className="text-sm text-center max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              加盟企業・顧問先への提案に使えるツールを揃えています。<br />
+              J-GLOWのツールで、外国人雇用支援の業務効率を上げてください。
+            </p>
+          </FadeUp>
           <style>{`
             .pro-card {
               background: rgba(255,255,255,0.07);
@@ -270,14 +279,14 @@ export default async function BusinessPage() {
               border-color: #c9a84c;
             }
           `}</style>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <FadeUpGroup stagger={0.12} className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[
               {
-                icon: '\u{1F4C4}',
-                title: '労働条件通知書 生成ツール',
-                desc: '8言語バイリンガルPDF。顧問先企業に即日提供できます。',
-                href: '/business/tools/labor-notice',
-                badge: '会員登録必要',
+                icon: '\u{1F4B0}',
+                title: '採用コストシミュレーター',
+                desc: '企業訪問時にその場で試算。説得力ある提案資料をPDFで作成できます。',
+                href: '/business/cost-simulator',
+                badge: '無料',
               },
               {
                 icon: '\u{1F4CB}',
@@ -314,18 +323,20 @@ export default async function BusinessPage() {
                 </p>
               </Link>
             ))}
-          </div>
+          </FadeUpGroup>
 
-          <div className="text-center mt-10">
-            <Link
-              href="/business/partners"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
-              style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
-            >
-              パートナー登録について
-              <ArrowRight size={14} />
-            </Link>
-          </div>
+          <FadeUp delay={0.3}>
+            <div className="text-center mt-10">
+              <Link
+                href="/business/partners"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
+                style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
+              >
+                パートナー登録について
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
     </div>

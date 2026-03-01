@@ -13,6 +13,7 @@ import Step6Content from "@/components/business/hiring-guide/Step6Content";
 import Step7Content from "@/components/business/hiring-guide/Step7Content";
 import SummarySection from "@/components/business/hiring-guide/SummarySection";
 import DoubleCTASection from "@/components/business/hiring-guide/DoubleCTASection";
+import { FadeUp } from "@/components/common/FadeUp";
 
 export const metadata: Metadata = {
   title: "はじめての外国人雇用 完全ガイド【7ステップ】| J-GLOW",
@@ -35,29 +36,36 @@ export default function HiringGuidePage() {
   return (
     <main>
       <HeroSection />
-      <IntroSection />
+      <FadeUp delay={0.1}>
+        <IntroSection />
+      </FadeUp>
 
       {/* 7ステップ セクション */}
       {steps.map((step) => (
-        <section
-          key={step.id}
-          id={step.id}
-          className={`py-16 ${step.number % 2 === 0 ? "bg-[var(--surface-muted)]" : ""}`}
-        >
-          <div className="mx-auto max-w-5xl px-6">
-            <StepHeader
-              number={step.number}
-              title={step.title}
-              lead={step.lead}
-            />
-            {stepContentMap[step.number]}
-            <RelatedArticles articles={step.relatedArticles} />
-          </div>
-        </section>
+        <FadeUp key={step.id}>
+          <section
+            id={step.id}
+            className={`py-16 ${step.number % 2 === 0 ? "bg-[var(--surface-muted)]" : ""}`}
+          >
+            <div className="mx-auto max-w-5xl px-6">
+              <StepHeader
+                number={step.number}
+                title={step.title}
+                lead={step.lead}
+              />
+              {stepContentMap[step.number]}
+              <RelatedArticles articles={step.relatedArticles} />
+            </div>
+          </section>
+        </FadeUp>
       ))}
 
-      <SummarySection />
-      <DoubleCTASection />
+      <FadeUp>
+        <SummarySection />
+      </FadeUp>
+      <FadeUp>
+        <DoubleCTASection />
+      </FadeUp>
     </main>
   );
 }

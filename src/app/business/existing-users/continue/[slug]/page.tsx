@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ArticleContent from '@/components/business/ArticleContent';
 import FullHtmlArticle from '@/components/business/FullHtmlArticle';
+import { FadeUp } from '@/components/common/FadeUp';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -299,57 +300,59 @@ export default async function ContinueArticlePage({ params }: Props) {
         </div>
 
         {/* 記事本文 */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="la-body">
-            <ArticleContent content={post.body ?? ''} />
-          </div>
+        <FadeUp delay={0.1}>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className="la-body">
+              <ArticleContent content={post.body ?? ''} />
+            </div>
 
-          {/* フッターナビ */}
-          <div
-            style={{
-              marginTop: '3.5rem',
-              paddingTop: '2rem',
-              borderTop: '1px solid #e2e5ea',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-            }}
-          >
-            <Link
-              href="/business/existing-users/continue#contents"
+            {/* フッターナビ */}
+            <div
               style={{
-                display: 'inline-flex',
+                marginTop: '3.5rem',
+                paddingTop: '2rem',
+                borderTop: '1px solid #e2e5ea',
+                display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                gap: '6px',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#1a2f5e',
-                textDecoration: 'none',
+                flexWrap: 'wrap',
+                gap: '12px',
               }}
             >
-              ← コンテンツ一覧に戻る
-            </Link>
-            <Link
-              href="/business/existing-users/ladder/checker"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#fff',
-                backgroundColor: '#1a2f5e',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-              }}
-            >
-              移行チェッカーを使う →
-            </Link>
+              <Link
+                href="/business/existing-users/continue#contents"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#1a2f5e',
+                  textDecoration: 'none',
+                }}
+              >
+                ← コンテンツ一覧に戻る
+              </Link>
+              <Link
+                href="/business/existing-users/ladder/checker"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#fff',
+                  backgroundColor: '#1a2f5e',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                }}
+              >
+                移行チェッカーを使う →
+              </Link>
+            </div>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </>
   );

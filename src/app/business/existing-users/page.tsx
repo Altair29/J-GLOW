@@ -3,6 +3,7 @@ import { BusinessHubHero } from '@/components/business/BusinessHubHero';
 import { ExistingUsersInteractive } from '@/components/business/ExistingUsersInteractive';
 import { BusinessHubTimeline } from '@/components/business/BusinessHubTimeline';
 import { BusinessHubCTA } from '@/components/business/BusinessHubCTA';
+import { FadeUp } from '@/components/common/FadeUp';
 
 export const metadata: Metadata = {
   title: '外国人雇用 改善サポート | J-GLOW',
@@ -20,10 +21,14 @@ export default function ExistingUsersHubPage() {
       <ExistingUsersInteractive />
 
       {/* 4. 制度変更タイムライン */}
-      <BusinessHubTimeline />
+      <FadeUp>
+        <BusinessHubTimeline />
+      </FadeUp>
 
       {/* 5. 監理団体への相談CTA */}
-      <BusinessHubCTA />
+      <FadeUp>
+        <BusinessHubCTA />
+      </FadeUp>
     </div>
   );
 }

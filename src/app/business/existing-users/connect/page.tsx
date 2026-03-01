@@ -4,6 +4,7 @@ import { ConnectStageOverview } from '@/components/business/ConnectStageOverview
 import { ConnectContentGrid } from '@/components/business/ConnectContentGrid';
 import { ConnectTemplateBanner } from '@/components/business/ConnectTemplateBanner';
 import { ConnectFooterCTA } from '@/components/business/ConnectFooterCTA';
+import { FadeUp } from '@/components/common/FadeUp';
 
 export const metadata: Metadata = {
   title: '外国人材とつながる | J-GLOW',
@@ -15,10 +16,18 @@ export default function ConnectHubPage() {
   return (
     <div>
       <ConnectHeroSection />
-      <ConnectStageOverview />
-      <ConnectContentGrid />
-      <ConnectTemplateBanner />
-      <ConnectFooterCTA />
+      <FadeUp>
+        <ConnectStageOverview />
+      </FadeUp>
+      <FadeUp>
+        <ConnectContentGrid />
+      </FadeUp>
+      <FadeUp>
+        <ConnectTemplateBanner />
+      </FadeUp>
+      <FadeUp>
+        <ConnectFooterCTA />
+      </FadeUp>
     </div>
   );
 }

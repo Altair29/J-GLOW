@@ -3,6 +3,7 @@ import { ContinueHeroSection } from '@/components/business/ContinueHeroSection';
 import { ContinueStageOverview } from '@/components/business/ContinueStageOverview';
 import { ContinueContentGrid } from '@/components/business/ContinueContentGrid';
 import { ContinueFooterCTA } from '@/components/business/ContinueFooterCTA';
+import { FadeUp } from '@/components/common/FadeUp';
 
 export const metadata: Metadata = {
   title: '続ける・判断する | J-GLOW',
@@ -14,9 +15,15 @@ export default function ContinueHubPage() {
   return (
     <div>
       <ContinueHeroSection />
-      <ContinueStageOverview />
-      <ContinueContentGrid />
-      <ContinueFooterCTA />
+      <FadeUp>
+        <ContinueStageOverview />
+      </FadeUp>
+      <FadeUp>
+        <ContinueContentGrid />
+      </FadeUp>
+      <FadeUp>
+        <ContinueFooterCTA />
+      </FadeUp>
     </div>
   );
 }

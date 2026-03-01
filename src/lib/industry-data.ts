@@ -1,4 +1,9 @@
 // 19分野の統合データ（アイコン・説明・ビザ情報・統計）
+//
+// 統計出典:
+//   在留外国人数: 出入国在留管理庁「特定技能制度運用状況」令和6年12月末
+//   受入見込数: 政府受入見込数（2025年閣議決定版）特定技能＋育成就労
+//   ✅ = 確定値  🟡 = 推定値（「その他 24,509人」の内数を按分）
 
 export type IndustrySlug =
   | 'kaigo'
@@ -89,9 +94,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.heart,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '13,500', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '59,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.9', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '44,367', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '126,900', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '33,800', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   kogyo: {
@@ -102,9 +107,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.gear,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '49,000', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '199,500', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '1.8', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '45,279', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '199,500', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '119,700', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   nogyo: {
@@ -115,9 +120,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.plant,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '24,200', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '78,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '1.7', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '29,331', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '73,300', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '26,300', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   inshoku: {
@@ -128,9 +133,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.food,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '60,700', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '139,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.4', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '74,538', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '133,500', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '61,400', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   kensetsu: {
@@ -141,9 +146,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.build,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '25,400', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '80,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '5.7', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '38,578', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '76,000', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '123,500', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   biru: {
@@ -154,9 +159,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.clean,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '3,700', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '37,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.8', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約5,500', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '32,200', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '7,300', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   zosen: {
@@ -167,9 +172,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.ship,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '6,100', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '36,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '3.2', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約8,500', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '23,400', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '13,500', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   'jidosha-seib': {
@@ -180,9 +185,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.car,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '2,900', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '10,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '4.1', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約3,200', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '9,400', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '9,900', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   koku: {
@@ -193,9 +198,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.plane,
     visa: { ikusei: false, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '350', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '4,400', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '3.5', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約1,100', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '4,900', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '—', unit: '', label: '育成就労は対象外', source: '特定技能1号のみ対象' },
     ],
   },
   shukuhaku: {
@@ -206,9 +211,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.hotel,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '320', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '11,200', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '5.3', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約750', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '14,800', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '5,200', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   gyogyo: {
@@ -219,9 +224,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.fish,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '2,200', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '17,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.1', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約3,700', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値' },
+      { value: '14,800', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '2,600', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   gaishoku: {
@@ -232,9 +237,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.restaurant,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '7,800', unit: '人', label: '特定技能 在留者数', source: '出入国在留管理庁 2024年6月' },
-      { value: '53,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '3.1', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '27,864', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 ✅確定値' },
+      { value: '50,000', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '5,300', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   'jidosha-unso': {
@@ -245,9 +250,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.truck,
     visa: { ikusei: false, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '24,500', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.6', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約200', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値\n2024/12受入開始' },
+      { value: '22,100', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '—', unit: '', label: '育成就労は対象外', source: '特定技能1号のみ対象' },
     ],
   },
   tetsudo: {
@@ -258,9 +263,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.train,
     visa: { ikusei: true, tokutei1: true, tokutei2: true },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '3,800', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '3.0', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約50', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値\n2024/9受入開始' },
+      { value: '2,900', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '1,100', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   ringyo: {
@@ -271,9 +276,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.tree,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '1,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.3', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約80', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値\n2024/9受入開始' },
+      { value: '900', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '500', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   mokuzai: {
@@ -284,9 +289,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.wood,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '5,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '1.9', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '約100', unit: '人', label: '特定技能 在留外国人数', source: '出入国在留管理庁\n令和6年12月末 🟡推定値\n2024/9受入開始' },
+      { value: '4,500', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '2,200', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   linen: {
@@ -297,9 +302,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.laundry,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '3,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '2.5', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '受入前', unit: '', label: '特定技能 在留外国人数', source: '2027年受入開始予定' },
+      { value: '4,300', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '3,400', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   butsuryu: {
@@ -310,9 +315,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.box,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '2,500', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '1.6', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '受入前', unit: '', label: '特定技能 在留外国人数', source: '2027年受入開始予定' },
+      { value: '11,400', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '6,900', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
   shigen: {
@@ -323,9 +328,9 @@ export const INDUSTRY_DATA: Record<IndustrySlug, IndustryData> = {
     svgPath: SVG.recycle,
     visa: { ikusei: true, tokutei1: true, tokutei2: false },
     stats: [
-      { value: '—', unit: '', label: '特定技能 在留者数', source: '2024年新設分野' },
-      { value: '1,000', unit: '人', label: '受入れ見込数（5年間）', source: '分野別運用方針' },
-      { value: '1.4', unit: '倍', label: '有効求人倍率', source: '厚生労働省 2024年' },
+      { value: '受入前', unit: '', label: '特定技能 在留外国人数', source: '2027年受入開始予定' },
+      { value: '900', unit: '人', label: '受入見込数・特定技能（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
+      { value: '3,600', unit: '人', label: '受入見込数・育成就労（5年間）', source: '2025年閣議決定\n2026〜2030年度' },
     ],
   },
 };
