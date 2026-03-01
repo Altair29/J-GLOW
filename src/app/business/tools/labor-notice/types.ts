@@ -318,19 +318,47 @@ export function resolveJobRangeTx(
   }
 }
 
+/* ── i18n helpers for cutoff / pay day ── */
+const I18N_REQUIRED: Record<Lang, string> = {
+  ja: '（要入力）', en: '(Required)', zh: '（需填写）', vi: '(Bắt buộc)',
+  id: '(Wajib)', tl: '(Kinakailangan)', km: '(ចាំបាច់)', my: '(လိုအပ်သည်)',
+};
+const I18N_EVERY_MONTH_END: Record<Lang, string> = {
+  ja: '毎月末日', en: 'End of each month', zh: '每月末日', vi: 'Cuối mỗi tháng',
+  id: 'Akhir setiap bulan', tl: 'Katapusan ng bawat buwan', km: 'ចុងខែរៀងរាល់ខែ', my: 'လတိုင်းလကုန်ရက်',
+};
+const I18N_EVERY_MONTH_DAY: Record<Lang, (day: string) => string> = {
+  ja: (d) => `毎月${d}日`, en: (d) => `${d}th of each month`, zh: (d) => `每月${d}日`, vi: (d) => `Ngày ${d} mỗi tháng`,
+  id: (d) => `Tanggal ${d} setiap bulan`, tl: (d) => `Ika-${d} ng bawat buwan`, km: (d) => `ថ្ងៃទី${d}រៀងរាល់ខែ`, my: (d) => `လတိုင်း ${d} ရက်နေ့`,
+};
+const I18N_CURRENT_MONTH: Record<Lang, string> = {
+  ja: '当月', en: 'Same month', zh: '当月', vi: 'Tháng hiện tại',
+  id: 'Bulan berjalan', tl: 'Kasalukuyang buwan', km: 'ខែបច្ចុប្បន្ន', my: 'လက်ရှိလ',
+};
+const I18N_FOLLOWING_MONTH: Record<Lang, string> = {
+  ja: '翌月', en: 'Following month', zh: '次月', vi: 'Tháng sau',
+  id: 'Bulan berikutnya', tl: 'Susunod na buwan', km: 'ខែបន្ទាប់', my: 'နောက်လ',
+};
+const I18N_MONTH_END: Record<Lang, (m: string) => string> = {
+  ja: (m) => `${m}末日`, en: (m) => `${m}, end of month`, zh: (m) => `${m}末日`, vi: (m) => `${m}, cuối tháng`,
+  id: (m) => `${m}, akhir bulan`, tl: (m) => `${m}, katapusan ng buwan`, km: (m) => `${m} ចុងខែ`, my: (m) => `${m} လကုန်ရက်`,
+};
+const I18N_MONTH_DAY: Record<Lang, (m: string, d: string) => string> = {
+  ja: (m, d) => `${m}${d}日`, en: (m, d) => `${m}, ${d}th`, zh: (m, d) => `${m}${d}日`, vi: (m, d) => `${m}, ngày ${d}`,
+  id: (m, d) => `${m}, tanggal ${d}`, tl: (m, d) => `${m}, ika-${d}`, km: (m, d) => `${m} ថ្ងៃទី${d}`, my: (m, d) => `${m} ${d} ရက်နေ့`,
+};
+
 export function formatCutoffDay(value: string, lang: Lang = 'ja'): string {
-  if (!value) return lang === 'ja' ? '（要入力）' : '(Required)';
-  if (value === 'end') return lang === 'ja' ? '毎月末日' : 'End of each month';
-  return lang === 'ja' ? `毎月${value}日` : `${value}th of each month`;
+  if (!value) return I18N_REQUIRED[lang];
+  if (value === 'end') return I18N_EVERY_MONTH_END[lang];
+  return I18N_EVERY_MONTH_DAY[lang](value);
 }
 
 export function formatPayDay(value: string, month: PaymentMonth, lang: Lang = 'ja'): string {
-  const monthLabel = lang === 'ja'
-    ? (month === 'current' ? '当月' : '翌月')
-    : (month === 'current' ? 'Same month' : 'Following month');
-  if (!value) return lang === 'ja' ? '（要入力）' : '(Required)';
-  if (value === 'end') return lang === 'ja' ? `${monthLabel}末日` : `${monthLabel}, end of month`;
-  return lang === 'ja' ? `${monthLabel}${value}日` : `${monthLabel}, ${value}th`;
+  const monthLabel = month === 'current' ? I18N_CURRENT_MONTH[lang] : I18N_FOLLOWING_MONTH[lang];
+  if (!value) return I18N_REQUIRED[lang];
+  if (value === 'end') return I18N_MONTH_END[lang](monthLabel);
+  return I18N_MONTH_DAY[lang](monthLabel, value);
 }
 
 /* ── Date cross-validation ── */
@@ -393,7 +421,7 @@ export const RENEWAL_CRITERIA_OPTIONS = [
 export const IKUSEI_SECTORS: { value: SectorType; label: string; tKey: string }[] = [
   { value: 'nursing_care', label: '介護', tKey: 'sector_nursing_care' },
   { value: 'building_cleaning', label: 'ビルクリーニング', tKey: 'sector_building_cleaning' },
-  { value: 'manufacturing', label: '素形材・産業機械・電気電子情報関連製造業', tKey: 'sector_manufacturing' },
+  { value: 'manufacturing', label: '工業製品製造業', tKey: 'sector_manufacturing' },
   { value: 'construction', label: '建設', tKey: 'sector_construction' },
   { value: 'shipbuilding', label: '造船・舶用工業', tKey: 'sector_shipbuilding' },
   { value: 'auto_maintenance', label: '自動車整備', tKey: 'sector_auto_maintenance' },

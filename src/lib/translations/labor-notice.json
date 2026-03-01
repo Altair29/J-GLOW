@@ -1480,14 +1480,14 @@
     "my": "အဆောက်အအုံသန့်ရှင်းရေး"
   },
   "sector_manufacturing": {
-    "ja": "素形材・産業機械・電気電子情報関連製造業",
-    "en": "Manufacturing (Materials, Industrial Machinery, Electronics)",
-    "zh": "素形材·产业机械·电气电子信息相关制造业",
-    "vi": "Sản xuất (Vật liệu, Máy móc, Điện tử)",
-    "id": "Manufaktur (Material, Mesin Industri, Elektronik)",
-    "tl": "Pagmamanupaktura (Materyales, Makinarya, Elektronika)",
-    "km": "ផលិតកម្ម (សម្ភារៈ ម៉ាស៊ីនឧស្សាហកម្ម អេឡិចត្រូនិក)",
-    "my": "ကုန်ထုတ်လုပ်မှု (ပစ္စည်း၊ စက်ယန္တရား၊ အီလက်ထရောနစ်)"
+    "ja": "工業製品製造業",
+    "en": "Industrial Products Manufacturing",
+    "zh": "工业产品制造业",
+    "vi": "Sản xuất sản phẩm công nghiệp",
+    "id": "Manufaktur Produk Industri",
+    "tl": "Pagmamanupaktura ng Produktong Industriyal",
+    "km": "ផលិតកម្មផលិតផលឧស្សាហកម្ម",
+    "my": "စက်မှုထုတ်ကုန်ထုတ်လုပ်ရေး"
   },
   "sector_construction": {
     "ja": "建設",
