@@ -2,18 +2,30 @@
 
 import { useState, useMemo } from 'react';
 import { calcRiskScenarios, calcRiskCost } from '../lib/calculate';
+import { ADDITIONAL_RISKS } from '../lib/constants';
+import type { VisaChoice } from '../lib/types';
 
 type Props = {
   headcount: number;
   initialCostPerPerson: { min: number; max: number };
+  visaChoice?: VisaChoice;
 };
 
 function formatYen(n: number): string {
   return `¥${n.toLocaleString()}`;
 }
 
-export function RiskAnalysis({ headcount, initialCostPerPerson }: Props) {
+const SEVERITY_STYLES = {
+  high: { bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-700' },
+  medium: { bg: 'bg-yellow-50', border: 'border-yellow-200', badge: 'bg-yellow-100 text-yellow-700' },
+  low: { bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-100 text-green-700' },
+};
+
+const SEVERITY_LABELS = { high: '高', medium: '中', low: '低' };
+
+export function RiskAnalysis({ headcount, initialCostPerPerson, visaChoice }: Props) {
   const [turnoverRate, setTurnoverRate] = useState(15);
+  const [showAdditionalRisks, setShowAdditionalRisks] = useState(false);
 
   const scenarios = useMemo(
     () => calcRiskScenarios(headcount, initialCostPerPerson),
@@ -25,11 +37,14 @@ export function RiskAnalysis({ headcount, initialCostPerPerson }: Props) {
     [headcount, initialCostPerPerson, turnoverRate],
   );
 
+  // 育成就労を含む場合は制度変更リスクを強調
+  const hasIkusei = visaChoice === 'ikusei' || visaChoice === 'both' || visaChoice === 'compare';
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-bold text-[#1a2f5e]">リスク分析</h3>
 
-      {/* スライダー */}
+      {/* 離職リスクスライダー */}
       <div className="bg-gray-50 rounded-lg p-4 space-y-3">
         <label className="block text-sm font-medium text-gray-700">
           想定離職率: <span className="text-[#1a2f5e] font-bold">{turnoverRate}%</span>
@@ -108,7 +123,7 @@ export function RiskAnalysis({ headcount, initialCostPerPerson }: Props) {
         </table>
       </div>
 
-      {/* CTA */}
+      {/* 定着支援CTA */}
       <div className="p-4 bg-green-50 rounded-lg border border-green-200">
         <p className="text-sm text-green-800 mb-2">
           離職防止は再採用コストの削減に直結します。
@@ -119,6 +134,37 @@ export function RiskAnalysis({ headcount, initialCostPerPerson }: Props) {
         >
           現場指示書ビルダーで定着率を改善 &rarr;
         </a>
+      </div>
+
+      {/* その他のリスク（アコーディオン） */}
+      <div className="border border-gray-200 rounded-lg">
+        <button
+          onClick={() => setShowAdditionalRisks(!showAdditionalRisks)}
+          className="w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+        >
+          <span>離職以外のリスク要因</span>
+          <span className="text-gray-400">{showAdditionalRisks ? '▲' : '▼'}</span>
+        </button>
+        {showAdditionalRisks && (
+          <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
+            {ADDITIONAL_RISKS.map((risk) => {
+              const style = SEVERITY_STYLES[risk.severity];
+              // 育成就労以外は制度変更リスクを強調しない
+              if (risk.type === 'regulatory' && !hasIkusei) return null;
+              return (
+                <div key={risk.type} className={`${style.bg} border ${style.border} rounded-lg p-3`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`${style.badge} text-xs px-2 py-0.5 rounded font-medium`}>
+                      リスク度: {SEVERITY_LABELS[risk.severity]}
+                    </span>
+                    <h4 className="text-sm font-bold text-gray-800">{risk.label}</h4>
+                  </div>
+                  <p className="text-xs text-gray-600">{risk.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

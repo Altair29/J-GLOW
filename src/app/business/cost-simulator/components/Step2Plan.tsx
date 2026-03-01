@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import type { Step2Data, VisaChoice, SendingCountry } from '../lib/types';
 import { SENDING_COUNTRIES } from '../lib/constants';
 import { generateMonthOptions } from '../lib/calculate';
@@ -24,10 +25,33 @@ export function Step2Plan({
   capacityLimit,
   isOverCapacity,
 }: Props) {
+  const [showGuide, setShowGuide] = useState(false);
+  const [guideStep, setGuideStep] = useState(0);
+  const [guideAnswers, setGuideAnswers] = useState<string[]>([]);
+
   const update = <K extends keyof Step2Data>(key: K, value: Step2Data[K]) =>
     onChange({ ...data, [key]: value });
 
   const monthOptions = generateMonthOptions();
+
+  // ビザ選択ガイドのロジック
+  const guideQuestions = [
+    { q: '採用候補者はどこにいますか？', opts: [{ label: '海外にいる', value: 'overseas' }, { label: '日本国内にいる', value: 'domestic' }] },
+    { q: '大卒の専門人材（IT・通訳等）ですか？', opts: [{ label: 'はい', value: 'yes' }, { label: 'いいえ（現場作業メイン）', value: 'no' }] },
+    { q: '長期雇用（5年以上・永住可能）を前提としますか？', opts: [{ label: 'はい', value: 'long' }, { label: 'いいえ（3〜5年程度）', value: 'short' }] },
+  ];
+
+  const getGuideRecommendation = (): { visa: VisaChoice; label: string; reason: string } | null => {
+    if (guideAnswers.length < 3) return null;
+    const [location, degree, term] = guideAnswers;
+    if (location === 'domestic' && degree === 'yes') return { visa: 'ginou', label: '技術・人文知識・国際業務', reason: '国内在住の大卒専門人材に最適' };
+    if (location === 'domestic' && degree === 'no') return { visa: 'tokutei', label: '特定技能1号（国内切替）', reason: '国内在住で即戦力。最短3ヶ月で就労開始' };
+    if (location === 'overseas' && degree === 'yes') return { visa: 'ginou', label: '技術・人文知識・国際業務', reason: '海外の大卒専門人材を招聘' };
+    if (term === 'long') return { visa: 'tokutei', label: '特定技能1号→2号', reason: '1号（5年）→2号移行で永住申請も可能' };
+    return { visa: 'ikusei', label: '育成就労', reason: '海外の未経験者を3年間で育成。最も受入実績が多い' };
+  };
+
+  const guideResult = getGuideRecommendation();
 
   const visaOptions: { value: VisaChoice; label: string; desc: string }[] = [
     { value: 'ikusei', label: '育成就労', desc: '3年間・海外から' },
@@ -47,6 +71,74 @@ export function Step2Plan({
         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#1a2f5e] text-white text-sm font-bold">2</span>
         採用計画
       </h2>
+
+      {/* ビザ選択ガイド */}
+      <div className="border border-blue-200 bg-blue-50/50 rounded-xl p-4">
+        <button
+          onClick={() => { setShowGuide(!showGuide); setGuideStep(0); setGuideAnswers([]); }}
+          className="flex items-center gap-2 text-sm font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors w-full"
+        >
+          <span className="text-base">💡</span>
+          <span>{showGuide ? 'ガイドを閉じる' : 'どのビザを選べばいいかわからない方はこちら'}</span>
+          <span className="ml-auto text-gray-400">{showGuide ? '▲' : '▼'}</span>
+        </button>
+        {showGuide && (
+          <div className="mt-4 space-y-3">
+            {guideStep < guideQuestions.length ? (
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-3">
+                  Q{guideStep + 1}. {guideQuestions[guideStep].q}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {guideQuestions[guideStep].opts.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => {
+                        const newAnswers = [...guideAnswers.slice(0, guideStep), opt.value];
+                        setGuideAnswers(newAnswers);
+                        setGuideStep(guideStep + 1);
+                      }}
+                      className="p-3 rounded-lg border-2 border-gray-200 hover:border-[#1a2f5e] text-sm font-medium text-gray-700 hover:text-[#1a2f5e] transition-all text-center"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {guideStep > 0 && (
+                  <button
+                    onClick={() => setGuideStep(guideStep - 1)}
+                    className="text-xs text-gray-400 hover:text-gray-600 mt-2"
+                  >
+                    &larr; 前の質問に戻る
+                  </button>
+                )}
+              </div>
+            ) : guideResult ? (
+              <div className="bg-white rounded-lg p-4 border border-blue-200">
+                <p className="text-xs text-gray-500 mb-1">おすすめ</p>
+                <p className="text-base font-bold text-[#1a2f5e]">{guideResult.label}</p>
+                <p className="text-sm text-gray-600 mt-1">{guideResult.reason}</p>
+                <button
+                  onClick={() => {
+                    update('visaChoice', guideResult.visa);
+                    if (guideAnswers[0] === 'domestic') update('targetChoice', 'kokunai');
+                    setShowGuide(false);
+                  }}
+                  className="mt-3 px-4 py-2 bg-[#1a2f5e] text-white rounded-lg text-sm font-medium hover:bg-[#1a2f5e]/90 transition-colors"
+                >
+                  この在留資格で試算する
+                </button>
+                <button
+                  onClick={() => { setGuideStep(0); setGuideAnswers([]); }}
+                  className="ml-3 text-xs text-gray-400 hover:text-gray-600"
+                >
+                  やり直す
+                </button>
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
 
       {/* 在留資格 — v2: 6択カード */}
       <div>

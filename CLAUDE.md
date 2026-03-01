@@ -39,8 +39,8 @@ src/
 │  │  │  ├─ trends/
 │  │  │  ├─ honest-guide/
 │  │  │  └─ cost-simulator/          # → /business/cost-simulator にリダイレクト
-│  │  ├─ roadmap/                    # 育成就労ロードマップ
-│  │  ├─ articles/                   # 19分野ガイド + [slug] + industry-overview
+│  │  ├─ roadmap/                    # 育成就労ロードマップ（RoadmapLanding + Suspense）
+│  │  ├─ articles/                   # 19分野ガイド + [slug]（IndustryHero/Stats/Flow適用） + industry-overview
 │  │  ├─ existing-users/             # 外国人スタッフ活用ハブ
 │  │  │  ├─ ladder/{checker,[slug]}  # キャリアラダー + 移行チェッカー
 │  │  │  ├─ continue/[slug]          # 続ける・判断する記事
@@ -93,7 +93,14 @@ src/
 │  │  ├─ PartnerDirectory.tsx        # 旧パートナー一覧（Legacy型使用）
 │  │  ├─ MigrationChecker.tsx        # 移行チェッカー全ロジック
 │  │  ├─ TemplateBuilder.tsx         # 現場指示書ビルダー v4
+│  │  ├─ ExistingUsersInteractive.tsx # 活用ハブインタラクティブUI
 │  │  └─ ArticleContent.tsx          # Markdownレンダラー
+│  ├─ articles/                      # 記事ビジュアルコンポーネント
+│  │  ├─ IndustryHero.tsx            # 19分野記事ヒーロー（業種アイコン+ビザバッジ）
+│  │  ├─ IndustryStatsBanner.tsx     # 統計カード3列（スクロールアニメーション）
+│  │  ├─ StatCard.tsx                # 個別統計カード（数値+出典）
+│  │  ├─ IndustrySystemFlow.tsx      # キャリアパスフローチャート（3ビザ種別）
+│  │  └─ ArticleHeader.tsx           # 汎用記事ヘッダー
 │  ├─ worker/                        # ワーカー向けUI
 │  ├─ admin/                         # 管理画面コンポーネント
 │  ├─ shared/                        # 汎用UI（Button, Input, Modal, Badge等）
@@ -107,6 +114,7 @@ src/
 │  ├─ translations/labor-notice.json  # 8言語翻訳辞書
 │  ├─ templateData.ts                # 現場指示書データ（6言語）
 │  ├─ hiring-guide-data.ts           # 採用ガイドデータ
+│  ├─ industry-data.ts               # 19分野データ（アイコンSVG・ビザ対応・統計3件×19業種）
 │  ├─ partners-config.ts             # パートナー設定（TIER_CONFIG, PARTNER_TYPE_CONFIG, TYPE_VISA_OPTIONS, FORM_FIELDS）
 │  ├─ analytics/useActivityLog.ts    # 行動ログフック（page_view イベント）
 │  └─ constants.ts, data.ts
@@ -148,7 +156,9 @@ scripts/                             # DB投入スクリプト
 - **セクション背景交互**: `#f8fafc` ↔ `#ffffff`
 - **セクション区切り**: `border-top: 1px solid #e2e8f0`
 - **外部リンク**: `target="_blank" rel="noopener noreferrer"`
-- **スクロールアニメーション**: `FadeUp` / `FadeUpGroup`（`@/components/common/FadeUp`、framer-motion useInView）
+- **スクロールアニメーション**: `FadeUp` / `FadeUpGroup`（`@/components/common/FadeUp`、framer-motion useInView、easeOutQuart `[0.25,0.46,0.45,0.94]`）
+  - 適用ページ: `/business`, `hiring-guide`, `existing-users`（+ladder/connect/continue）, `roadmap`, `continue/[slug]`
+  - ルール: ヒーローセクションはFadeUp不使用、セクション単位でラップ、カード/リスト並列要素は `FadeUpGroup`
 
 ---
 
@@ -163,19 +173,21 @@ scripts/                             # DB投入スクリプト
 | `/business/simulation` | 外国人雇用シミュレーションゲーム（DB駆動カード20枚） |
 | `/business/diagnosis` | 外国人雇用 適正診断 |
 | `/business/cost-simulator` | コストシミュレーター v2（LandingGate→Quick/Detail 2モード・6ビザ・3ユーザー種別・PDF提案書） |
-| `/business/hiring-guide` | 採用完全ガイド（7ステップ） |
+| `/business/hiring-guide` | 採用完全ガイド（7ステップ、FadeUp適用） |
 | `/business/hiring-guide/labor-shortage` | 労働力不足サブページ |
 | `/business/hiring-guide/trends` | 採用動向サブページ |
 | `/business/hiring-guide/honest-guide` | 正直ガイドサブページ |
-| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン、`?type=kanri` で監理団体初期選択対応） |
+| `/business/roadmap` | 育成就労ロードマップ（記事一覧+カウントダウン+タイムライン、`?type=kanri` で監理団体初期選択対応、FadeUp適用） |
 | `/business/articles` | 分野別外国人採用ガイド（19分野） |
-| `/business/articles/[slug]` | 記事詳細（Markdown/HTML自動判別） |
-| `/business/existing-users` | 外国人スタッフ活用ハブ |
-| `/business/existing-users/ladder` | キャリアラダー記事セクション（Stage 1〜4） |
+| `/business/articles/[slug]` | 記事詳細（Markdown/HTML自動判別、19分野はIndustryHero/Stats/Flow付き） |
+| `/business/existing-users` | 外国人スタッフ活用ハブ（FadeUp/FadeUpGroup適用） |
+| `/business/existing-users/ladder` | キャリアラダー記事セクション（Stage 1〜4、FadeUp適用） |
 | `/business/existing-users/ladder/[slug]` | キャリアラダー記事詳細 |
 | `/business/existing-users/ladder/checker` | 特定技能移行チェッカー（5問ウィザード） |
+| `/business/existing-users/connect` | つながるハブ（FadeUp適用） |
 | `/business/existing-users/connect/templates` | 現場指示書ビルダー v4（6言語対応） |
-| `/business/existing-users/continue/[slug]` | 「続ける・判断する」記事（フルHTML対応） |
+| `/business/existing-users/continue` | 続ける・判断するハブ（FadeUp適用） |
+| `/business/existing-users/continue/[slug]` | 「続ける・判断する」記事（フルHTML対応、FadeUp適用） |
 | `/business/blog/[slug]` | ブログ記事詳細（同一記事が複数ルートからアクセス可能） |
 | `/business/tools/labor-notice` | 労働条件通知書生成ツール（8言語・5ステップ・PDF出力） |
 | `/business/subsidies` | 助成金情報 |
@@ -298,7 +310,8 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 ### ツールメニュー (`toolItems`)
 | ラベル | パス |
 |---|---|
-| コストシミュレーター | `/business/cost-simulator` |
+| 外国人採用ナビゲーター | `/business/cost-simulator` |
+| 採用計画コストシミュレーター | `/business/hiring-guide/cost-simulator` |
 | 労働条件通知書 生成ツール | `/business/tools/labor-notice` |
 | 現場指示書ビルダー | `/business/existing-users/connect/templates` |
 | 特定技能移行チェッカー | `/business/existing-users/ladder/checker` |
@@ -349,7 +362,7 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 
 1. **ヒーロー** — CTA: コストシミュレーター / 採用ガイド
 2. **状況別3本柱カード** — 採用ガイド / スタッフ活用ハブ / 育成就労ロードマップ
-3. **現場で使えるツール** — `ToolsSection` コンポーネント（6ツール）
+3. **現場で使えるツール** — `ToolsSection` コンポーネント（6ツール: ナビゲーター/コストシミュレーター/労働条件通知書/現場指示書/移行チェッカー/19分野解説）
 4. **制度の今を知る** — 統計記事3本（労働力不足 / 採用動向 / 正直ガイド）
 5. **監理団体・登録支援機関・士業の方へ**（FOR PROFESSIONALS）
    - ツールカード3枚:
@@ -373,6 +386,19 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 - body が `<style>` で始まる → **フルHTML記事**: `dangerouslySetInnerHTML` で直接レンダリング
 - それ以外 → **Markdown記事**: `ArticleContent`（ReactMarkdown + remarkGfm + rehypeRaw）
 - 同一記事が複数ルートからアクセス可能（`/business/blog/[slug]`, `/business/existing-users/continue/[slug]` 等）
+
+### 19分野記事ビジュアル強化 (`/business/articles/[slug]`)
+
+`getIndustryData(slug)` で19分野に該当するかを判定し、3段階の条件分岐でレンダリング:
+
+1. **19分野記事（Markdown）**: `IndustryHero` → `IndustryStatsBanner` → 本文 → `IndustrySystemFlow` → フッターナビ
+2. **19分野記事（フルHTML）**: `IndustryHero` → `IndustryStatsBanner` → HTML本文 → `IndustrySystemFlow` → フッターナビ
+3. **非19分野記事**: 既存レンダリング（変更なし）
+
+- **IndustryHero**: ネイビーグラデーション + パンくず + 分野アイコン（SVG装飾 `opacity: 0.06`）+ ビザバッジ（育成就労/特定技能1号/2号）
+- **IndustryStatsBanner**: `StatCard` × 3（在留外国人数 / 特定技能受入見込 / 育成就労受入見込）、`useInView` スクロールトリガー
+- **IndustrySystemFlow**: 3ステップキャリアパス（育成就労→特定技能1号→2号）、対象外ステップはグレーアウト
+- **データ**: `src/lib/industry-data.ts`（出入国在留管理庁 令和6年12月末 / 2025年閣議決定版の実数値）
 
 ---
 
@@ -421,6 +447,13 @@ signInWithPassword → Cookie書込 → getSession() → router.push + router.re
 ### 特定技能移行チェッカー (`/business/existing-users/ladder/checker`)
 - 5問ウィザード（STEP2の回答で動的分岐: ikusei/tokutei1/skip）
 - 結果: ロードマップ + 試験情報 + 企業ToDo + 業界別戦略
+
+### 19分野記事システム (`/business/articles/[slug]`)
+- **データ**: `src/lib/industry-data.ts` — 19業種定義（IndustrySlug型）
+  - 各業種: name, description, emoji, SVGアイコン, ビザ対応フラグ（ikusei/tokutei1/tokutei2）, 統計3件
+- **19業種**: kaigo, kogyo, nogyo, inshoku, kensetsu, biru, zosen, jidosha-seib, koku, shukuhaku, gyogyo, gaishoku, jidosha-unso, tetsudo, ringyo, mokuzai, linen, butsuryu, shigen
+- **表示**: slugが業種マッチ時 → IndustryHero + IndustryStatsBanner + 本文 + IndustrySystemFlow
+- **非業種記事**: ArticleHeader + 本文（従来通り）
 
 ---
 
@@ -479,3 +512,16 @@ New（partners/ 検索UI・申請フォームで使用）:
 - `00035` — activity_logs（行動ログ）
 - `00036` — contact_inquiries（お問い合わせ）+ partners 拡張（5種別×3ティア）
 - `00037` — simulator_v2（visa_type CHECK拡張、tokutei→tokutei1リネーム、新ビザコスト項目12件INSERT、sessions/presets カラム追加）
+
+---
+
+## 出力フォーマットルール
+
+### Notion用出力（ユーザーが「Notion用に」「Notionに貼る」等と指定した場合）
+
+- **Markdown表（`| col1 | col2 |` 形式）は使用禁止** — Notionペースト時に崩れるため
+- 表の代わりに「見出し + 箇条書き」形式で出力する
+- 比較表 → 2つのリストに分割
+- スケジュール表 → 週別見出し + リスト
+- コードブロックのフロー図 → 番号付きリスト
+- 使用OK: 見出し（#）、箇条書き（-）、引用（>）、太字（**）、コードブロック（純粋なコード用途のみ）、区切り線（---）

@@ -14,9 +14,14 @@ function formatYen(n: number): string {
 function RangeCell({ min, max }: { min: number; max: number }) {
   if (min === 0 && max === 0) return <span className="text-gray-400">—</span>;
   if (min === max) return <span>{formatYen(min)}</span>;
+  const mid = Math.round((min + max) / 2);
   return (
     <span>
-      {formatYen(min)} 〜 {formatYen(max)}
+      <span className="font-bold">{formatYen(mid)}</span>
+      <br />
+      <span className="text-xs text-gray-400">
+        {formatYen(min)} 〜 {formatYen(max)}
+      </span>
     </span>
   );
 }

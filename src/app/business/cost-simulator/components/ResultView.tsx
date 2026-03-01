@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import type { CostBreakdown, Step4Data, AllInputs } from '../lib/types';
 import type { AllInputsV1 } from '../lib/types';
@@ -10,6 +10,8 @@ import { RiskAnalysis } from './RiskAnalysis';
 import { ConsultationPanel } from './ConsultationPanel';
 import { useAuth } from '@/hooks/useAuth';
 import GateModal from './GateModal';
+import { JP_HIRING_BENCHMARKS, INDUSTRY_COST_BENCHMARKS } from '../lib/constants';
+import { generateActionPlan, getIndustryBenchmarkComparison } from '../lib/calculate';
 
 const PdfDocument = dynamic(() => import('./PdfDocument').then((m) => m.PdfDownloadButton), {
   ssr: false,
@@ -38,6 +40,15 @@ type Props = {
 
 function formatYen(n: number): string {
   return `¥${n.toLocaleString()}`;
+}
+
+function formatMidYen(min: number, max: number): string {
+  const mid = Math.round((min + max) / 2);
+  return formatYen(mid);
+}
+
+function formatManYen(n: number): string {
+  return `${Math.round(n / 10000)}万円`;
 }
 
 export function ResultView({
@@ -85,13 +96,53 @@ export function ResultView({
     breakdowns[0],
   );
 
+  // 育成就労かどうかの判定
+  const hasIkusei = breakdowns.some((b) => b.visaType === 'ikusei');
+
+  // 日本人採用比較データ
+  const industry = allInputs?.step1.industry ?? inputs.step1.industry;
+  const jpBenchmark = JP_HIRING_BENCHMARKS[industry];
+
+  // 業種別ベンチマーク比較
+  const benchmarkComparison = useMemo(() => {
+    if (!industry || breakdowns.length === 0) return null;
+    return getIndustryBenchmarkComparison(
+      industry,
+      breakdowns[0].initialTotal,
+      breakdowns[0].monthlyTotal,
+    );
+  }, [industry, breakdowns]);
+
+  // アクションプラン
+  const actionPlan = useMemo(() => {
+    if (!allInputs) return null;
+    return generateActionPlan(allInputs);
+  }, [allInputs]);
+
   return (
     <div className="space-y-8">
+      {/* 育成就労の制度注記バナー */}
+      {hasIkusei && (
+        <div className="p-4 bg-amber-50 border border-amber-300 rounded-xl">
+          <p className="text-amber-800 text-sm font-medium">
+            育成就労制度は2027年施行予定の新制度です。本試算は現時点で公表されている情報に基づいていますが、施行時に費用体系・受入条件が変更される可能性があります。
+          </p>
+          <a
+            href="https://www.moj.go.jp/isa/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-amber-700 hover:underline mt-1 inline-block"
+          >
+            最新情報は出入国在留管理庁のサイトでご確認ください
+          </a>
+        </div>
+      )}
+
       {/* 受入上限警告バナー */}
       {isOverCapacity && (
         <div className="p-4 bg-orange-50 border-2 border-orange-300 rounded-xl">
           <p className="text-orange-800 font-medium">
-            ⚠️ 育成就労の受入上限を超過しています（上限: {capacityLimit}人 / 希望: {inputs.step2.headcount}人）
+            育成就労の受入上限を超過しています（上限: {capacityLimit}人 / 希望: {inputs.step2.headcount}人）
           </p>
           <p className="text-sm text-orange-600 mt-1">
             常勤職員数を増やすか、特定技能での採用をご検討ください。
@@ -99,46 +150,140 @@ export function ResultView({
         </div>
       )}
 
-      {/* KPI Hero Section */}
+      {/* KPI Hero Section（中央値メイン表示） */}
       <div className="bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl p-6 md:p-8 text-white">
         <div className="text-center space-y-4">
           <p className="text-sm opacity-80">
             3年間総コスト（{inputs.step2.headcount}人分・リスク含む）
           </p>
           <p className="text-3xl md:text-4xl font-bold">
-            {formatYen(maxBreakdown.threeYearTotal.min)}
-            {maxBreakdown.threeYearTotal.min !== maxBreakdown.threeYearTotal.max && (
-              <span> 〜 {formatYen(maxBreakdown.threeYearTotal.max)}</span>
-            )}
+            {formatMidYen(maxBreakdown.threeYearTotal.min, maxBreakdown.threeYearTotal.max)}
           </p>
+          {maxBreakdown.threeYearTotal.min !== maxBreakdown.threeYearTotal.max && (
+            <p className="text-xs opacity-60">
+              （{formatYen(maxBreakdown.threeYearTotal.min)} 〜 {formatYen(maxBreakdown.threeYearTotal.max)}）
+            </p>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div className="bg-white/10 rounded-lg p-4">
               <p className="text-xs opacity-80">1人あたり初期費用</p>
               <p className="text-lg font-bold mt-1">
-                {formatYen(maxBreakdown.initialTotal.min)} 〜 {formatYen(maxBreakdown.initialTotal.max)}
+                {formatMidYen(maxBreakdown.initialTotal.min, maxBreakdown.initialTotal.max)}
               </p>
+              {maxBreakdown.initialTotal.min !== maxBreakdown.initialTotal.max && (
+                <p className="text-xs opacity-50">
+                  {formatYen(maxBreakdown.initialTotal.min)} 〜 {formatYen(maxBreakdown.initialTotal.max)}
+                </p>
+              )}
             </div>
             <div className="bg-white/10 rounded-lg p-4">
               <p className="text-xs opacity-80">1人あたり月次費用</p>
               <p className="text-lg font-bold mt-1">
-                {formatYen(maxBreakdown.monthlyTotal.min)} 〜 {formatYen(maxBreakdown.monthlyTotal.max)} / 月
+                {formatMidYen(maxBreakdown.monthlyTotal.min, maxBreakdown.monthlyTotal.max)} / 月
               </p>
+              {maxBreakdown.monthlyTotal.min !== maxBreakdown.monthlyTotal.max && (
+                <p className="text-xs opacity-50">
+                  {formatYen(maxBreakdown.monthlyTotal.min)} 〜 {formatYen(maxBreakdown.monthlyTotal.max)}
+                </p>
+              )}
             </div>
             <div className="bg-white/10 rounded-lg p-4">
               <p className="text-xs opacity-80">リスクコスト</p>
               <p className="text-lg font-bold mt-1">
-                {formatYen(maxBreakdown.riskTotal.min)}
-                {maxBreakdown.riskTotal.min !== maxBreakdown.riskTotal.max && (
-                  <span> 〜 {formatYen(maxBreakdown.riskTotal.max)}</span>
-                )}
+                {formatMidYen(maxBreakdown.riskTotal.min, maxBreakdown.riskTotal.max)}
               </p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* 業種別ベンチマーク比較 */}
+      {benchmarkComparison && (
+        <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+          <h3 className="text-sm font-bold text-[#1a2f5e] mb-3">業界平均との比較</h3>
+          <div className="flex items-center gap-4">
+            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+              benchmarkComparison.initialDiff <= -10
+                ? 'bg-green-100 text-green-700'
+                : benchmarkComparison.initialDiff <= 10
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-orange-100 text-orange-700'
+            }`}>
+              {benchmarkComparison.label}
+            </span>
+            <span className="text-sm text-gray-600">
+              初期費用: 業界平均比 {benchmarkComparison.initialDiff > 0 ? '+' : ''}{benchmarkComparison.initialDiff}%
+              ／月次費用: {benchmarkComparison.monthlyDiff > 0 ? '+' : ''}{benchmarkComparison.monthlyDiff}%
+            </span>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            ※ 業界平均は各種調査データに基づく参考値です
+          </p>
+        </div>
+      )}
+
       {/* コスト比較テーブル */}
       <CostTable breakdowns={breakdowns} headcount={inputs.step2.headcount} />
+
+      {/* 日本人採用との比較 */}
+      {jpBenchmark && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold text-[#1a2f5e]">日本人採用との比較（参考）</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[#1a2f5e] text-white">
+                  <th className="px-4 py-3 text-left">比較項目</th>
+                  <th className="px-4 py-3 text-right">外国人採用（今回の試算）</th>
+                  <th className="px-4 py-3 text-right">日本人採用（業種平均）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-100">
+                  <td className="px-4 py-3 text-gray-700">採用初期費用 / 人</td>
+                  <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
+                    {formatMidYen(maxBreakdown.initialTotal.min, maxBreakdown.initialTotal.max)}
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono">
+                    {formatYen(jpBenchmark.adCostPerHire.min)} 〜 {formatYen(jpBenchmark.adCostPerHire.max)}
+                  </td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="px-4 py-3 text-gray-700">月次給与（企業負担込み）</td>
+                  <td className="px-4 py-3 text-right font-mono font-bold text-[#1a2f5e]">
+                    {formatMidYen(maxBreakdown.monthlyTotal.min, maxBreakdown.monthlyTotal.max)}
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono">
+                    {formatYen(Math.round(jpBenchmark.averageMonthlyWage * 1.165))}
+                  </td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="px-4 py-3 text-gray-700">有効求人倍率</td>
+                  <td className="px-4 py-3 text-right text-green-600 font-bold">
+                    監理団体/機関経由で高い採用成功率
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono text-orange-600">
+                    {jpBenchmark.effectiveJobOpeningsRatio}倍
+                  </td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="px-4 py-3 text-gray-700">紹介手数料率</td>
+                  <td className="px-4 py-3 text-right font-mono text-[#1a2f5e]">
+                    送出機関費（定額）
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono">
+                    年収の{Math.round(jpBenchmark.agencyFeeRate * 100)}%
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-gray-400">
+            ※ 日本人採用データは厚生労働省 一般職業紹介状況、リクルートワークス研究所等の業種別平均に基づく参考値です。
+            有効求人倍率が高い業種ほど日本人の採用が困難であり、外国人採用の合理性が高まります。
+          </p>
+        </div>
+      )}
 
       {/* 逆算スケジュール */}
       <ScheduleTimeline
@@ -151,11 +296,49 @@ export function ResultView({
       <RiskAnalysis
         headcount={inputs.step2.headcount}
         initialCostPerPerson={maxBreakdown.initialTotal}
+        visaChoice={allInputs?.step2.visaChoice}
       />
 
       {/* 自動診断 */}
       {allInputs && (
-        <ConsultationPanel inputs={allInputs} />
+        <ConsultationPanel inputs={allInputs} breakdowns={breakdowns} />
+      )}
+
+      {/* アクションプラン */}
+      {actionPlan && actionPlan.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold text-[#1a2f5e]">推奨アクションプラン</h3>
+          <div className="space-y-4">
+            {actionPlan.map((step, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1a2f5e] text-white text-xs font-bold shrink-0">
+                    {i + 1}
+                  </span>
+                  <h4 className="font-bold text-sm text-[#1a2f5e]">{step.phase}</h4>
+                </div>
+                <ul className="space-y-2 pl-10">
+                  {step.tasks.map((task, j) => (
+                    <li key={j} className="flex items-start gap-2">
+                      <span className="text-gray-400 mt-0.5 shrink-0">&#9744;</span>
+                      <div>
+                        <span className="text-sm text-gray-700">{task.label}</span>
+                        {task.ctaHref && (
+                          <a
+                            href={task.ctaHref}
+                            className="inline-flex items-center gap-1 ml-2 text-xs font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors"
+                          >
+                            {task.ctaLabel} &rarr;
+                          </a>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* アクションボタンエリア */}
@@ -168,12 +351,12 @@ export function ResultView({
             className="px-6 py-3 bg-white border-2 border-[#1a2f5e] text-[#1a2f5e] rounded-lg text-sm font-medium hover:bg-[#1a2f5e]/5 transition-colors disabled:opacity-50"
           >
             {isGuest
-              ? '🔗 URLで共有（無料登録が必要）'
+              ? 'URLで共有（無料登録が必要）'
               : shareUrl
                 ? '✓ コピーしました'
                 : sharing
                   ? '共有URL作成中...'
-                  : '🔗 URLをコピー'}
+                  : 'URLをコピー'}
           </button>
 
           {/* PDF出力 */}
@@ -182,11 +365,12 @@ export function ResultView({
               onClick={() => setShowGate(true)}
               className="px-6 py-3 bg-[#c9a84c] text-white rounded-lg text-sm font-medium hover:bg-[#c9a84c]/90 transition-colors"
             >
-              📄 PDF提案書を作成（無料登録が必要）
+              PDF提案書を作成（無料登録が必要）
             </button>
           ) : (
             <PdfDocument
               inputs={inputs}
+              allInputs={allInputs}
               breakdowns={breakdowns}
               step4={step4}
               isProposalMode={isProposalMode}
@@ -201,7 +385,7 @@ export function ResultView({
                   onClick={() => setShowPresetForm(true)}
                   className="px-6 py-3 bg-white border-2 border-[#c9a84c] text-[#8a6d2b] rounded-lg text-sm font-medium hover:bg-[#c9a84c]/10 transition-colors"
                 >
-                  💾 このプリセットを保存
+                  このプリセットを保存
                 </button>
               ) : (
                 <div className="flex items-center gap-2">

@@ -6,7 +6,7 @@ import type { SimulatorCostItem, SimulatorOrgPreset } from '@/types/database';
 
 // --- ユーザー種別・モード ---
 
-export type SimulatorUserType = 'kanri' | 'company' | 'guest';
+export type SimulatorUserType = 'kanri' | 'support' | 'company' | 'guest';
 export type SimulatorMode = 'quick' | 'detail';
 
 // --- ビザ種別 ---
@@ -173,6 +173,31 @@ export type DiagnosisItem = {
   description: string;
   ctaLabel: string;
   ctaHref: string;
+};
+
+// --- アクションプラン ---
+
+export type ActionStep = {
+  phase: string; // e.g. "今月中", "1〜2ヶ月目"
+  tasks: { label: string; ctaHref?: string; ctaLabel?: string }[];
+};
+
+// --- 日本人採用比較 ---
+
+export type JapaneseHiringBenchmark = {
+  adCostPerHire: { min: number; max: number };
+  agencyFeeRate: number; // 年収の%
+  averageMonthlyWage: number;
+  effectiveJobOpeningsRatio: number; // 有効求人倍率
+};
+
+// --- その他リスク ---
+
+export type AdditionalRisk = {
+  type: 'immigration' | 'regulatory' | 'currency' | 'compliance';
+  label: string;
+  description: string;
+  severity: 'high' | 'medium' | 'low';
 };
 
 // --- Shell Props ---

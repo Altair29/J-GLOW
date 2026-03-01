@@ -1,11 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { AllInputs, DiagnosisItem, DiagnosisType } from '../lib/types';
+import type { AllInputs, CostBreakdown, DiagnosisItem, DiagnosisType } from '../lib/types';
 import { diagnoseInputs } from '../lib/calculate';
 
 type Props = {
   inputs: AllInputs;
+  breakdowns?: CostBreakdown[];
 };
 
 const TYPE_STYLES: Record<DiagnosisType, { bg: string; border: string; iconBg: string; icon: string }> = {
@@ -15,8 +16,8 @@ const TYPE_STYLES: Record<DiagnosisType, { bg: string; border: string; iconBg: s
   opportunity: { bg: 'bg-green-50', border: 'border-green-200', iconBg: 'bg-green-100', icon: '💡' },
 };
 
-export function ConsultationPanel({ inputs }: Props) {
-  const items = useMemo(() => diagnoseInputs(inputs), [inputs]);
+export function ConsultationPanel({ inputs, breakdowns }: Props) {
+  const items = useMemo(() => diagnoseInputs(inputs, breakdowns), [inputs, breakdowns]);
 
   if (items.length === 0) return null;
 
@@ -39,12 +40,18 @@ export function ConsultationPanel({ inputs }: Props) {
                 <div className="flex-1 space-y-2">
                   <h4 className="font-bold text-sm text-gray-800">{item.title}</h4>
                   <p className="text-sm text-gray-600">{item.description}</p>
-                  <a
-                    href={item.ctaHref}
-                    className="inline-flex items-center gap-1 text-sm font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors"
-                  >
-                    {item.ctaLabel} &rarr;
-                  </a>
+                  {item.ctaHref.startsWith('#') ? (
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-[#1a2f5e]">
+                      {item.ctaLabel}
+                    </span>
+                  ) : (
+                    <a
+                      href={item.ctaHref}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-[#1a2f5e] hover:text-[#c9a84c] transition-colors"
+                    >
+                      {item.ctaLabel} &rarr;
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

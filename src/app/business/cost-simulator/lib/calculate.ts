@@ -11,8 +11,19 @@ import type {
   RiskScenario,
   DiagnosisItem,
   VisaTypeV2,
+  ActionStep,
+  SendingCountry,
 } from './types';
-import { COUNTRY_FEE_DEFAULTS, VISA_LEAD_TIMES, QUICK_ESTIMATE_DEFAULTS, VISA_TYPE_CONFIG } from './constants';
+import {
+  COUNTRY_FEE_DEFAULTS,
+  VISA_LEAD_TIMES,
+  QUICK_ESTIMATE_DEFAULTS,
+  VISA_TYPE_CONFIG,
+  getLeadTimeMonths,
+  JP_HIRING_BENCHMARKS,
+  INDUSTRY_COST_BENCHMARKS,
+  INDUSTRIES_V2,
+} from './constants';
 
 // ========================================
 // プリセット適用
@@ -101,9 +112,10 @@ export function resolveAmount(
     return { min: step0.enrollmentFee, max: step0.enrollmentFee };
   }
 
-  // 社会保険: 給与×14%(正社員) or 15%(パート)
+  // 社会保険: 健康保険(~10%)+厚生年金(18.3%)+雇用保険(0.6%)+労災(~1%)=約16.5%企業負担
+  // パート(週20h以上で適用): やや低めの15.5%
   if (item.item_key === 'social_insurance') {
-    const rate = isParttime ? 0.15 : 0.14;
+    const rate = isParttime ? 0.155 : 0.165;
     const amount = Math.round(monthlyWage * rate);
     return { min: amount, max: amount };
   }
@@ -399,36 +411,37 @@ export function getMonthsUntilStart(startDate: string): number {
   return (target.getFullYear() - now.getFullYear()) * 12 + (target.getMonth() - now.getMonth());
 }
 
-export function getEarliestStartMonth(visaType: VisaTypeV2): string {
-  const leadTime = VISA_LEAD_TIMES[visaType].months;
+export function getEarliestStartMonth(visaType: VisaTypeV2, country?: SendingCountry): string {
+  const leadTime = getLeadTimeMonths(visaType, country);
   const now = new Date();
   const earliest = new Date(now.getFullYear(), now.getMonth() + leadTime, 1);
   return `${earliest.getFullYear()}年${earliest.getMonth() + 1}月`;
 }
 
-export function isFeasible(startDate: string, visaType: VisaTypeV2): boolean {
+export function isFeasible(startDate: string, visaType: VisaTypeV2, country?: SendingCountry): boolean {
   const months = getMonthsUntilStart(startDate);
-  return months >= VISA_LEAD_TIMES[visaType].months;
+  return months >= getLeadTimeMonths(visaType, country);
 }
 
 // ========================================
 // 診断ロジック
 // ========================================
 
-export function diagnoseInputs(inputs: AllInputs): DiagnosisItem[] {
+export function diagnoseInputs(inputs: AllInputs, breakdowns?: CostBreakdown[]): DiagnosisItem[] {
   const items: DiagnosisItem[] = [];
   const { step1, step2 } = inputs;
+  const country = step2.sendingCountry;
 
   // 1. 育成就労が間に合わない
   if (
     (step2.visaChoice === 'ikusei' || step2.visaChoice === 'both') &&
-    !isFeasible(step2.startDate, 'ikusei')
+    !isFeasible(step2.startDate, 'ikusei', country)
   ) {
-    const earliest = getEarliestStartMonth('ikusei');
+    const earliest = getEarliestStartMonth('ikusei', country);
     items.push({
       type: 'urgent',
       title: '育成就労が希望時期に間に合いません',
-      description: `育成就労には最短9ヶ月必要です。最短で${earliest}就労開始が可能です。特定技能1号（国内切替・最短3ヶ月）との併用を検討してください。`,
+      description: `育成就労には${getLeadTimeMonths('ikusei', country)}ヶ月必要です。最短で${earliest}就労開始が可能です。特定技能1号（国内切替・最短3ヶ月）との併用を検討してください。`,
       ctaLabel: '特定技能1号について詳しく見る',
       ctaHref: '/business/hiring-guide',
     });
@@ -493,7 +506,195 @@ export function diagnoseInputs(inputs: AllInputs): DiagnosisItem[] {
     });
   }
 
+  // ---- v2追加 診断パターン ----
+
+  // 7. 業種×ビザのミスマッチ
+  const industryDef = INDUSTRIES_V2.find((i) => i.id === step1.industry);
+  if (industryDef && step2.visaChoice !== 'compare') {
+    const visaKey = step2.visaChoice === 'tokutei' ? 'tokutei1_kaigai' : step2.visaChoice;
+    if (visaKey !== 'both' && !industryDef.visaTypes.includes(visaKey as any)) {
+      items.push({
+        type: 'warning',
+        title: `${industryDef.label}では${VISA_TYPE_CONFIG[visaKey as keyof typeof VISA_TYPE_CONFIG]?.label ?? visaKey}の利用が困難です`,
+        description: `選択された業種と在留資格の組み合わせは制度上の制約があります。この業種で利用可能なビザ種別をご確認ください。`,
+        ctaLabel: 'ビザ種別を変更する',
+        ctaHref: '#step2',
+      });
+    }
+    // 介護×技人国の特殊ケース
+    if (step1.industry === 'nursing' && step2.visaChoice === 'ginou') {
+      items.push({
+        type: 'info',
+        title: '介護分野の技人国は介護福祉士の国家資格が必要です',
+        description: '介護分野で技術・人文知識・国際業務ビザを取得するには介護福祉士の国家資格が必要で、実質的に国内在住者からの採用に限られます。特定技能1号が最も一般的です。',
+        ctaLabel: '特定技能1号で試算し直す',
+        ctaHref: '#step2',
+      });
+    }
+  }
+
+  // 8. 予算と実費の乖離
+  if (step1.initialBudget && breakdowns && breakdowns.length > 0) {
+    const calcInitial = Math.round((breakdowns[0].initialTotal.min + breakdowns[0].initialTotal.max) / 2);
+    const budgetLimit = step1.initialBudget === 'under50' ? 500000 : step1.initialBudget === '50to150' ? 1500000 : Infinity;
+    if (calcInitial > budgetLimit * 1.2) {
+      items.push({
+        type: 'warning',
+        title: '試算結果がご予算を超えています',
+        description: `ご予算${step1.initialBudget === 'under50' ? '50万円以内' : '50〜150万円'}に対し、試算では1人あたり約${Math.round(calcInitial / 10000)}万円の初期費用が見込まれます。特定技能1号（国内在住者）への切替で初期費用を30〜50%削減できる可能性があります。`,
+        ctaLabel: '国内人材で試算する',
+        ctaHref: '#step2',
+      });
+    }
+  }
+
+  // 9. 常勤職員数に対する採用人数比率が高い
+  if (step1.fullTimeStaff > 0 && step2.headcount / step1.fullTimeStaff > 0.3) {
+    items.push({
+      type: 'info',
+      title: '外国人比率が高めの採用計画です',
+      description: `常勤職員${step1.fullTimeStaff}人に対し${step2.headcount}人の採用は、受入体制（住居・日本語支援・通訳）に十分な準備が必要です。段階的な受入（初年度は少数→翌年追加）も検討してください。`,
+      ctaLabel: '受入体制の準備ガイド',
+      ctaHref: '/business/hiring-guide',
+    });
+  }
+
+  // 10. 住居なし×育成就労
+  if (inputs.step3.housing === 'none' && (step2.visaChoice === 'ikusei' || step2.visaChoice === 'both')) {
+    items.push({
+      type: 'warning',
+      title: '育成就労では住居確保が原則義務です',
+      description: '育成就労制度では、受入企業または監理団体が住居の確保を行うことが原則義務とされています。「住居なし」の場合でも、入居先確保の支援が必要です。',
+      ctaLabel: '監理団体に相談する',
+      ctaHref: '/business/partners?type=kanri',
+    });
+  }
+
+  // 11. 5名以上の育成就労→複数ビザ併用提案
+  if (
+    step2.headcount >= 5 &&
+    step2.visaChoice === 'ikusei'
+  ) {
+    items.push({
+      type: 'opportunity',
+      title: '育成就労と特定技能の併用戦略が有効です',
+      description: `${step2.headcount}名の採用であれば、特定技能1号で先行2名を確保し、育成就労で残りを半年後に受入れる「ハイブリッド戦略」が有効です。人手不足の解消を前倒しできます。`,
+      ctaLabel: '比較モードで試算する',
+      ctaHref: '#step2',
+    });
+  }
+
+  // 12. 送出国×業種の相性
+  if (step2.sendingCountry === 'myanmar' && ['construction', 'welding'].includes(step1.industry)) {
+    items.push({
+      type: 'info',
+      title: 'ミャンマーからの建設・溶接分野は政情リスクに注意',
+      description: 'ミャンマーは政情不安定のため、送出手続きの遅延やビザ発給停止のリスクがあります。ベトナム・インドネシアとの並行検討をおすすめします。',
+      ctaLabel: '他の送出国も検討する',
+      ctaHref: '#step2',
+    });
+  }
+  if (step2.sendingCountry === 'philippines') {
+    items.push({
+      type: 'info',
+      title: 'フィリピンはPOEA/DMW手続きでリードタイムが長めです',
+      description: 'フィリピンからの受入は海外雇用庁(DMW)の手続きが必須で、他国より1〜3ヶ月長くかかる傾向があります。早めの準備開始をおすすめします。',
+      ctaLabel: 'スケジュールを確認する',
+      ctaHref: '#schedule',
+    });
+  }
+
   return items;
+}
+
+// ========================================
+// アクションプラン生成
+// ========================================
+
+export function generateActionPlan(inputs: AllInputs): ActionStep[] {
+  const { step2, userType } = inputs;
+  const isIkusei = step2.visaChoice === 'ikusei' || step2.visaChoice === 'both';
+  const isTokutei = step2.visaChoice === 'tokutei' || step2.visaChoice === 'both';
+  const isGinou = step2.visaChoice === 'ginou';
+
+  const steps: ActionStep[] = [];
+
+  // STEP 1: 今月中
+  const step1Tasks: ActionStep['tasks'] = [];
+  if (userType === 'company') {
+    if (isIkusei) {
+      step1Tasks.push({ label: '監理団体を2〜3社比較・面談する', ctaHref: '/business/partners?type=kanri', ctaLabel: '監理団体を探す' });
+    }
+    if (isTokutei) {
+      step1Tasks.push({ label: '登録支援機関を検討する（委託 or 自社対応）', ctaHref: '/business/partners?type=support', ctaLabel: '登録支援機関を探す' });
+    }
+    if (isGinou) {
+      step1Tasks.push({ label: '行政書士を選定する', ctaHref: '/business/partners?type=gyosei', ctaLabel: '行政書士を探す' });
+    }
+    step1Tasks.push({ label: '社内の受入体制を確認する（住居・研修担当者の選定）' });
+  } else {
+    step1Tasks.push({ label: '提案先企業の状況・ニーズをヒアリングする' });
+    step1Tasks.push({ label: 'シミュレーション結果をPDF提案書として共有する' });
+  }
+  steps.push({ phase: '今月中', tasks: step1Tasks });
+
+  // STEP 2: 1〜2ヶ月目
+  const step2Tasks: ActionStep['tasks'] = [];
+  if (isIkusei || isTokutei) {
+    step2Tasks.push({ label: '送出機関の選定・求人票の作成' });
+  }
+  step2Tasks.push({ label: '就業規則の外国人対応条項を確認する', ctaHref: '/business/partners?type=sharoshi', ctaLabel: '社労士に相談' });
+  if (inputs.step3.housing !== 'none') {
+    step2Tasks.push({ label: '社宅・寮の手配を開始する' });
+  }
+  steps.push({ phase: '1〜2ヶ月目', tasks: step2Tasks });
+
+  // STEP 3: 3〜4ヶ月目
+  const step3Tasks: ActionStep['tasks'] = [];
+  step3Tasks.push({ label: '面接・選考（オンラインまたは現地）' });
+  step3Tasks.push({ label: '在留資格申請の準備・提出' });
+  if (isIkusei) {
+    step3Tasks.push({ label: '育成就労計画の認定申請' });
+  }
+  steps.push({ phase: '3〜4ヶ月目', tasks: step3Tasks });
+
+  // STEP 4: 入国〜就労開始
+  const step4Tasks: ActionStep['tasks'] = [];
+  step4Tasks.push({ label: '住居・備品の最終準備' });
+  if (isIkusei) {
+    step4Tasks.push({ label: '入国後講習の実施（1〜2ヶ月・就労不可期間）' });
+  }
+  step4Tasks.push({ label: 'OJT開始・多言語指示書の整備', ctaHref: '/business/existing-users/connect/templates', ctaLabel: '現場指示書ビルダー' });
+  step4Tasks.push({ label: '生活オリエンテーション（銀行口座・携帯・ゴミ出し等）' });
+  steps.push({ phase: '入国〜就労開始', tasks: step4Tasks });
+
+  return steps;
+}
+
+// ========================================
+// 業種別ベンチマーク比較
+// ========================================
+
+export function getIndustryBenchmarkComparison(
+  industry: string,
+  calculatedInitial: { min: number; max: number },
+  calculatedMonthly: { min: number; max: number },
+): { initialDiff: number; monthlyDiff: number; label: string } | null {
+  const benchmark = INDUSTRY_COST_BENCHMARKS[industry];
+  if (!benchmark) return null;
+
+  const calcInitialMid = (calculatedInitial.min + calculatedInitial.max) / 2;
+  const calcMonthlyMid = (calculatedMonthly.min + calculatedMonthly.max) / 2;
+
+  const initialDiff = Math.round(((calcInitialMid - benchmark.initialPerPerson) / benchmark.initialPerPerson) * 100);
+  const monthlyDiff = Math.round(((calcMonthlyMid - benchmark.monthlyPerPerson) / benchmark.monthlyPerPerson) * 100);
+
+  let label: string;
+  if (initialDiff <= -10) label = '業界平均より低コスト';
+  else if (initialDiff <= 10) label = '業界平均並み';
+  else label = '業界平均より高コスト';
+
+  return { initialDiff, monthlyDiff, label };
 }
 
 // ========================================

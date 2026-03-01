@@ -210,8 +210,9 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
     [step1.fullTimeStaff],
   );
 
+  const isOrgUser = userType === 'kanri' || userType === 'support';
   const isOverCapacity = step2.visaChoice !== 'tokutei' && step2.headcount > capacityLimit && capacityLimit > 0;
-  const isProposalMode = !!(step0.orgName || step0.staffName);
+  const isProposalMode = isOrgUser && !!(step0.orgName || step0.staffName);
 
   // ステップバリデーション
   const canProceedStep0 = step0.managementFee > 0;
@@ -225,7 +226,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
     setMode(m);
     if (m === 'quick') {
       setPhase('quick');
-    } else if (ut === 'kanri') {
+    } else if (ut === 'kanri' || ut === 'support') {
       setPhase('detail-step0');
     } else {
       setPhase('detail-step1');
@@ -234,7 +235,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
 
   // --- ナビゲーション ---
   const getDetailPhases = useCallback((): ShellPhase[] => {
-    if (userType === 'kanri') {
+    if (userType === 'kanri' || userType === 'support') {
       return ['detail-step0', 'detail-step1', 'detail-step2', 'detail-step3', 'result'];
     }
     return ['detail-step1', 'detail-step2', 'detail-step3', 'result'];
@@ -264,11 +265,14 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
     if (userType === 'kanri') {
       return ['団体情報', '企業情報', '採用計画', '自社環境'];
     }
+    if (userType === 'support') {
+      return ['機関情報', '企業情報', '採用計画', '自社環境'];
+    }
     return ['企業情報', '採用計画', '自社環境'];
   }, [userType]);
 
   const canProceedArray = useMemo(() => {
-    if (userType === 'kanri') {
+    if (userType === 'kanri' || userType === 'support') {
       return [true, canProceedStep0, canProceedStep1, canProceedStep2, canProceedStep3];
     }
     return [true, canProceedStep1, canProceedStep2, canProceedStep3];
@@ -292,7 +296,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
       setStep1((prev) => ({ ...prev, fullTimeStaff: quickInputs.fullTimeStaff! }));
     }
     setMode('detail');
-    setPhase(userType === 'kanri' ? 'detail-step0' : 'detail-step1');
+    setPhase((userType === 'kanri' || userType === 'support') ? 'detail-step0' : 'detail-step1');
   }, [quickInputs, userType]);
 
   // --- DB操作 ---
@@ -486,6 +490,7 @@ export function CostSimulatorShell({ costItems, presets: initialPresets, userId,
                 onLoadPreset={handleLoadPreset}
                 onDeletePreset={handleDeletePreset}
                 isLoggedIn={isLoggedIn}
+                userType={userType}
               />
             )}
             {phase === 'detail-step1' && (

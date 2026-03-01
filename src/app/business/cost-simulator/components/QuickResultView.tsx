@@ -16,6 +16,11 @@ function formatYen(n: number): string {
   return `¥${n.toLocaleString()}`;
 }
 
+function formatMidYen(min: number, max: number): string {
+  const mid = Math.round((min + max) / 2);
+  return formatYen(mid);
+}
+
 function getVisaTypeV2FromKey(key: string): VisaTypeV2 | null {
   const map: Record<string, VisaTypeV2> = {
     ikusei: 'ikusei',
@@ -36,10 +41,20 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
   const leadTime = visaType ? VISA_LEAD_TIMES[visaType] : null;
   const feasible = visaType ? isFeasible(inputs.startDate, visaType) : true;
   const earliestMonth = visaType ? getEarliestStartMonth(visaType) : '';
+  const hasIkusei = breakdowns.some((b) => b.visaType === 'ikusei');
 
   return (
     <div className="space-y-8">
-      {/* KPI カード */}
+      {/* 育成就労の制度注記 */}
+      {hasIkusei && (
+        <div className="p-3 bg-amber-50 border border-amber-300 rounded-lg">
+          <p className="text-amber-800 text-xs">
+            育成就労制度は2027年施行予定の新制度です。本試算は概算であり、施行時に費用体系が変更される可能性があります。
+          </p>
+        </div>
+      )}
+
+      {/* KPI カード（中央値メイン） */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* 最短就労開始 */}
         <div className={`rounded-xl p-5 text-center ${feasible ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
@@ -54,40 +69,46 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
           )}
         </div>
 
-        {/* 1人あたり初期費用 */}
+        {/* 1人あたり初期費用（中央値メイン） */}
         <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
           <p className="text-xs text-gray-500 mb-1">1人あたり初期費用</p>
           <p className="text-lg font-bold text-[#1a2f5e]">
-            {formatYen(primary.initialTotal.min)}
-            {primary.initialTotal.min !== primary.initialTotal.max && (
-              <span className="text-sm"> 〜 {formatYen(primary.initialTotal.max)}</span>
-            )}
+            {formatMidYen(primary.initialTotal.min, primary.initialTotal.max)}
           </p>
+          {primary.initialTotal.min !== primary.initialTotal.max && (
+            <p className="text-xs text-gray-400 mt-1">
+              {formatYen(primary.initialTotal.min)} 〜 {formatYen(primary.initialTotal.max)}
+            </p>
+          )}
         </div>
 
-        {/* 月次コスト */}
+        {/* 月次コスト（中央値メイン） */}
         <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
           <p className="text-xs text-gray-500 mb-1">月次コスト（1人）</p>
           <p className="text-lg font-bold text-[#1a2f5e]">
-            {formatYen(primary.monthlyTotal.min)}
-            {primary.monthlyTotal.min !== primary.monthlyTotal.max && (
-              <span className="text-sm"> 〜 {formatYen(primary.monthlyTotal.max)}</span>
-            )}
+            {formatMidYen(primary.monthlyTotal.min, primary.monthlyTotal.max)}
           </p>
+          {primary.monthlyTotal.min !== primary.monthlyTotal.max && (
+            <p className="text-xs text-gray-400 mt-1">
+              {formatYen(primary.monthlyTotal.min)} 〜 {formatYen(primary.monthlyTotal.max)}
+            </p>
+          )}
         </div>
       </div>
 
-      {/* 3年間総コスト */}
+      {/* 3年間総コスト（中央値メイン） */}
       <div className="bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl p-6 text-white text-center">
         <p className="text-sm opacity-80 mb-2">
           3年間総コスト（{inputs.headcount}人分）
         </p>
         <p className="text-3xl font-bold">
-          {formatYen(primary.threeYearTotal.min)}
-          {primary.threeYearTotal.min !== primary.threeYearTotal.max && (
-            <span className="text-xl"> 〜 {formatYen(primary.threeYearTotal.max)}</span>
-          )}
+          {formatMidYen(primary.threeYearTotal.min, primary.threeYearTotal.max)}
         </p>
+        {primary.threeYearTotal.min !== primary.threeYearTotal.max && (
+          <p className="text-xs opacity-60 mt-1">
+            （{formatYen(primary.threeYearTotal.min)} 〜 {formatYen(primary.threeYearTotal.max)}）
+          </p>
+        )}
       </div>
 
       {/* 比較表示（複数ビザ時） */}
@@ -99,7 +120,7 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
               <div key={b.visaType} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <span className="text-sm font-medium text-gray-700">{b.visaLabel}</span>
                 <span className="text-sm font-bold text-[#1a2f5e] font-mono">
-                  {formatYen(b.threeYearTotal.min)} 〜 {formatYen(b.threeYearTotal.max)}
+                  {formatMidYen(b.threeYearTotal.min, b.threeYearTotal.max)}
                 </span>
               </div>
             ))}

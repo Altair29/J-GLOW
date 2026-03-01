@@ -1,6 +1,6 @@
 'use client';
 
-import type { Step0Data } from '../lib/types';
+import type { Step0Data, SimulatorUserType } from '../lib/types';
 import type { SimulatorOrgPreset } from '@/types/database';
 import { PresetManager } from './PresetManager';
 
@@ -14,6 +14,7 @@ type Props = {
   onLoadPreset: (preset: SimulatorOrgPreset) => void;
   onDeletePreset: (id: string) => Promise<void>;
   isLoggedIn: boolean;
+  userType?: SimulatorUserType;
 };
 
 export function Step0TeamSetup({
@@ -26,7 +27,9 @@ export function Step0TeamSetup({
   onLoadPreset,
   onDeletePreset,
   isLoggedIn,
+  userType = 'kanri',
 }: Props) {
+  const isSupport = userType === 'support';
   const update = <K extends keyof Step0Data>(key: K, value: Step0Data[K]) =>
     onChange({ ...data, [key]: value });
 
@@ -34,7 +37,7 @@ export function Step0TeamSetup({
     <div className="space-y-6">
       <h2 className="text-lg font-bold text-[#1a2f5e] flex items-center gap-2">
         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#1a2f5e] text-white text-sm font-bold">1</span>
-        監理団体・登録支援機関の情報
+        {isSupport ? '登録支援機関の情報' : '監理団体の情報'}
       </h2>
 
       {/* プリセット（ログイン時のみ） */}
@@ -50,13 +53,13 @@ export function Step0TeamSetup({
       {/* 団体名 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          団体名 <span className="text-gray-400 text-xs">（任意・提案書に表示）</span>
+          {isSupport ? '機関名' : '団体名'} <span className="text-gray-400 text-xs">（任意・提案書に表示）</span>
         </label>
         <input
           type="text"
           value={data.orgName}
           onChange={(e) => update('orgName', e.target.value)}
-          placeholder="例：◯◯監理協同組合"
+          placeholder={isSupport ? '例：◯◯サポート株式会社' : '例：◯◯監理協同組合'}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a2f5e]/20 focus:border-[#1a2f5e] outline-none"
         />
       </div>
@@ -78,7 +81,7 @@ export function Step0TeamSetup({
       {/* 月額監理費 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          月額監理費・支援費 <span className="text-red-500">*</span>
+          {isSupport ? '月額支援費' : '月額監理費・支援費'} <span className="text-red-500">*</span>
         </label>
         <div className="flex items-center gap-2">
           <span className="text-gray-500">¥</span>
@@ -93,7 +96,7 @@ export function Step0TeamSetup({
           <span className="text-sm text-gray-500">/ 月・人</span>
         </div>
         <p className="text-xs text-gray-400 mt-1">
-          コスト試算に反映されます。相場は25,000〜50,000円/月です
+          コスト試算に反映されます。相場は{isSupport ? '15,000〜30,000' : '25,000〜50,000'}円/月です
         </p>
       </div>
 

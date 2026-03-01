@@ -16,9 +16,15 @@ const USER_TYPE_OPTIONS: {
 }[] = [
   {
     value: 'kanri',
-    label: '監理団体・登録支援機関',
-    desc: '提案書PDFを作成し、企業様に提出できます',
+    label: '監理団体',
+    desc: '育成就労の受入支援・企業への提案書を作成',
     icon: '🏢',
+  },
+  {
+    value: 'support',
+    label: '登録支援機関',
+    desc: '特定技能の支援業務・企業への提案書を作成',
+    icon: '🤝',
   },
   {
     value: 'company',
@@ -129,8 +135,10 @@ export function LandingGate({ onStart }: Props) {
               </h2>
               <p className="text-gray-600 mb-8">
                 {userType === 'kanri'
-                  ? '監理団体・登録支援機関として試算します'
-                  : '受入企業として試算します'}
+                  ? '監理団体として試算します'
+                  : userType === 'support'
+                    ? '登録支援機関として試算します'
+                    : '受入企業として試算します'}
               </p>
 
               <div className="grid md:grid-cols-2 gap-4">
