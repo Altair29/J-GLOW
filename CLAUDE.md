@@ -18,6 +18,7 @@
 - framer-motion（アニメーション）
 - nanoid（共有トークン生成）
 - rehype-raw + remark-gfm（Markdown/HTML記事レンダリング）
+- Playwright（E2Eテスト）
 
 ---
 
@@ -128,6 +129,10 @@ public/
 ├─ images/                           # ヒーロー・カード・SVG図解
 │  └─ tools/                         # ツールスクリーンショット（6枚）
 └─ downloads/                        # PDF・Excel
+e2e/                                 # Playwright E2Eテスト
+├─ auth.setup.ts                     # 認証セットアップ（storageState保存）
+└─ labor-notice.spec.ts              # 労働条件通知書ウィザード（25テスト）
+playwright.config.ts                 # Playwright設定（setup + chromium）
 supabase/migrations/                 # 00001〜00037（38ファイル）
 scripts/                             # DB投入スクリプト
 ```
@@ -519,6 +524,29 @@ New（partners/ 検索UI・申請フォームで使用）:
   - RegularCard: 横並び3カラム（アイコン・情報・タグ+ボタン）
 - **ApplicationForm**: 5ステップ（種別選択→基本情報→種別固有→PR→プラン選択）、design.jsx移植
 - **定数**: `src/lib/partners-config.ts` に TIER_CONFIG, PARTNER_TYPE_CONFIG, TYPE_VISA_OPTIONS, REGION/INDUSTRY/COUNTRY_OPTIONS, FORM_FIELDS を集約
+
+---
+
+## E2Eテスト（Playwright）
+
+### 設定
+- **config**: `playwright.config.ts`（setup→chromium の2プロジェクト構成）
+- **認証**: `e2e/auth.setup.ts` でログイン → `e2e/.auth/user.json` にstorageState保存
+- **baseURL**: `http://localhost:3000`（`npm run dev` 自動起動）
+- **実行**: `npx playwright test`（全件）/ `npx playwright test e2e/labor-notice.spec.ts`（個別）
+
+### テストスイート
+
+| ファイル | テスト数 | 対象 |
+|---|---|---|
+| `e2e/labor-notice.spec.ts` | 25 | 労働条件通知書ウィザード（5ステップ全遷移・バリデーション・条件分岐UI・PDF生成・レスポンシブ） |
+
+### セレクタ規約
+- 見出し: `getByRole('heading', { name: '...' })`（タブボタンとの重複回避）
+- ボタン: `getByRole('button', { name: /.../ })`
+- 入力: `getByPlaceholder('...')` / `locator('input[type="..."]').nth(n)`
+- ラベル: `locator('label').filter({ hasText: '...' })`（ラジオボタン・チェックボックス）
+- エラーメッセージ: `locator('p').filter({ hasText: '...' })`（hidden optionとの重複回避）
 
 ---
 
