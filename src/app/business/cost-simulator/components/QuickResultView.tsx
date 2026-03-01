@@ -58,81 +58,29 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
         </div>
       )}
 
-      {/* KPI カード（中央値メイン） */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* 最短就労開始 */}
-        <div className={`rounded-xl p-5 text-center ${feasible ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-          <p className="text-xs text-gray-500 mb-1">最短就労開始</p>
-          <p className={`text-lg font-bold ${feasible ? 'text-green-700' : 'text-red-600'}`}>
-            {feasible ? '間に合います' : earliestMonth}
-          </p>
-          {leadTime && (
-            <p className="text-xs text-gray-400 mt-1">
-              リードタイム: {leadTime.months}ヶ月
-            </p>
-          )}
-        </div>
-
-        {/* 1人あたり初期費用（中央値メイン） */}
-        <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
-          <p className="text-xs text-gray-500 mb-1">1人あたり初期費用</p>
-          <p className="text-lg font-bold text-[#1a2f5e]">
-            {formatMidYen(primary.initialTotal.min, primary.initialTotal.max)}
-          </p>
-          {primary.initialTotal.min !== primary.initialTotal.max && (
-            <p className="text-xs text-gray-400 mt-1">
-              {formatYen(primary.initialTotal.min)} 〜 {formatYen(primary.initialTotal.max)}
-            </p>
-          )}
-        </div>
-
-        {/* 月次コスト（中央値メイン） */}
-        <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
-          <p className="text-xs text-gray-500 mb-1">月次コスト（1人）</p>
-          <p className="text-lg font-bold text-[#1a2f5e]">
-            {formatMidYen(primary.monthlyTotal.min, primary.monthlyTotal.max)}
-          </p>
-          {primary.monthlyTotal.min !== primary.monthlyTotal.max && (
-            <p className="text-xs text-gray-400 mt-1">
-              {formatYen(primary.monthlyTotal.min)} 〜 {formatYen(primary.monthlyTotal.max)}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* 3年間総コスト（中央値メイン） */}
-      <div className="bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl p-6 text-white text-center">
-        <p className="text-sm opacity-80 mb-2">
-          3年間総コスト（{inputs.headcount}人分）
-        </p>
-        <p className="text-3xl font-bold">
-          {formatMidYen(primary.threeYearTotal.min, primary.threeYearTotal.max)}
-        </p>
-        {primary.threeYearTotal.min !== primary.threeYearTotal.max && (
-          <p className="text-xs opacity-60 mt-1">
-            （{formatYen(primary.threeYearTotal.min)} 〜 {formatYen(primary.threeYearTotal.max)}）
-          </p>
-        )}
-      </div>
-
-      {/* ゲスト向け: 比較部分をぼかして登録誘導 */}
+      {/* ゲスト向け: KPIカード含めてぼかし+登録誘導 */}
       <div className={isGuest ? 'relative' : ''}>
         {isGuest && (
-          <div className="sticky top-20 z-30 flex flex-col items-center justify-center py-6 -mb-6">
-            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#1a2f5e]/20 rounded-2xl p-6 shadow-xl text-center max-w-sm">
+          <div className="absolute inset-0 z-30 flex items-start justify-center pt-16">
+            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#1a2f5e]/20 rounded-2xl p-6 shadow-xl text-center max-w-sm mx-4">
               <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               </div>
-              <h3 className="text-base font-bold text-[#1a2f5e] mb-2">詳細な比較・分析を見る</h3>
+              <h3 className="text-base font-bold text-[#1a2f5e] mb-2">概算結果を確認する</h3>
               <p className="text-sm text-gray-600 mb-4">
-                ビザ別比較や詳細シミュレーションは無料登録でご利用いただけます。
+                試算結果の確認・詳細シミュレーションは無料登録でご利用いただけます。
               </p>
+              <ul className="text-left text-xs text-gray-500 space-y-1.5 mb-5 max-w-xs mx-auto">
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>初期費用・月次コストの概算表示</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>ビザ種別ごとの比較</li>
+                <li className="flex items-start gap-2"><span className="text-[#c9a84c] shrink-0">&#10003;</span>詳細シミュレーション・PDF出力</li>
+              </ul>
               <a
                 href={`/register/business?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}&from=simulator`}
                 className="inline-block w-full px-5 py-3 rounded-lg font-bold text-sm transition-opacity hover:opacity-90"
                 style={{ backgroundColor: '#c9a84c', color: '#1a2f5e' }}
               >
-                無料会員登録して詳細を見る &rarr;
+                無料会員登録して結果を見る &rarr;
               </a>
               <p className="text-xs text-gray-400 mt-2">
                 <a href={`/login?returnUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/business/cost-simulator')}`} className="text-[#1a2f5e] hover:underline">
@@ -144,9 +92,66 @@ export function QuickResultView({ inputs, breakdowns, onDetailMode, onRestart }:
         )}
 
         <div className={isGuest ? 'blur-[6px] select-none pointer-events-none' : ''} aria-hidden={isGuest}>
+          {/* KPI カード（中央値メイン） */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* 最短就労開始 */}
+            <div className={`rounded-xl p-5 text-center ${feasible ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+              <p className="text-xs text-gray-500 mb-1">最短就労開始</p>
+              <p className={`text-lg font-bold ${feasible ? 'text-green-700' : 'text-red-600'}`}>
+                {feasible ? '間に合います' : earliestMonth}
+              </p>
+              {leadTime && (
+                <p className="text-xs text-gray-400 mt-1">
+                  リードタイム: {leadTime.months}ヶ月
+                </p>
+              )}
+            </div>
+
+            {/* 1人あたり初期費用（中央値メイン） */}
+            <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
+              <p className="text-xs text-gray-500 mb-1">1人あたり初期費用</p>
+              <p className="text-lg font-bold text-[#1a2f5e]">
+                {formatMidYen(primary.initialTotal.min, primary.initialTotal.max)}
+              </p>
+              {primary.initialTotal.min !== primary.initialTotal.max && (
+                <p className="text-xs text-gray-400 mt-1">
+                  {formatYen(primary.initialTotal.min)} 〜 {formatYen(primary.initialTotal.max)}
+                </p>
+              )}
+            </div>
+
+            {/* 月次コスト（中央値メイン） */}
+            <div className="bg-[#1a2f5e]/5 rounded-xl p-5 text-center border border-[#1a2f5e]/10">
+              <p className="text-xs text-gray-500 mb-1">月次コスト（1人）</p>
+              <p className="text-lg font-bold text-[#1a2f5e]">
+                {formatMidYen(primary.monthlyTotal.min, primary.monthlyTotal.max)}
+              </p>
+              {primary.monthlyTotal.min !== primary.monthlyTotal.max && (
+                <p className="text-xs text-gray-400 mt-1">
+                  {formatYen(primary.monthlyTotal.min)} 〜 {formatYen(primary.monthlyTotal.max)}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* 3年間総コスト（中央値メイン） */}
+          <div className="bg-gradient-to-r from-[#1a2f5e] to-[#2a4a8e] rounded-xl p-6 text-white text-center mt-8">
+            <p className="text-sm opacity-80 mb-2">
+              3年間総コスト（{inputs.headcount}人分）
+            </p>
+            <p className="text-3xl font-bold">
+              {formatMidYen(primary.threeYearTotal.min, primary.threeYearTotal.max)}
+            </p>
+            {primary.threeYearTotal.min !== primary.threeYearTotal.max && (
+              <p className="text-xs opacity-60 mt-1">
+                （{formatYen(primary.threeYearTotal.min)} 〜 {formatYen(primary.threeYearTotal.max)}）
+              </p>
+            )}
+          </div>
+
           {/* 比較表示（複数ビザ時） */}
           {breakdowns.length > 1 && (
-            <div className="space-y-3">
+            <div className="space-y-3 mt-8">
               <h3 className="text-sm font-bold text-[#1a2f5e]">ビザ種別ごとの概算比較</h3>
               <div className="grid gap-3">
                 {breakdowns.map((b) => (
